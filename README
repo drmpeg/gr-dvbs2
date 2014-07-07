@@ -1,0 +1,55 @@
+# Copyright 2014 Ron Economos
+#
+# This file is part of gr-dvbs2
+#
+# gr-dvbs2 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+#
+# gr-dvbs2 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with gr-dvbs2; see the file COPYING.  If not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street,
+# Boston, MA 02110-1301, USA.
+
+gr-dvbs2
+======
+
+Author: Ron Economos
+Email: <w6rz@comcast.net>
+
+The goal of this project is to build a software-defined DVB-S2
+transmitter, based on the EN 302 307 V1.3.1 Second Generation
+framing structure, channel coding and modulation systems for
+Broadcasting, Interactive Services, New Gathering and other
+broadband satellite applications standard:
+
+http://www.etsi.org/deliver/etsi_en/302300_302399/302307/01.03.01_60/en_302307v010301p.pdf
+
+The baseband framing, baseband scrambling, LDPC (low density
+parity check), BCH (Bose, Chaudhuri, Hocquenghem), bit interleaver
+and physical layer framing and scrambling blocks are from G4GUO's
+DATV-Express Digital Amateur Television project datvexpress_gui
+(https://github.com/G4GUO/datvexpress_gui/tree/master/DVB-S2)
+and converted to GnuRadio 3.7.x.
+
+A gnuradio-companion flowgraph (dvbs2_tx.grc) for the bladeRF
+transmit capable SDR is included along with a stand-alone
+Python script for bladeRF (dvbs2-blade.py).
+
+Build instructions:
+
+    mkdir build
+    cd build
+    cmake ../
+    make
+    sudo make install
+    sudo ldconfig
+
+Contributions are welcome!
+

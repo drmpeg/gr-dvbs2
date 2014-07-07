@@ -1,0 +1,55 @@
+<block>
+  <name>Interleaver</name>
+  <key>dvbs2_interleaver_bb</key>
+  <category>dvbs2</category>
+  <import>import dvbs2</import>
+  <make>dvbs2.interleaver_bb($constellation.val, $rate.val)</make>
+  <param>
+    <name>Constellation</name>
+    <key>constellation</key>
+    <type>enum</type>
+    <option>
+      <name>QPSK</name>
+      <key>MOD_QPSK</key>
+      <opt>val:dvbs2.MOD_QPSK</opt>
+    </option>
+    <option>
+      <name>8PSK</name>
+      <key>MOD_8PSK</key>
+      <opt>val:dvbs2.MOD_8PSK</opt>
+    </option>
+    <option>
+      <name>16APSK</name>
+      <key>MOD_16APSK</key>
+      <opt>val:dvbs2.MOD_16APSK</opt>
+    </option>
+    <option>
+      <name>32APSK</name>
+      <key>MOD_32APSK</key>
+      <opt>val:dvbs2.MOD_32APSK</opt>
+    </option>
+  </param>
+  <param>
+    <name>Code rate</name>
+    <key>rate</key>
+    <type>enum</type>
+    <option>
+      <name>Other</name>
+      <key>C_OTHER</key>
+      <opt>val:dvbs2.C_OTHER</opt>
+    </option>
+    <option>
+      <name>3/5</name>
+      <key>C3_5</key>
+      <opt>val:dvbs2.C3_5</opt>
+    </option>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>byte</type>
+  </source>
+</block>
