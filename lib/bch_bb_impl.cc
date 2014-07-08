@@ -187,63 +187,33 @@ void bch_bb_impl::poly_reverse(int *pin, int *pout, int len)
 //
 inline void bch_bb_impl::reg_4_shift(unsigned int *sr)
 {
-    unsigned int temp;
-
-    sr[3] >>= 1;
-    temp = sr[2] << 31;
-    sr[3] |= temp;
-    sr[2] >>= 1;
-    temp = sr[1] << 31;
-    sr[2] |= temp;
-    sr[1] >>= 1;
-    temp = sr[0] << 31;
-    sr[1] |= temp;
-    sr[0] >>= 1;
+    sr[3] = (sr[3] >> 1) | (sr[2] << 31);
+    sr[2] = (sr[2] >> 1) | (sr[1] << 31);
+    sr[1] = (sr[1] >> 1) | (sr[0] << 31);
+    sr[0] = (sr[0] >> 1);
 }
 //
 // Shift 160 bits
 //
 inline void bch_bb_impl::reg_5_shift(unsigned int *sr)
 {
-    unsigned int temp;
-
-    sr[4] >>= 1;
-    temp = sr[3] << 31;
-    sr[4] |= temp;
-    sr[3] >>= 1;
-    temp = sr[2] << 31;
-    sr[3] |= temp;
-    sr[2] >>= 1;
-    temp = sr[1] << 31;
-    sr[2] |= temp;
-    sr[1] >>= 1;
-    temp = sr[0] << 31;
-    sr[1] |= temp;
-    sr[0] >>= 1;
+    sr[4] = (sr[4] >> 1) | (sr[3] << 31);
+    sr[3] = (sr[3] >> 1) | (sr[2] << 31);
+    sr[2] = (sr[2] >> 1) | (sr[1] << 31);
+    sr[1] = (sr[1] >> 1) | (sr[0] << 31);
+    sr[0] = (sr[0] >> 1);
 }
 //
 // Shift 192 bits
 //
 inline void bch_bb_impl::reg_6_shift(unsigned int *sr)
 {
-    unsigned int temp;
-
-    sr[5] >>= 1;
-    temp = sr[4] << 31;
-    sr[5] |= temp;
-    sr[4] >>= 1;
-    temp = sr[3] << 31;
-    sr[4] |= temp;
-    sr[3] >>= 1;
-    temp = sr[2] << 31;
-    sr[3] |= temp;
-    sr[2] >>= 1;
-    temp = sr[1] << 31;
-    sr[2] |= temp;
-    sr[1] >>= 1;
-    temp = sr[0] << 31;
-    sr[1] |= temp;
-    sr[0] >>= 1;
+    sr[5] = (sr[5] >> 1) | (sr[4] << 31);
+    sr[4] = (sr[4] >> 1) | (sr[3] << 31);
+    sr[3] = (sr[3] >> 1) | (sr[2] << 31);
+    sr[2] = (sr[2] >> 1) | (sr[1] << 31);
+    sr[1] = (sr[1] >> 1) | (sr[0] << 31);
+    sr[0] = (sr[0] >> 1);
 }
 
 void bch_bb_impl::bch_poly_build_tables(void)
