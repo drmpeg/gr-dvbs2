@@ -42,6 +42,11 @@ A gnuradio-companion flowgraph (dvbs2_tx.grc) for the bladeRF
 transmit capable SDR is included along with a stand-alone
 Python script for bladeRF (dvbs2-blade.py).
 
+Note: This implementation only supports the Single Transport
+Stream Broadcast services mode. Optional Broadcast services
+configurations supported are 1/4, 1/3 and 2/5 code rates,
+16APSK and 32APSK.
+
 Build instructions:
 
     mkdir build
