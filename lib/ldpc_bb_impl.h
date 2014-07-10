@@ -53,16 +53,6 @@ namespace gr {
       const static int ldpc_tab_5_6N[150][14];
       const static int ldpc_tab_8_9N[160][5];
       const static int ldpc_tab_9_10N[162][5];
-      const static int ldpc_tab_1_4S[9][13];
-      const static int ldpc_tab_1_3S[15][13];
-      const static int ldpc_tab_2_5S[18][13];
-      const static int ldpc_tab_1_2S[20][9];
-      const static int ldpc_tab_3_5S[27][13];
-      const static int ldpc_tab_2_3S[30][14];
-      const static int ldpc_tab_3_4S[33][13];
-      const static int ldpc_tab_4_5S[35][4];
-      const static int ldpc_tab_5_6S[37][14];
-      const static int ldpc_tab_8_9S[40][5];
 
      public:
       ldpc_bb_impl(dvbs2_code_rate_t rate);
