@@ -233,7 +233,7 @@ void bch_bb_impl::bch_poly_build_tables(void)
     const int polyn12[]={1,1,0,0,0,1,1,1,0,1,0,1,1,0,0,0,1};
 
     int len;
-    int polyout[3][2000];
+    int polyout[2][200];
 
     len = poly_mult(polyn01, 17, polyn02,    17,  polyout[0]);
     len = poly_mult(polyn03, 17, polyout[0], len, polyout[1]);
@@ -278,7 +278,7 @@ void bch_bb_impl::bch_poly_build_tables(void)
                         temp = *in++;
                         *out++ = temp;
                         consumed++;
-                        b = (temp ^ ((shift[5] & 1) ? 1 : 0));
+                        b = (temp ^ (shift[5] & 1));
                         reg_6_shift(shift);
                         if (b)
                         {
@@ -293,7 +293,7 @@ void bch_bb_impl::bch_poly_build_tables(void)
                     // Now add the parity bits to the output
                     for (int n = 0; n < 192; n++)
                     {
-                        *out++ = (shift[5] & 1) ? 1 : 0;
+                        *out++ = (shift[5] & 1);
                         reg_6_shift(shift);
                     }
                 }
@@ -309,7 +309,7 @@ void bch_bb_impl::bch_poly_build_tables(void)
                         temp = *in++;
                         *out++ = temp;
                         consumed++;
-                        b = (temp ^ ((shift[4] & 1) ? 1 : 0));
+                        b = (temp ^ (shift[4] & 1));
                         reg_5_shift(shift);
                         if (b)
                         {
@@ -323,7 +323,7 @@ void bch_bb_impl::bch_poly_build_tables(void)
                     // Now add the parity bits to the output
                     for( int n = 0; n < 160; n++ )
                     {
-                        *out++ = (shift[4] & 1) ? 1 : 0;
+                        *out++ = (shift[4] & 1);
                         reg_5_shift(shift);
                     }
                 }
