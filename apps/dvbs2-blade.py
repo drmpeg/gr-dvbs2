@@ -35,7 +35,7 @@ def main(args):
         sys.stderr.write("Usage: dvbs2-blade.py input_file [output_file]\n");
         sys.exit(1)
 
-    symbol_rate = 10000000
+    symbol_rate = 5000000
     samp_rate = symbol_rate * 2
     constellation = dvbs2.MOD_16APSK
     code_rate = dvbs2.C9_10

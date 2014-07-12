@@ -2,7 +2,7 @@
 ##################################################
 # Gnuradio Python Flow Graph
 # Title: Dvbs2 Tx
-# Generated: Sun Jul  6 22:21:52 2014
+# Generated: Sat Jul 12 14:27:41 2014
 ##################################################
 
 from gnuradio import blocks
@@ -28,7 +28,7 @@ class dvbs2_tx(grc_wxgui.top_block_gui):
         ##################################################
         # Variables
         ##################################################
-        self.symbol_rate = symbol_rate = 10000000
+        self.symbol_rate = symbol_rate = 5000000
         self.taps = taps = 50
         self.samp_rate = samp_rate = symbol_rate * 2
         self.rolloff = rolloff = 0.2
@@ -71,7 +71,7 @@ class dvbs2_tx(grc_wxgui.top_block_gui):
         self.dvbs2_bch_bb_0 = dvbs2.bch_bb(dvbs2.C9_10)
         self.dvbs2_bbscrambler_bb_0 = dvbs2.bbscrambler_bb(dvbs2.C9_10)
         self.dvbs2_bbheader_bb_0 = dvbs2.bbheader_bb(dvbs2.C9_10,dvbs2.RO_0_20)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, "/run/shm/advdvbs2910.ts", False)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, "/run/shm/adv16apsk910.ts", True)
 
         ##################################################
         # Connections
