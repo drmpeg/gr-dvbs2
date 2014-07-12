@@ -45,7 +45,7 @@ def main(args):
     center_freq = 1280000000
     txvga1_gain = -10
     txvga2_gain = 15
-    bandwidth = 12000000
+    bandwidth = 6000000
 
     if constellation == dvbs2.MOD_8PSK:
         if (   code_rate == dvbs2.C1_4

@@ -2,7 +2,7 @@
 ##################################################
 # Gnuradio Python Flow Graph
 # Title: Dvbs2 Tx
-# Generated: Sat Jul 12 14:27:41 2014
+# Generated: Sat Jul 12 16:06:55 2014
 ##################################################
 
 from gnuradio import blocks
@@ -38,7 +38,7 @@ class dvbs2_tx(grc_wxgui.top_block_gui):
         ##################################################
         self.wxgui_fftsink2_0 = fftsink2.fft_sink_c(
         	self.GetWin(),
-        	baseband_freq=0,
+        	baseband_freq=1280000000,
         	y_per_div=10,
         	y_divs=10,
         	ref_level=0,
@@ -60,7 +60,7 @@ class dvbs2_tx(grc_wxgui.top_block_gui):
         self.osmosdr_sink_0.set_if_gain(0, 0)
         self.osmosdr_sink_0.set_bb_gain(-10, 0)
         self.osmosdr_sink_0.set_antenna("", 0)
-        self.osmosdr_sink_0.set_bandwidth(12000000, 0)
+        self.osmosdr_sink_0.set_bandwidth(6000000, 0)
           
         self.fft_filter_xxx_0 = filter.fft_filter_ccc(1, (firdes.root_raised_cosine(1, samp_rate, samp_rate/2, rolloff, taps)), 1)
         self.fft_filter_xxx_0.declare_sample_delay(0)
@@ -109,9 +109,9 @@ class dvbs2_tx(grc_wxgui.top_block_gui):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.fft_filter_xxx_0.set_taps((firdes.root_raised_cosine(1, self.samp_rate, self.samp_rate/2, self.rolloff, self.taps)))
         self.osmosdr_sink_0.set_sample_rate(self.samp_rate)
         self.wxgui_fftsink2_0.set_sample_rate(self.samp_rate)
-        self.fft_filter_xxx_0.set_taps((firdes.root_raised_cosine(1, self.samp_rate, self.samp_rate/2, self.rolloff, self.taps)))
 
     def get_rolloff(self):
         return self.rolloff
