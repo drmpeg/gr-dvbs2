@@ -42,6 +42,15 @@ A gnuradio-companion flowgraph (dvbs2_tx.grc) for the bladeRF
 transmit capable SDR is included along with a stand-alone
 Python script for bladeRF (dvbs2-blade.py).
 
+A test bitstream that matches the example applications symbol
+rate, constellation and code rate can be downloaded here:
+
+http://www.w6rz.net/adv16apsk910.ts
+
+A DVB-S2 Transport Stream bit-rate calculator:
+
+https://github.com/drmpeg/dtv-utils/blob/master/dvbs2rate.c
+
 Note: This implementation only supports the Single Transport
 Stream Broadcast services mode. Optional Broadcast services
 configurations supported are 1/4, 1/3 and 2/5 code rates,
