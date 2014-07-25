@@ -224,6 +224,11 @@ namespace gr {
                     m_16apsk[14].imag() = -0.4984;
                     m_16apsk[15].real() = -0.4984;
                     m_16apsk[15].imag() = -1.2088;
+                    for (int i = 0; i < 16; i++)
+                    {
+                        m_16apsk[i].real() /= 1.2088;
+                        m_16apsk[i].imag() /= 1.2088;
+                    }
                 }
                 else if (rate == gr::dvbs2::C20_30)
                 {
@@ -259,6 +264,11 @@ namespace gr {
                     m_16apsk[14].imag() = -0.4909;
                     m_16apsk[15].real() = -0.4909;
                     m_16apsk[15].imag() = -1.2007;
+                    for (int i = 0; i < 16; i++)
+                    {
+                        m_16apsk[i].real() /= 1.2007;
+                        m_16apsk[i].imag() /= 1.2007;
+                    }
                 }
                 else
                 {
@@ -1806,6 +1816,11 @@ namespace gr {
                     m_256apsk[254].imag() = -0.5236;
                     m_256apsk[255].real() = -0.3016;
                     m_256apsk[255].imag() = -0.5347;
+                    for (int i = 0; i < 256; i++)
+                    {
+                        m_256apsk[i].real() /= 1.6747;
+                        m_256apsk[i].imag() /= 1.6747;
+                    }
                 }
                 else if (rate == gr::dvbs2::C22_30)
                 {
@@ -2321,6 +2336,11 @@ namespace gr {
                     m_256apsk[254].imag() = -0.7143;
                     m_256apsk[255].real() = -0.3110;
                     m_256apsk[255].imag() = -0.5686;
+                    for (int i = 0; i < 256; i++)
+                    {
+                        m_256apsk[i].real() /= 1.6329;
+                        m_256apsk[i].imag() /= 1.6329;
+                    }
                 }
                 else
                 {
