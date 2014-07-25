@@ -33,6 +33,14 @@ namespace gr {
       int code_rate;
       int mod;
       int packed_items;
+      int rowaddr0;
+      int rowaddr1;
+      int rowaddr2;
+      int rowaddr3;
+      int rowaddr4;
+      int rowaddr5;
+      int rowaddr6;
+      int rowaddr7;
 
      public:
       interleaver_bb_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate);

@@ -105,6 +105,15 @@ namespace gr {
                 case gr::dvbs2::C9_10:
                     modcod = 11;
                     break;
+                case gr::dvbs2::C13_45:
+                    modcod = 132;
+                    break;
+                case gr::dvbs2::C9_20:
+                    modcod = 134;
+                    break;
+                case gr::dvbs2::C11_20:
+                    modcod = 136;
+                    break;
                 default:
                     modcod = 0;
                     break;
@@ -136,6 +145,34 @@ namespace gr {
                 case gr::dvbs2::C9_10:
                     modcod = 17;
                     break;
+                case gr::dvbs2::C23_36:
+                    modcod = 142;
+                    break;
+                case gr::dvbs2::C25_36:
+                    modcod = 144;
+                    break;
+                case gr::dvbs2::C13_18:
+                    modcod = 146;
+                    break;
+                default:
+                    modcod = 0;
+                    break;
+            }
+        }
+
+        if (constellation == gr::dvbs2::MOD_8APSK)
+        {
+            slots = (FRAME_SIZE_NORMAL / 3) / 90;
+            pilot_symbols = (slots / 16) * 36;
+            if (!(slots % 16)) pilot_symbols -= 36;
+            switch (rate)
+            {
+                case gr::dvbs2::C100_180:
+                    modcod = 138;
+                    break;
+                case gr::dvbs2::C104_180:
+                    modcod = 140;
+                    break;
                 default:
                     modcod = 0;
                     break;
@@ -166,6 +203,58 @@ namespace gr {
                     break;
                 case gr::dvbs2::C9_10:
                     modcod = 23;
+                    break;
+                case gr::dvbs2::C26_45:
+                    modcod = 154;
+                    break;
+                case gr::dvbs2::C3_5:
+                    modcod = 156;
+                    break;
+                case gr::dvbs2::C28_45:
+                    modcod = 160;
+                    break;
+                case gr::dvbs2::C23_36:
+                    modcod = 162;
+                    break;
+                case gr::dvbs2::C25_36:
+                    modcod = 166;
+                    break;
+                case gr::dvbs2::C13_18:
+                    modcod = 168;
+                    break;
+                case gr::dvbs2::C140_180:
+                    modcod = 170;
+                    break;
+                case gr::dvbs2::C154_180:
+                    modcod = 172;
+                    break;
+                default:
+                    modcod = 0;
+                    break;
+            }
+        }
+
+        if (constellation == gr::dvbs2::MOD_8_8APSK)
+        {
+            slots = (FRAME_SIZE_NORMAL / 4) / 90;
+            pilot_symbols = (slots / 16) * 36;
+            if (!(slots % 16)) pilot_symbols -= 36;
+            switch (rate)
+            {
+                case gr::dvbs2::C90_180:
+                    modcod = 148;
+                    break;
+                case gr::dvbs2::C96_180:
+                    modcod = 150;
+                    break;
+                case gr::dvbs2::C100_180:
+                    modcod = 152;
+                    break;
+                case gr::dvbs2::C18_30:
+                    modcod = 158;
+                    break;
+                case gr::dvbs2::C20_30:
+                    modcod = 164;
                     break;
                 default:
                     modcod = 0;
@@ -200,6 +289,149 @@ namespace gr {
                     break;
             }
         }
+
+        if (constellation == gr::dvbs2::MOD_4_12_16APSK)
+        {
+            slots = (FRAME_SIZE_NORMAL / 5) / 90;
+            pilot_symbols = (slots / 16) * 36;
+            if (!(slots % 16)) pilot_symbols -= 36;
+            switch (rate)
+            {
+                case gr::dvbs2::C2_3:
+                    modcod = 174;
+                    break;
+                default:
+                    modcod = 0;
+                    break;
+            }
+        }
+
+        if (constellation == gr::dvbs2::MOD_4_8_4_16APSK)
+        {
+            slots = (FRAME_SIZE_NORMAL / 5) / 90;
+            pilot_symbols = (slots / 16) * 36;
+            if (!(slots % 16)) pilot_symbols -= 36;
+            switch (rate)
+            {
+                case gr::dvbs2::C128_180:
+                    modcod = 178;
+                    break;
+                case gr::dvbs2::C132_180:
+                    modcod = 180;
+                    break;
+                case gr::dvbs2::C140_180:
+                    modcod = 182;
+                    break;
+                default:
+                    modcod = 0;
+                    break;
+            }
+        }
+
+        if (constellation == gr::dvbs2::MOD_64APSK)
+        {
+            slots = (FRAME_SIZE_NORMAL / 6) / 90;
+            pilot_symbols = (slots / 16) * 36;
+            if (!(slots % 16)) pilot_symbols -= 36;
+            switch (rate)
+            {
+                case gr::dvbs2::C128_180:
+                    modcod = 184;
+                    break;
+                default:
+                    modcod = 0;
+                    break;
+            }
+        }
+
+        if (constellation == gr::dvbs2::MOD_8_16_20_20APSK)
+        {
+            slots = (FRAME_SIZE_NORMAL / 6) / 90;
+            pilot_symbols = (slots / 16) * 36;
+            if (!(slots % 16)) pilot_symbols -= 36;
+            switch (rate)
+            {
+                case gr::dvbs2::C7_9:
+                    modcod = 190;
+                    break;
+                case gr::dvbs2::C4_5:
+                    modcod = 194;
+                    break;
+                case gr::dvbs2::C5_6:
+                    modcod = 198;
+                    break;
+                default:
+                    modcod = 0;
+                    break;
+            }
+        }
+
+        if (constellation == gr::dvbs2::MOD_4_12_20_28APSK)
+        {
+            slots = (FRAME_SIZE_NORMAL / 6) / 90;
+            pilot_symbols = (slots / 16) * 36;
+            if (!(slots % 16)) pilot_symbols -= 36;
+            switch (rate)
+            {
+                case gr::dvbs2::C132_180:
+                    modcod = 186;
+                    break;
+                default:
+                    modcod = 0;
+                    break;
+            }
+        }
+
+        if (constellation == gr::dvbs2::MOD_128APSK)
+        {
+            slots = (FRAME_SIZE_NORMAL / 7) / 90;
+            pilot_symbols = (slots / 16) * 36;
+            if (!(slots % 16)) pilot_symbols -= 36;
+            switch (rate)
+            {
+                case gr::dvbs2::C135_180:
+                    modcod = 200;
+                    break;
+                case gr::dvbs2::C140_180:
+                    modcod = 202;
+                    break;
+                default:
+                    modcod = 0;
+                    break;
+            }
+        }
+
+        if (constellation == gr::dvbs2::MOD_256APSK)
+        {
+            slots = (FRAME_SIZE_NORMAL / 8) / 90;
+            pilot_symbols = (slots / 16) * 36;
+            if (!(slots % 16)) pilot_symbols -= 36;
+            switch (rate)
+            {
+                case gr::dvbs2::C116_180:
+                    modcod = 204;
+                    break;
+                case gr::dvbs2::C20_30:
+                    modcod = 206;
+                    break;
+                case gr::dvbs2::C124_180:
+                    modcod = 208;
+                    break;
+                case gr::dvbs2::C128_180:
+                    modcod = 210;
+                    break;
+                case gr::dvbs2::C22_30:
+                    modcod = 212;
+                    break;
+                case gr::dvbs2::C135_180:
+                    modcod = 214;
+                    break;
+                default:
+                    modcod = 0;
+                    break;
+            }
+        }
+
         // Now create the PL header.
         int b[90];
         // Add the sync sequence SOF
@@ -230,18 +462,19 @@ namespace gr {
         ninput_items_required[0] = (noutput_items / ((((slots * 90) + 90) + pilot_symbols) * 2)) * (slots * 90);
     }
 
-void physical_cc_impl::b_64_7_code(unsigned char in, int *out)
+void physical_cc_impl::b_64_8_code(unsigned char in, int *out)
 {
     unsigned long temp, bit;
 
     temp = 0;
 
-    if (in & 0x40) temp ^= g[0];
-    if (in & 0x20) temp ^= g[1];
-    if (in & 0x10) temp ^= g[2];
-    if (in & 0x08) temp ^= g[3];
-    if (in & 0x04) temp ^= g[4];
-    if (in & 0x02) temp ^= g[5];
+    if (in & 0x80) temp ^= g[0];
+    if (in & 0x40) temp ^= g[1];
+    if (in & 0x20) temp ^= g[2];
+    if (in & 0x10) temp ^= g[3];
+    if (in & 0x08) temp ^= g[4];
+    if (in & 0x04) temp ^= g[5];
+    if (in & 0x02) temp ^= g[6];
 
     bit = 0x80000000;
     for (int m = 0; m < 32; m++)
@@ -261,9 +494,16 @@ void physical_cc_impl::pl_header_encode(unsigned char modcod, unsigned char type
 {
     unsigned char code;
 
-    code = (modcod << 2) | type;
+    if (modcod & 0x80)
+    {
+        code = modcod | type;
+    }
+    else
+    {
+        code = (modcod << 2) | type;
+    }
     // Add the modcod and type information and scramble it
-    b_64_7_code (code, out);
+    b_64_8_code (code, out);
 }
 
 int physical_cc_impl::parity_chk(long a, long b)
@@ -403,9 +643,9 @@ void physical_cc_impl::build_symbol_scrambler_table(void)
         return noutput_items;
     }
 
-    const unsigned long physical_cc_impl::g[6] =
+    const unsigned long physical_cc_impl::g[7] =
     {
-        0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF, 0x0000FFFF, 0xFFFFFFFF
+        0x90AC2DDD, 0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF, 0x0000FFFF, 0xFFFFFFFF
     };
 
     const int physical_cc_impl::ph_scram_tab[64] =

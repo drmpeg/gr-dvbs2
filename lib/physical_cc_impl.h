@@ -36,12 +36,12 @@ namespace gr {
       gr_complex m_pl[90];
       gr_complex m_zero[1];
       int m_cscram[FRAME_SIZE_NORMAL];
-      void b_64_7_code(unsigned char, int *);
+      void b_64_8_code(unsigned char, int *);
       void pl_header_encode(unsigned char, unsigned char, int *);
       int parity_chk(long, long);
       void build_symbol_scrambler_table(void);
 
-      const static unsigned long g[6];
+      const static unsigned long g[7];
       const static int ph_scram_tab[64];
       const static int ph_sync_seq[26];
 

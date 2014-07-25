@@ -34,6 +34,9 @@ namespace gr {
       gr_complex m_8psk[8];
       gr_complex m_16apsk[16];
       gr_complex m_32apsk[32];
+      gr_complex m_64apsk[64];
+      gr_complex m_128apsk[128];
+      gr_complex m_256apsk[256];
 
      public:
       modulator_bc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate);

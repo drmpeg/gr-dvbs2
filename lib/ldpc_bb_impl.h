@@ -54,6 +54,30 @@ namespace gr {
       const static int ldpc_tab_8_9N[160][5];
       const static int ldpc_tab_9_10N[162][5];
 
+      const static int ldpc_tab_13_45N[52][13];
+      const static int ldpc_tab_9_20N[81][13];
+      const static int ldpc_tab_11_20N[99][14];
+      const static int ldpc_tab_26_45N[104][14];
+      const static int ldpc_tab_28_45N[112][12];
+      const static int ldpc_tab_23_36N[115][12];
+      const static int ldpc_tab_25_36N[125][12];
+      const static int ldpc_tab_13_18N[130][11];
+      const static int ldpc_tab_7_9N[140][13];
+      const static int ldpc_tab_90_180N[90][19];
+      const static int ldpc_tab_96_180N[96][21];
+      const static int ldpc_tab_100_180N[100][17];
+      const static int ldpc_tab_104_180N[104][19];
+      const static int ldpc_tab_116_180N[116][19];
+      const static int ldpc_tab_124_180N[124][17];
+      const static int ldpc_tab_128_180N[128][16];
+      const static int ldpc_tab_132_180N[132][16];
+      const static int ldpc_tab_135_180N[135][15];
+      const static int ldpc_tab_140_180N[140][16];
+      const static int ldpc_tab_154_180N[154][14];
+      const static int ldpc_tab_18_30N[108][20];
+      const static int ldpc_tab_20_30N[120][17];
+      const static int ldpc_tab_22_30N[132][16];
+
      public:
       ldpc_bb_impl(dvbs2_code_rate_t rate);
       ~ldpc_bb_impl();

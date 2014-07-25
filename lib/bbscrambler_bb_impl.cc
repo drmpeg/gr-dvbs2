@@ -78,6 +78,75 @@ namespace gr {
             case gr::dvbs2::C9_10:
                 kbch = 58192;
                 break;
+            case gr::dvbs2::C13_45:
+                kbch = 18528;
+                break;
+            case gr::dvbs2::C9_20:
+                kbch = 28968;
+                break;
+            case gr::dvbs2::C90_180:
+                kbch = 32208;
+                break;
+            case gr::dvbs2::C96_180:
+                kbch = 34368;
+                break;
+            case gr::dvbs2::C11_20:
+                kbch = 35448;
+                break;
+            case gr::dvbs2::C100_180:
+                kbch = 35808;
+                break;
+            case gr::dvbs2::C104_180:
+                kbch = 37248;
+                break;
+            case gr::dvbs2::C26_45:
+                kbch = 37248;
+                break;
+            case gr::dvbs2::C18_30:
+                kbch = 38688;
+                break;
+            case gr::dvbs2::C28_45:
+                kbch = 40128;
+                break;
+            case gr::dvbs2::C23_36:
+                kbch = 41208;
+                break;
+            case gr::dvbs2::C116_180:
+                kbch = 41568;
+                break;
+            case gr::dvbs2::C20_30:
+                kbch = 43008;
+                break;
+            case gr::dvbs2::C124_180:
+                kbch = 44448;
+                break;
+            case gr::dvbs2::C25_36:
+                kbch = 44808;
+                break;
+            case gr::dvbs2::C128_180:
+                kbch = 45888;
+                break;
+            case gr::dvbs2::C13_18:
+                kbch = 46608;
+                break;
+            case gr::dvbs2::C132_180:
+                kbch = 47328;
+                break;
+            case gr::dvbs2::C22_30:
+                kbch = 47328;
+                break;
+            case gr::dvbs2::C135_180:
+                kbch = 48408;
+                break;
+            case gr::dvbs2::C140_180:
+                kbch = 50208;
+                break;
+            case gr::dvbs2::C7_9:
+                kbch = 50208;
+                break;
+            case gr::dvbs2::C154_180:
+                kbch = 55248;
+                break;
             default:
                 kbch = 0;
                 break;

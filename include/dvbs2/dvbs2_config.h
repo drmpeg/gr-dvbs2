@@ -22,6 +22,9 @@
 #ifndef INCLUDED_DVBS2_CONFIG_H
 #define INCLUDED_DVBS2_CONFIG_H
 
+#define TRUE 1
+#define FALSE 0
+
 #define BB_HEADER_LENGTH_BITS 72
 
 // BB HEADER fields
@@ -67,6 +70,29 @@ namespace gr {
       C5_6,
       C8_9,
       C9_10,
+      C13_45,
+      C9_20,
+      C90_180,
+      C96_180,
+      C11_20,
+      C100_180,
+      C104_180,
+      C26_45,
+      C18_30,
+      C28_45,
+      C23_36,
+      C116_180,
+      C20_30,
+      C124_180,
+      C25_36,
+      C128_180,
+      C13_18,
+      C132_180,
+      C22_30,
+      C135_180,
+      C140_180,
+      C7_9,
+      C154_180,
       C_OTHER,
     };
 
@@ -75,13 +101,25 @@ namespace gr {
       RO_0_25,
       RO_0_20,
       RO_RESERVED,
+      RO_0_15,
+      RO_0_10,
+      RO_0_05,
     };
 
     enum dvbs2_constellation_t {
       MOD_QPSK = 0,
       MOD_8PSK,
+      MOD_8APSK,
       MOD_16APSK,
+      MOD_8_8APSK,
       MOD_32APSK,
+      MOD_4_12_16APSK,
+      MOD_4_8_4_16APSK,
+      MOD_64APSK,
+      MOD_8_16_20_20APSK,
+      MOD_4_12_20_28APSK,
+      MOD_128APSK,
+      MOD_256APSK,
     };
 
     enum dvbs2_pilots_t {

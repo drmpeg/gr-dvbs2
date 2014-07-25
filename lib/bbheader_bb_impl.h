@@ -50,6 +50,8 @@ namespace gr {
       unsigned int kbch;
       unsigned int count;
       unsigned char crc;
+      bool dvbs2x;
+      bool alternate;
       FrameFormat m_format[1];
       unsigned char crc_tab[256];
       void add_bbheader(unsigned char *, int);

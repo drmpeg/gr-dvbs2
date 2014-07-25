@@ -100,6 +100,121 @@ namespace gr {
                 nbch = 58320;
                 bch_code = BCH_CODE_N8;
                 break;
+            case gr::dvbs2::C13_45:
+                kbch = 18528;
+                nbch = 18720;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C9_20:
+                kbch = 28968;
+                nbch = 29160;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C90_180:
+                kbch = 32208;
+                nbch = 32400;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C96_180:
+                kbch = 34368;
+                nbch = 34560;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C11_20:
+                kbch = 35448;
+                nbch = 35640;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C100_180:
+                kbch = 35808;
+                nbch = 36000;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C104_180:
+                kbch = 37248;
+                nbch = 37440;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C26_45:
+                kbch = 37248;
+                nbch = 37440;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C18_30:
+                kbch = 38688;
+                nbch = 38880;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C28_45:
+                kbch = 40128;
+                nbch = 40320;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C23_36:
+                kbch = 41208;
+                nbch = 41400;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C116_180:
+                kbch = 41568;
+                nbch = 41760;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C20_30:
+                kbch = 43008;
+                nbch = 43200;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C124_180:
+                kbch = 44448;
+                nbch = 44640;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C25_36:
+                kbch = 44808;
+                nbch = 45000;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C128_180:
+                kbch = 45888;
+                nbch = 46080;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C13_18:
+                kbch = 46608;
+                nbch = 46800;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C132_180:
+                kbch = 47328;
+                nbch = 47520;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C22_30:
+                kbch = 47328;
+                nbch = 47520;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C135_180:
+                kbch = 48408;
+                nbch = 48600;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C140_180:
+                kbch = 50208;
+                nbch = 50400;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C7_9:
+                kbch = 50208;
+                nbch = 50400;
+                bch_code = BCH_CODE_N12;
+                break;
+            case gr::dvbs2::C154_180:
+                kbch = 55248;
+                nbch = 55440;
+                bch_code = BCH_CODE_N12;
+                break;
             default:
                 kbch = 0;
                 nbch = 0;

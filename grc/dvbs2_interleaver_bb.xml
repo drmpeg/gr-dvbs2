@@ -19,14 +19,59 @@
       <opt>val:dvbs2.MOD_8PSK</opt>
     </option>
     <option>
+      <name>8APSK</name>
+      <key>MOD_8APSK</key>
+      <opt>val:dvbs2.MOD_8APSK</opt>
+    </option>
+    <option>
       <name>16APSK</name>
       <key>MOD_16APSK</key>
       <opt>val:dvbs2.MOD_16APSK</opt>
     </option>
     <option>
+      <name>8+8APSK</name>
+      <key>MOD_8_8APSK</key>
+      <opt>val:dvbs2.MOD_8_8APSK</opt>
+    </option>
+    <option>
       <name>32APSK</name>
       <key>MOD_32APSK</key>
       <opt>val:dvbs2.MOD_32APSK</opt>
+    </option>
+    <option>
+      <name>4+12+16rbAPSK</name>
+      <key>MOD_4_12_16APSK</key>
+      <opt>val:dvbs2.MOD_4_12_16APSK</opt>
+    </option>
+    <option>
+      <name>4+8+4+16APSK</name>
+      <key>MOD_4_8_4_16APSK</key>
+      <opt>val:dvbs2.MOD_4_8_4_16APSK</opt>
+    </option>
+    <option>
+      <name>64APSK</name>
+      <key>MOD_64APSK</key>
+      <opt>val:dvbs2.MOD_64APSK</opt>
+    </option>
+    <option>
+      <name>8+16+20+20APSK</name>
+      <key>MOD_8_16_20_20APSK</key>
+      <opt>val:dvbs2.MOD_8_16_20_20APSK</opt>
+    </option>
+    <option>
+      <name>4+12+20+28APSK</name>
+      <key>MOD_4_12_20_28APSK</key>
+      <opt>val:dvbs2.MOD_4_12_20_28APSK</opt>
+    </option>
+    <option>
+      <name>128APSK</name>
+      <key>MOD_128APSK</key>
+      <opt>val:dvbs2.MOD_128APSK</opt>
+    </option>
+    <option>
+      <name>256APSK</name>
+      <key>MOD_256APSK</key>
+      <opt>val:dvbs2.MOD_256APSK</opt>
     </option>
   </param>
   <param>
@@ -42,6 +87,86 @@
       <name>3/5</name>
       <key>C3_5</key>
       <opt>val:dvbs2.C3_5</opt>
+    </option>
+    <option>
+      <name>4/5</name>
+      <key>C4_5</key>
+      <opt>val:dvbs2.C4_5</opt>
+    </option>
+    <option>
+      <name>5/6</name>
+      <key>C5_6</key>
+      <opt>val:dvbs2.C5_6</opt>
+    </option>
+    <option>
+      <name>7/9</name>
+      <key>C7_9</key>
+      <opt>val:dvbs2.C7_9</opt>
+    </option>
+    <option>
+      <name>13/18</name>
+      <key>C13_18</key>
+      <opt>val:dvbs2.C13_18</opt>
+    </option>
+    <option>
+      <name>23/36</name>
+      <key>C23_36</key>
+      <opt>val:dvbs2.C23_36</opt>
+    </option>
+    <option>
+      <name>25/36</name>
+      <key>C25_36</key>
+      <opt>val:dvbs2.C25_36</opt>
+    </option>
+    <option>
+      <name>26/45</name>
+      <key>C26_45</key>
+      <opt>val:dvbs2.C26_45</opt>
+    </option>
+    <option>
+      <name>28/45</name>
+      <key>C28_45</key>
+      <opt>val:dvbs2.C28_45</opt>
+    </option>
+    <option>
+      <name>90/180</name>
+      <key>C90_180</key>
+      <opt>val:dvbs2.C90_180</opt>
+    </option>
+    <option>
+      <name>96/180</name>
+      <key>C96_180</key>
+      <opt>val:dvbs2.C96_180</opt>
+    </option>
+    <option>
+      <name>100/180</name>
+      <key>C100_180</key>
+      <opt>val:dvbs2.C100_180</opt>
+    </option>
+    <option>
+      <name>116/180</name>
+      <key>C116_180</key>
+      <opt>val:dvbs2.C116_180</opt>
+    </option>
+    <option>
+      <name>124/180</name>
+      <key>C124_180</key>
+      <opt>val:dvbs2.C124_180</opt>
+    </option>
+    <option>
+      <name>128/180</name>
+      <key>C128_180</key>
+      <opt>val:dvbs2.C128_180</opt>
+    </option>
+    <option>
+      <name>135/180</name>
+      <key>C135_180</key>
+      <opt>val:dvbs2.C135_180</opt>
+    </option>
+    <option>
+      <name>140/180</name>
+      <key>C140_180</key>
+      <opt>val:dvbs2.C140_180</opt>
     </option>
   </param>
   <sink>
