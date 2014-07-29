@@ -47,56 +47,213 @@ def main(args):
     txvga2_gain = 15
     bandwidth = 6000000
 
-    if constellation == dvbs2.MOD_8PSK:
-        if (   code_rate == dvbs2.C1_4
-            or code_rate == dvbs2.C1_3
-            or code_rate == dvbs2.C2_5
-            or code_rate == dvbs2.C1_2
-            or code_rate == dvbs2.C4_5):
-            sys.stderr.write("Invalid code rate for 8PSK\n");
-            sys.exit(1)
-
-    if constellation == dvbs2.MOD_16APSK:
-        if (   code_rate == dvbs2.C1_4
-            or code_rate == dvbs2.C1_3
-            or code_rate == dvbs2.C2_5
-            or code_rate == dvbs2.C1_2
-            or code_rate == dvbs2.C3_5):
-            sys.stderr.write("Invalid code rate for 16APSK\n");
-            sys.exit(1)
-
-    if constellation == dvbs2.MOD_32APSK:
+    if constellation == dvbs2.MOD_QPSK:
         if (   code_rate == dvbs2.C1_4
             or code_rate == dvbs2.C1_3
             or code_rate == dvbs2.C2_5
             or code_rate == dvbs2.C1_2
             or code_rate == dvbs2.C3_5
-            or code_rate == dvbs2.C2_3):
+            or code_rate == dvbs2.C2_3
+            or code_rate == dvbs2.C3_4
+            or code_rate == dvbs2.C4_5
+            or code_rate == dvbs2.C5_6
+            or code_rate == dvbs2.C8_9
+            or code_rate == dvbs2.C9_10
+            or code_rate == dvbs2.C13_45
+            or code_rate == dvbs2.C9_20
+            or code_rate == dvbs2.C11_20):
+            pass
+        else:
+            sys.stderr.write("Invalid code rate for QPSK\n");
+            sys.exit(1)
+
+    if constellation == dvbs2.MOD_8PSK:
+        if (   code_rate == dvbs2.C3_5
+            or code_rate == dvbs2.C2_3
+            or code_rate == dvbs2.C3_4
+            or code_rate == dvbs2.C5_6
+            or code_rate == dvbs2.C8_9
+            or code_rate == dvbs2.C9_10
+            or code_rate == dvbs2.C23_36
+            or code_rate == dvbs2.C25_36
+            or code_rate == dvbs2.C13_18):
+            pass
+        else:
+            sys.stderr.write("Invalid code rate for 8PSK\n");
+            sys.exit(1)
+
+    if constellation == dvbs2.MOD_8APSK:
+        if (   code_rate == dvbs2.C100_180
+            or code_rate == dvbs2.C104_180):
+            pass
+        else:
+            sys.stderr.write("Invalid code rate for 8APSK\n");
+            sys.exit(1)
+
+    if constellation == dvbs2.MOD_16APSK:
+        if (   code_rate == dvbs2.C2_3
+            or code_rate == dvbs2.C3_4
+            or code_rate == dvbs2.C4_5
+            or code_rate == dvbs2.C5_6
+            or code_rate == dvbs2.C8_9
+            or code_rate == dvbs2.C9_10
+            or code_rate == dvbs2.C26_45
+            or code_rate == dvbs2.C3_5
+            or code_rate == dvbs2.C28_45
+            or code_rate == dvbs2.C23_36
+            or code_rate == dvbs2.C25_36
+            or code_rate == dvbs2.C13_18
+            or code_rate == dvbs2.C140_180
+            or code_rate == dvbs2.C154_180):
+            pass
+        else:
+            sys.stderr.write("Invalid code rate for 16APSK\n");
+            sys.exit(1)
+
+    if constellation == dvbs2.MOD_8_8APSK:
+        if (   code_rate == dvbs2.C90_180
+            or code_rate == dvbs2.C96_180
+            or code_rate == dvbs2.C100_180
+            or code_rate == dvbs2.C18_30
+            or code_rate == dvbs2.C20_30):
+            pass
+        else:
+            sys.stderr.write("Invalid code rate for 8+8APSK\n");
+            sys.exit(1)
+
+    if constellation == dvbs2.MOD_32APSK:
+        if (   code_rate == dvbs2.C3_4
+            or code_rate == dvbs2.C4_5
+            or code_rate == dvbs2.C5_6
+            or code_rate == dvbs2.C8_9
+            or code_rate == dvbs2.C9_10):
+            pass
+        else:
             sys.stderr.write("Invalid code rate for 32APSK\n");
             sys.exit(1)
 
-    if rolloff == dvbs2.RO_0_20:
-        rrc_rolloff = 0.2
+    if constellation == dvbs2.MOD_4_12_16APSK:
+        if (   code_rate == dvbs2.C2_3):
+            pass
+        else:
+            sys.stderr.write("Invalid code rate for 4+12+16rbAPSK\n");
+            sys.exit(1)
+
+    if constellation == dvbs2.MOD_4_8_4_16APSK:
+        if (   code_rate == dvbs2.C128_180
+            or code_rate == dvbs2.C132_180
+            or code_rate == dvbs2.C140_180):
+            pass
+        else:
+            sys.stderr.write("Invalid code rate for 4+8+4+16APSK\n");
+            sys.exit(1)
+
+    if constellation == dvbs2.MOD_64APSK:
+        if (   code_rate == dvbs2.C128_180):
+            pass
+        else:
+            sys.stderr.write("Invalid code rate for 64APSK\n");
+            sys.exit(1)
+
+    if constellation == dvbs2.MOD_4_12_20_28APSK:
+        if (   code_rate == dvbs2.C132_180):
+            pass
+        else:
+            sys.stderr.write("Invalid code rate for 4+12+20+28APSK\n");
+            sys.exit(1)
+
+    if constellation == dvbs2.MOD_8_16_20_20APSK:
+        if (   code_rate == dvbs2.C7_9
+            or code_rate == dvbs2.C4_5
+            or code_rate == dvbs2.C5_6):
+            pass
+        else:
+            sys.stderr.write("Invalid code rate for 8+16+20+20APSK\n");
+            sys.exit(1)
+
+    if constellation == dvbs2.MOD_128APSK:
+        if (   code_rate == dvbs2.C135_180
+            or code_rate == dvbs2.C140_180):
+            pass
+        else:
+            sys.stderr.write("Invalid code rate for 128APSK\n");
+            sys.exit(1)
+
+    if constellation == dvbs2.MOD_256APSK:
+        if (   code_rate == dvbs2.C20_30
+            or code_rate == dvbs2.C22_30
+            or code_rate == dvbs2.C116_180
+            or code_rate == dvbs2.C124_180
+            or code_rate == dvbs2.C128_180
+            or code_rate == dvbs2.C135_180):
+            pass
+        else:
+            sys.stderr.write("Invalid code rate for 256APSK\n");
+            sys.exit(1)
+
+    if rolloff == dvbs2.RO_0_05:
+        rrc_rolloff = 0.05
+    elif rolloff == dvbs2.RO_0_10:
+        rrc_rolloff = 0.10
+    elif rolloff == dvbs2.RO_0_15:
+        rrc_rolloff = 0.15
+    elif rolloff == dvbs2.RO_0_20:
+        rrc_rolloff = 0.20
     elif rolloff == dvbs2.RO_0_25:
         rrc_rolloff = 0.25
     elif rolloff == dvbs2.RO_0_35:
         rrc_rolloff = 0.35
 
-    if code_rate == dvbs2.C3_5:
+    if (   code_rate == dvbs2.C3_5
+        or code_rate == dvbs2.C4_5
+        or code_rate == dvbs2.C5_6
+        or code_rate == dvbs2.C7_9
+        or code_rate == dvbs2.C13_18
+        or code_rate == dvbs2.C23_36
+        or code_rate == dvbs2.C25_36
+        or code_rate == dvbs2.C26_45
+        or code_rate == dvbs2.C28_45
+        or code_rate == dvbs2.C90_180
+        or code_rate == dvbs2.C96_180
+        or code_rate == dvbs2.C100_180
+        or code_rate == dvbs2.C116_180
+        or code_rate == dvbs2.C124_180
+        or code_rate == dvbs2.C128_180
+        or code_rate == dvbs2.C135_180
+        or code_rate == dvbs2.C140_180):
         code_rate_interleaver = code_rate
     else:
         code_rate_interleaver = dvbs2.C_OTHER
 
-    if code_rate == dvbs2.C1_4:
-        code_rate_modulator = dvbs2.C_OTHER
-    elif code_rate == dvbs2.C1_3:
-        code_rate_modulator = dvbs2.C_OTHER
-    elif code_rate == dvbs2.C2_5:
-        code_rate_modulator = dvbs2.C_OTHER
-    elif code_rate == dvbs2.C3_5:
-        code_rate_modulator = dvbs2.C_OTHER
-    else:
+    if (   code_rate == dvbs2.C2_3
+        or code_rate == dvbs2.C3_4
+        or code_rate == dvbs2.C4_5
+        or code_rate == dvbs2.C5_6
+        or code_rate == dvbs2.C8_9
+        or code_rate == dvbs2.C9_10
+        or code_rate == dvbs2.C90_180
+        or code_rate == dvbs2.C96_180
+        or code_rate == dvbs2.C100_180
+        or code_rate == dvbs2.C104_180
+        or code_rate == dvbs2.C26_45
+        or code_rate == dvbs2.C18_30
+        or code_rate == dvbs2.C28_45
+        or code_rate == dvbs2.C23_36
+        or code_rate == dvbs2.C116_180
+        or code_rate == dvbs2.C20_30
+        or code_rate == dvbs2.C124_180
+        or code_rate == dvbs2.C25_36
+        or code_rate == dvbs2.C128_180
+        or code_rate == dvbs2.C13_18
+        or code_rate == dvbs2.C132_180
+        or code_rate == dvbs2.C22_30
+        or code_rate == dvbs2.C135_180
+        or code_rate == dvbs2.C140_180
+        or code_rate == dvbs2.C7_9
+        or code_rate == dvbs2.C154_180):
         code_rate_modulator = code_rate
+    else:
+        code_rate_modulator = dvbs2.C_OTHER
 
     tb = gr.top_block()
 
