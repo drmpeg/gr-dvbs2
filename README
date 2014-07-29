@@ -47,7 +47,7 @@ symbol rate, constellation and code rate can be downloaded here:
 
 http://www.w6rz.net/adv16apsk910.ts
 
-A DVB-S2 Transport Stream bit-rate calculator:
+A DVB-S2 and DVB-S2X Transport Stream bit-rate calculator:
 
 https://github.com/drmpeg/dtv-utils/blob/master/dvbs2rate.c
 
@@ -61,6 +61,8 @@ available consumer or prosumer receivers. For DVB-S2X, optional
 Broadcast services configurations supported are 64APSK and
 64APSK-L. 128APSK, 256APSK and 256APSK-L constellations are
 included for experimentation.
+
+https://www.dvb.org/resources/public/standards/a83-2_dvb-s2x_den302307-2.pdf
 
 Build instructions:
 
