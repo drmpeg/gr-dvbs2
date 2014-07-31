@@ -51,10 +51,31 @@ A DVB-S2 and DVB-S2X Transport Stream bit-rate calculator:
 
 https://github.com/drmpeg/dtv-utils/blob/master/dvbs2rate.c
 
-Note: This implementation only supports the Single Transport
-Stream Broadcast services mode. For DVB-S2, optional Broadcast
-services configurations supported are 1/4, 1/3 and 2/5 code rates,
-16APSK and 32APSK.
+Note: This implementation supports the following DVB-S2
+System configurations:
+
+1) QPSK 1/4, 1/3, 2/5
+2) QPSK 1/2, 3/5, 2/3, 3/4, 4/5, 5/6, 8/9, 9/10
+3) 8PSK 3/5, 2/3, 3/4, 5/6, 8/9, 9/10
+4) 16APSK 2/3, 3/4, 4/5, 5/6, 8/9, 9/10
+5) 32APSK 3/4, 4/5, 5/6, 8/9, 9/10
+6) CCM (Constant Coding and Modulation)
+7) FECFRAME normal 64,800 bits
+8) FECFRAME short 16,200 bits
+9) Single Transport Stream
+10) Roll-off 0.35, 0.25 and 0.20
+
+System configurations not supported are:
+
+1) VCM (Variable Coding and Modulation)
+2) ACM (Adaptive Coding and Modulation)
+3) Multiple Transport Streams
+4) Single Generic Stream
+5) Multiple Generic Streams
+6) Input Stream Synchronizer
+7) Null Packet Detection
+8) Dummy Frame Insertion
+9) Wide-band mode
 
 Note: DVB-S2X extensions are not fully tested due to lack of
 available consumer or prosumer receivers. For DVB-S2X, optional
