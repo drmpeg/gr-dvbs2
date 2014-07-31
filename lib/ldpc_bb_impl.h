@@ -35,6 +35,7 @@ namespace gr {
     class ldpc_bb_impl : public ldpc_bb
     {
      private:
+      unsigned int frame_size;
       unsigned int nbch;
       unsigned int code_rate;
       unsigned int q_val;
@@ -53,6 +54,17 @@ namespace gr {
       const static int ldpc_tab_5_6N[150][14];
       const static int ldpc_tab_8_9N[160][5];
       const static int ldpc_tab_9_10N[162][5];
+
+      const static int ldpc_tab_1_4S[9][13];
+      const static int ldpc_tab_1_3S[15][13];
+      const static int ldpc_tab_2_5S[18][13];
+      const static int ldpc_tab_1_2S[20][9];
+      const static int ldpc_tab_3_5S[27][13];
+      const static int ldpc_tab_2_3S[30][14];
+      const static int ldpc_tab_3_4S[33][13];
+      const static int ldpc_tab_4_5S[35][4];
+      const static int ldpc_tab_5_6S[37][14];
+      const static int ldpc_tab_8_9S[40][5];
 
       const static int ldpc_tab_13_45N[52][13];
       const static int ldpc_tab_9_20N[81][13];
@@ -79,7 +91,7 @@ namespace gr {
       const static int ldpc_tab_22_30N[132][16];
 
      public:
-      ldpc_bb_impl(dvbs2_code_rate_t rate);
+      ldpc_bb_impl(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
       ~ldpc_bb_impl();
 
       // Where all the action really happens

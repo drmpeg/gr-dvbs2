@@ -29,16 +29,16 @@ namespace gr {
   namespace dvbs2 {
 
     interleaver_bb::sptr
-    interleaver_bb::make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate)
+    interleaver_bb::make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_framesize_t framesize)
     {
       return gnuradio::get_initial_sptr
-        (new interleaver_bb_impl(constellation, rate));
+        (new interleaver_bb_impl(constellation, rate, framesize));
     }
 
     /*
      * The private constructor
      */
-    interleaver_bb_impl::interleaver_bb_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate)
+    interleaver_bb_impl::interleaver_bb_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_framesize_t framesize)
       : gr::block("interleaver_bb",
               gr::io_signature::make(1, 1, sizeof(unsigned char)),
               gr::io_signature::make(1, 1, sizeof(unsigned char)))
@@ -46,17 +46,25 @@ namespace gr {
         int rows;
         signal_constellation = constellation;
         code_rate = rate;
+        if (framesize == gr::dvbs2::FECFRAME_NORMAL)
+        {
+            frame_size = FRAME_SIZE_NORMAL;
+        }
+        else
+        {
+            frame_size = FRAME_SIZE_SHORT;
+        }
         switch (constellation)
         {
             case gr::dvbs2::MOD_QPSK:
                 mod = 2;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 set_output_multiple(rows);
                 packed_items = rows;
                 break;
             case gr::dvbs2::MOD_8PSK:
                 mod = 3;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 if (rate == gr::dvbs2::C3_5)
                 {
                     rowaddr0 = rows * 2;
@@ -80,7 +88,7 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_8APSK:
                 mod = 3;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 rowaddr0 = 0;
                 rowaddr1 = rows;
                 rowaddr2 = rows * 2;
@@ -89,7 +97,7 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_16APSK:
                 mod = 4;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 if (rate == gr::dvbs2::C26_45)    /* 3201 */
                 {
                     rowaddr0 = rows * 3;
@@ -137,7 +145,7 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_8_8APSK:
                 mod = 4;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 if (rate == gr::dvbs2::C90_180)    /* 3210 */
                 {
                     rowaddr0 = rows * 3;
@@ -171,7 +179,7 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_32APSK:
                 mod = 5;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 rowaddr0 = 0;
                 rowaddr1 = rows;
                 rowaddr2 = rows * 2;
@@ -182,7 +190,7 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_4_12_16APSK:
                 mod = 5;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 rowaddr0 = rows * 2;
                 rowaddr1 = rows;
                 rowaddr2 = rows * 4;
@@ -193,7 +201,7 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_4_8_4_16APSK:
                 mod = 5;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 if (rate == gr::dvbs2::C140_180)    /* 40213 */
                 {
                     rowaddr0 = rows * 4;
@@ -215,7 +223,7 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_64APSK:
                 mod = 6;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 rowaddr0 = rows * 3;
                 rowaddr1 = 0;
                 rowaddr2 = rows * 5;
@@ -227,7 +235,7 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_8_16_20_20APSK:
                 mod = 6;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 if (rate == gr::dvbs2::C7_9)    /* 201543 */
                 {
                     rowaddr0 = rows * 2;
@@ -260,7 +268,7 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_4_12_20_28APSK:
                 mod = 6;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 rowaddr0 = rows * 5;
                 rowaddr1 = rows * 2;
                 rowaddr2 = 0;
@@ -272,7 +280,7 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_128APSK:
                 mod = 7;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 if (rate == gr::dvbs2::C135_180)    /* 4250316 */
                 {
                     rowaddr0 = rows * 4;
@@ -298,7 +306,7 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_256APSK:
                 mod = 8;
-                rows = FRAME_SIZE_NORMAL / mod;
+                rows = frame_size / mod;
                 if (rate == gr::dvbs2::C116_180)    /* 40372156 */
                 {
                     rowaddr0 = rows * 4;
@@ -383,7 +391,6 @@ namespace gr {
         unsigned char *out = (unsigned char *) output_items[0];
         int consumed = 0;
         int produced = 0;
-        int frame_size = FRAME_SIZE_NORMAL;
         int rows;
 
         switch (signal_constellation)

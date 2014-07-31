@@ -29,16 +29,16 @@ namespace gr {
   namespace dvbs2 {
 
     physical_cc::sptr
-    physical_cc::make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots)
+    physical_cc::make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots, dvbs2_framesize_t framesize)
     {
       return gnuradio::get_initial_sptr
-        (new physical_cc_impl(constellation, rate, pilots));
+        (new physical_cc_impl(constellation, rate, pilots, framesize));
     }
 
     /*
      * The private constructor
      */
-    physical_cc_impl::physical_cc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots)
+    physical_cc_impl::physical_cc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots, dvbs2_framesize_t framesize)
       : gr::block("physical_cc",
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
@@ -47,7 +47,16 @@ namespace gr {
         double r0 = 1.0;
 
         modcod = 0;
-        type = 0;
+        if (framesize == gr::dvbs2::FECFRAME_NORMAL)
+        {
+            frame_size = FRAME_SIZE_NORMAL;
+            type = 0;
+        }
+        else
+        {
+            frame_size = FRAME_SIZE_SHORT;
+            type = 2;
+        }
 
         pilot_mode = pilots;
         if (pilot_mode) type |= 1;
@@ -67,7 +76,7 @@ namespace gr {
         // Mode and code rate
         if (constellation == gr::dvbs2::MOD_QPSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 2) / 90;
+            slots = (frame_size / 2) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -122,7 +131,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_8PSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 3) / 90;
+            slots = (frame_size / 3) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -162,7 +171,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_8APSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 3) / 90;
+            slots = (frame_size / 3) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -181,7 +190,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_16APSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 4) / 90;
+            slots = (frame_size / 4) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -236,7 +245,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_8_8APSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 4) / 90;
+            slots = (frame_size / 4) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -264,7 +273,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_32APSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 5) / 90;
+            slots = (frame_size / 5) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -292,7 +301,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_4_12_16APSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 5) / 90;
+            slots = (frame_size / 5) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -308,7 +317,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_4_8_4_16APSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 5) / 90;
+            slots = (frame_size / 5) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -330,7 +339,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_64APSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 6) / 90;
+            slots = (frame_size / 6) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -346,7 +355,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_8_16_20_20APSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 6) / 90;
+            slots = (frame_size / 6) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -368,7 +377,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_4_12_20_28APSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 6) / 90;
+            slots = (frame_size / 6) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -384,7 +393,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_128APSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 7) / 90;
+            slots = (frame_size / 7) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -403,7 +412,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_256APSK)
         {
-            slots = (FRAME_SIZE_NORMAL / 8) / 90;
+            slots = (frame_size / 8) / 90;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)

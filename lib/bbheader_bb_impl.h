@@ -59,7 +59,7 @@ namespace gr {
       int add_crc8_bits(unsigned char *, int);
 
      public:
-      bbheader_bb_impl(dvbs2_code_rate_t rate, dvbs2_rolloff_factor_t rolloff);
+      bbheader_bb_impl(dvbs2_code_rate_t rate, dvbs2_rolloff_factor_t rolloff, dvbs2_framesize_t framesize);
       ~bbheader_bb_impl();
 
       // Where all the action really happens

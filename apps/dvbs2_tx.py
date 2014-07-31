@@ -2,7 +2,7 @@
 ##################################################
 # Gnuradio Python Flow Graph
 # Title: Dvbs2 Tx
-# Generated: Sat Jul 12 16:06:55 2014
+# Generated: Thu Jul 31 03:38:01 2014
 ##################################################
 
 from gnuradio import blocks
@@ -64,13 +64,13 @@ class dvbs2_tx(grc_wxgui.top_block_gui):
           
         self.fft_filter_xxx_0 = filter.fft_filter_ccc(1, (firdes.root_raised_cosine(1, samp_rate, samp_rate/2, rolloff, taps)), 1)
         self.fft_filter_xxx_0.declare_sample_delay(0)
-        self.dvbs2_physical_cc_0 = dvbs2.physical_cc(dvbs2.MOD_16APSK, dvbs2.C9_10, dvbs2.PILOTS_ON)
+        self.dvbs2_physical_cc_0 = dvbs2.physical_cc(dvbs2.MOD_16APSK, dvbs2.C9_10, dvbs2.PILOTS_ON, dvbs2.FECFRAME_NORMAL)
         self.dvbs2_modulator_bc_0 = dvbs2.modulator_bc(dvbs2.MOD_16APSK, dvbs2.C9_10)
-        self.dvbs2_ldpc_bb_0 = dvbs2.ldpc_bb(dvbs2.C9_10)
-        self.dvbs2_interleaver_bb_0 = dvbs2.interleaver_bb(dvbs2.MOD_16APSK, dvbs2.C_OTHER)
-        self.dvbs2_bch_bb_0 = dvbs2.bch_bb(dvbs2.C9_10)
-        self.dvbs2_bbscrambler_bb_0 = dvbs2.bbscrambler_bb(dvbs2.C9_10)
-        self.dvbs2_bbheader_bb_0 = dvbs2.bbheader_bb(dvbs2.C9_10,dvbs2.RO_0_20)
+        self.dvbs2_ldpc_bb_0 = dvbs2.ldpc_bb(dvbs2.C9_10, dvbs2.FECFRAME_NORMAL)
+        self.dvbs2_interleaver_bb_0 = dvbs2.interleaver_bb(dvbs2.MOD_16APSK, dvbs2.C_OTHER, dvbs2.FECFRAME_NORMAL)
+        self.dvbs2_bch_bb_0 = dvbs2.bch_bb(dvbs2.C9_10, dvbs2.FECFRAME_NORMAL)
+        self.dvbs2_bbscrambler_bb_0 = dvbs2.bbscrambler_bb(dvbs2.C9_10, dvbs2.FECFRAME_NORMAL)
+        self.dvbs2_bbheader_bb_0 = dvbs2.bbheader_bb(dvbs2.C9_10, dvbs2.RO_0_20, dvbs2.FECFRAME_NORMAL)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, "/run/shm/adv16apsk910.ts", True)
 
         ##################################################
@@ -88,7 +88,6 @@ class dvbs2_tx(grc_wxgui.top_block_gui):
         self.connect((self.fft_filter_xxx_0, 0), (self.wxgui_fftsink2_0, 0))
 
 
-# QT sink close method reimplementation
 
     def get_symbol_rate(self):
         return self.symbol_rate
@@ -109,9 +108,9 @@ class dvbs2_tx(grc_wxgui.top_block_gui):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.fft_filter_xxx_0.set_taps((firdes.root_raised_cosine(1, self.samp_rate, self.samp_rate/2, self.rolloff, self.taps)))
         self.osmosdr_sink_0.set_sample_rate(self.samp_rate)
         self.wxgui_fftsink2_0.set_sample_rate(self.samp_rate)
+        self.fft_filter_xxx_0.set_taps((firdes.root_raised_cosine(1, self.samp_rate, self.samp_rate/2, self.rolloff, self.taps)))
 
     def get_rolloff(self):
         return self.rolloff
@@ -134,4 +133,3 @@ if __name__ == '__main__':
     tb = dvbs2_tx()
     tb.Start(True)
     tb.Wait()
-

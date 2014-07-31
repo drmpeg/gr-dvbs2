@@ -24,171 +24,231 @@
 
 #include <gnuradio/io_signature.h>
 #include "ldpc_bb_impl.h"
+#include <stdio.h>
 
 namespace gr {
   namespace dvbs2 {
 
     ldpc_bb::sptr
-    ldpc_bb::make(dvbs2_code_rate_t rate)
+    ldpc_bb::make(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize)
     {
       return gnuradio::get_initial_sptr
-        (new ldpc_bb_impl(rate));
+        (new ldpc_bb_impl(rate, framesize));
     }
 
     /*
      * The private constructor
      */
-    ldpc_bb_impl::ldpc_bb_impl(dvbs2_code_rate_t rate)
+    ldpc_bb_impl::ldpc_bb_impl(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize)
       : gr::block("ldpc_bb",
               gr::io_signature::make(1, 1, sizeof(unsigned char)),
               gr::io_signature::make(1, 1, sizeof(unsigned char)))
     {
-        switch (rate)
+        if (framesize == gr::dvbs2::FECFRAME_NORMAL)
         {
-            case gr::dvbs2::C1_4:
-                nbch = 16200;
-                q_val = 135;
-                break;
-            case gr::dvbs2::C1_3:
-                nbch = 21600;
-                q_val = 120;
-                break;
-            case gr::dvbs2::C2_5:
-                nbch = 25920;
-                q_val = 108;
-                break;
-            case gr::dvbs2::C1_2:
-                nbch = 32400;
-                q_val = 90;
-                break;
-            case gr::dvbs2::C3_5:
-                nbch = 38880;
-                q_val = 72;
-                break;
-            case gr::dvbs2::C2_3:
-                nbch = 43200;
-                q_val = 60;
-                break;
-            case gr::dvbs2::C3_4:
-                nbch = 48600;
-                q_val = 45;
-                break;
-            case gr::dvbs2::C4_5:
-                nbch = 51840;
-                q_val = 36;
-                break;
-            case gr::dvbs2::C5_6:
-                nbch = 54000;
-                q_val = 30;
-                break;
-            case gr::dvbs2::C8_9:
-                nbch = 57600;
-                q_val = 20;
-                break;
-            case gr::dvbs2::C9_10:
-                nbch = 58320;
-                q_val = 18;
-                break;
-            case gr::dvbs2::C13_45:
-                nbch = 18720;
-                q_val = 128;
-                break;
-            case gr::dvbs2::C9_20:
-                nbch = 29160;
-                q_val = 99;
-                break;
-            case gr::dvbs2::C90_180:
-                nbch = 32400;
-                q_val = 90;
-                break;
-            case gr::dvbs2::C96_180:
-                nbch = 34560;
-                q_val = 84;
-                break;
-            case gr::dvbs2::C11_20:
-                nbch = 35640;
-                q_val = 81;
-                break;
-            case gr::dvbs2::C100_180:
-                nbch = 36000;
-                q_val = 80;
-                break;
-            case gr::dvbs2::C104_180:
-                nbch = 37440;
-                q_val = 76;
-                break;
-            case gr::dvbs2::C26_45:
-                nbch = 37440;
-                q_val = 76;
-                break;
-            case gr::dvbs2::C18_30:
-                nbch = 38880;
-                q_val = 72;
-                break;
-            case gr::dvbs2::C28_45:
-                nbch = 40320;
-                q_val = 68;
-                break;
-            case gr::dvbs2::C23_36:
-                nbch = 41400;
-                q_val = 65;
-                break;
-            case gr::dvbs2::C116_180:
-                nbch = 41760;
-                q_val = 64;
-                break;
-            case gr::dvbs2::C20_30:
-                nbch = 43200;
-                q_val = 60;
-                break;
-            case gr::dvbs2::C124_180:
-                nbch = 44640;
-                q_val = 56;
-                break;
-            case gr::dvbs2::C25_36:
-                nbch = 45000;
-                q_val = 55;
-                break;
-            case gr::dvbs2::C128_180:
-                nbch = 46080;
-                q_val = 52;
-                break;
-            case gr::dvbs2::C13_18:
-                nbch = 46800;
-                q_val = 50;
-                break;
-            case gr::dvbs2::C132_180:
-                nbch = 47520;
-                q_val = 48;
-                break;
-            case gr::dvbs2::C22_30:
-                nbch = 47520;
-                q_val = 48;
-                break;
-            case gr::dvbs2::C135_180:
-                nbch = 48600;
-                q_val = 45;
-                break;
-            case gr::dvbs2::C140_180:
-                nbch = 50400;
-                q_val = 40;
-                break;
-            case gr::dvbs2::C7_9:
-                nbch = 50400;
-                q_val = 40;
-                break;
-            case gr::dvbs2::C154_180:
-                nbch = 55440;
-                q_val = 26;
-                break;
-            default:
-                nbch = 0;
-                q_val = 0;
-                break;
+            frame_size = FRAME_SIZE_NORMAL;
+            switch (rate)
+            {
+                case gr::dvbs2::C1_4:
+                    nbch = 16200;
+                    q_val = 135;
+                    break;
+                case gr::dvbs2::C1_3:
+                    nbch = 21600;
+                    q_val = 120;
+                    break;
+                case gr::dvbs2::C2_5:
+                    nbch = 25920;
+                    q_val = 108;
+                    break;
+                case gr::dvbs2::C1_2:
+                    nbch = 32400;
+                    q_val = 90;
+                    break;
+                case gr::dvbs2::C3_5:
+                    nbch = 38880;
+                    q_val = 72;
+                    break;
+                case gr::dvbs2::C2_3:
+                    nbch = 43200;
+                    q_val = 60;
+                    break;
+                case gr::dvbs2::C3_4:
+                    nbch = 48600;
+                    q_val = 45;
+                    break;
+                case gr::dvbs2::C4_5:
+                    nbch = 51840;
+                    q_val = 36;
+                    break;
+                case gr::dvbs2::C5_6:
+                    nbch = 54000;
+                    q_val = 30;
+                    break;
+                case gr::dvbs2::C8_9:
+                    nbch = 57600;
+                    q_val = 20;
+                    break;
+                case gr::dvbs2::C9_10:
+                    nbch = 58320;
+                    q_val = 18;
+                    break;
+                case gr::dvbs2::C13_45:
+                    nbch = 18720;
+                    q_val = 128;
+                    break;
+                case gr::dvbs2::C9_20:
+                    nbch = 29160;
+                    q_val = 99;
+                    break;
+                case gr::dvbs2::C90_180:
+                    nbch = 32400;
+                    q_val = 90;
+                    break;
+                case gr::dvbs2::C96_180:
+                    nbch = 34560;
+                    q_val = 84;
+                    break;
+                case gr::dvbs2::C11_20:
+                    nbch = 35640;
+                    q_val = 81;
+                    break;
+                case gr::dvbs2::C100_180:
+                    nbch = 36000;
+                    q_val = 80;
+                    break;
+                case gr::dvbs2::C104_180:
+                    nbch = 37440;
+                    q_val = 76;
+                    break;
+                case gr::dvbs2::C26_45:
+                    nbch = 37440;
+                    q_val = 76;
+                    break;
+                case gr::dvbs2::C18_30:
+                    nbch = 38880;
+                    q_val = 72;
+                    break;
+                case gr::dvbs2::C28_45:
+                    nbch = 40320;
+                    q_val = 68;
+                    break;
+                case gr::dvbs2::C23_36:
+                    nbch = 41400;
+                    q_val = 65;
+                    break;
+                case gr::dvbs2::C116_180:
+                    nbch = 41760;
+                    q_val = 64;
+                    break;
+                case gr::dvbs2::C20_30:
+                    nbch = 43200;
+                    q_val = 60;
+                    break;
+                case gr::dvbs2::C124_180:
+                    nbch = 44640;
+                    q_val = 56;
+                    break;
+                case gr::dvbs2::C25_36:
+                    nbch = 45000;
+                    q_val = 55;
+                    break;
+                case gr::dvbs2::C128_180:
+                    nbch = 46080;
+                    q_val = 52;
+                    break;
+                case gr::dvbs2::C13_18:
+                    nbch = 46800;
+                    q_val = 50;
+                    break;
+                case gr::dvbs2::C132_180:
+                    nbch = 47520;
+                    q_val = 48;
+                    break;
+                case gr::dvbs2::C22_30:
+                    nbch = 47520;
+                    q_val = 48;
+                    break;
+                case gr::dvbs2::C135_180:
+                    nbch = 48600;
+                    q_val = 45;
+                    break;
+                case gr::dvbs2::C140_180:
+                    nbch = 50400;
+                    q_val = 40;
+                    break;
+                case gr::dvbs2::C7_9:
+                    nbch = 50400;
+                    q_val = 40;
+                    break;
+                case gr::dvbs2::C154_180:
+                    nbch = 55440;
+                    q_val = 26;
+                    break;
+                default:
+                    nbch = 0;
+                    q_val = 0;
+                    break;
+            }
+        }
+        else
+        {
+            frame_size = FRAME_SIZE_SHORT;
+            switch (rate)
+            {
+                case gr::dvbs2::C1_4:
+                    nbch = 3240;
+                    q_val = 36;
+                    break;
+                case gr::dvbs2::C1_3:
+                    nbch = 5400;
+                    q_val = 30;
+                    break;
+                case gr::dvbs2::C2_5:
+                    nbch = 6480;
+                    q_val = 27;
+                    break;
+                case gr::dvbs2::C1_2:
+                    nbch = 7200;
+                    q_val = 25;
+                    break;
+                case gr::dvbs2::C3_5:
+                    nbch = 9720;
+                    q_val = 18;
+                    break;
+                case gr::dvbs2::C2_3:
+                    nbch = 10800;
+                    q_val = 15;
+                    break;
+                case gr::dvbs2::C3_4:
+                    nbch = 11880;
+                    q_val = 12;
+                    break;
+                case gr::dvbs2::C4_5:
+                    nbch = 12600;
+                    q_val = 10;
+                    break;
+                case gr::dvbs2::C5_6:
+                    nbch = 13320;
+                    q_val = 8;
+                    break;
+                case gr::dvbs2::C8_9:
+                    nbch = 14400;
+                    q_val = 5;
+                    break;
+                case gr::dvbs2::C9_10:
+                    fprintf(stderr, "9/10 code rate not supported for short FECFRAME.\n");
+                    exit(1);
+                    break;
+                default:
+                    nbch = 0;
+                    q_val = 0;
+                    break;
+            }
         }
         code_rate = rate;
         ldpc_lookup_generate();
-        set_output_multiple(FRAME_SIZE_NORMAL);
+        set_output_multiple(frame_size);
     }
 
     /*
@@ -201,7 +261,7 @@ namespace gr {
     void
     ldpc_bb_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-        ninput_items_required[0] = (noutput_items / FRAME_SIZE_NORMAL) * nbch;
+        ninput_items_required[0] = (noutput_items / frame_size) * nbch;
     }
 
 #define LDPC_BF(TABLE_NAME, ROWS) \
@@ -228,45 +288,65 @@ void ldpc_bb_impl::ldpc_lookup_generate(void)
     index = 0;
     im = 0;
 
-    pbits = FRAME_SIZE_NORMAL - nbch;    //number of parity bits
+    pbits = frame_size - nbch;    //number of parity bits
     q = q_val;
 
-    if (code_rate == gr::dvbs2::C1_4)  LDPC_BF(ldpc_tab_1_4N,  45);
-    if (code_rate == gr::dvbs2::C1_3)  LDPC_BF(ldpc_tab_1_3N,  60);
-    if (code_rate == gr::dvbs2::C2_5)  LDPC_BF(ldpc_tab_2_5N,  72);
-    if (code_rate == gr::dvbs2::C1_2)  LDPC_BF(ldpc_tab_1_2N,  90);
-    if (code_rate == gr::dvbs2::C3_5)  LDPC_BF(ldpc_tab_3_5N,  108);
-    if (code_rate == gr::dvbs2::C2_3)  LDPC_BF(ldpc_tab_2_3N,  120);
-    if (code_rate == gr::dvbs2::C3_4)  LDPC_BF(ldpc_tab_3_4N,  135);
-    if (code_rate == gr::dvbs2::C4_5)  LDPC_BF(ldpc_tab_4_5N,  144);
-    if (code_rate == gr::dvbs2::C5_6)  LDPC_BF(ldpc_tab_5_6N,  150);
-    if (code_rate == gr::dvbs2::C8_9)  LDPC_BF(ldpc_tab_8_9N,  160);
-    if (code_rate == gr::dvbs2::C9_10) LDPC_BF(ldpc_tab_9_10N, 162);
+    if (frame_size == FRAME_SIZE_NORMAL)
+    {
+        if (code_rate == gr::dvbs2::C1_4)  LDPC_BF(ldpc_tab_1_4N,  45);
+        if (code_rate == gr::dvbs2::C1_3)  LDPC_BF(ldpc_tab_1_3N,  60);
+        if (code_rate == gr::dvbs2::C2_5)  LDPC_BF(ldpc_tab_2_5N,  72);
+        if (code_rate == gr::dvbs2::C1_2)  LDPC_BF(ldpc_tab_1_2N,  90);
+        if (code_rate == gr::dvbs2::C3_5)  LDPC_BF(ldpc_tab_3_5N,  108);
+        if (code_rate == gr::dvbs2::C2_3)  LDPC_BF(ldpc_tab_2_3N,  120);
+        if (code_rate == gr::dvbs2::C3_4)  LDPC_BF(ldpc_tab_3_4N,  135);
+        if (code_rate == gr::dvbs2::C4_5)  LDPC_BF(ldpc_tab_4_5N,  144);
+        if (code_rate == gr::dvbs2::C5_6)  LDPC_BF(ldpc_tab_5_6N,  150);
+        if (code_rate == gr::dvbs2::C8_9)  LDPC_BF(ldpc_tab_8_9N,  160);
+        if (code_rate == gr::dvbs2::C9_10) LDPC_BF(ldpc_tab_9_10N, 162);
 
-    if (code_rate == gr::dvbs2::C13_45)   LDPC_BF(ldpc_tab_13_45N,    52);
-    if (code_rate == gr::dvbs2::C9_20)    LDPC_BF(ldpc_tab_9_20N,     81);
-    if (code_rate == gr::dvbs2::C90_180)  LDPC_BF(ldpc_tab_90_180N,   90);
-    if (code_rate == gr::dvbs2::C96_180)  LDPC_BF(ldpc_tab_96_180N,   96);
-    if (code_rate == gr::dvbs2::C11_20)   LDPC_BF(ldpc_tab_11_20N,    99);
-    if (code_rate == gr::dvbs2::C100_180) LDPC_BF(ldpc_tab_100_180N, 100);
-    if (code_rate == gr::dvbs2::C104_180) LDPC_BF(ldpc_tab_104_180N, 104);
-    if (code_rate == gr::dvbs2::C26_45)   LDPC_BF(ldpc_tab_26_45N,   104);
-    if (code_rate == gr::dvbs2::C18_30)   LDPC_BF(ldpc_tab_18_30N,   108);
-    if (code_rate == gr::dvbs2::C28_45)   LDPC_BF(ldpc_tab_28_45N,   112);
-    if (code_rate == gr::dvbs2::C23_36)   LDPC_BF(ldpc_tab_23_36N,   115);
-    if (code_rate == gr::dvbs2::C116_180) LDPC_BF(ldpc_tab_116_180N, 116);
-    if (code_rate == gr::dvbs2::C20_30)   LDPC_BF(ldpc_tab_20_30N,   120);
-    if (code_rate == gr::dvbs2::C124_180) LDPC_BF(ldpc_tab_124_180N, 124);
-    if (code_rate == gr::dvbs2::C25_36)   LDPC_BF(ldpc_tab_25_36N,   125);
-    if (code_rate == gr::dvbs2::C128_180) LDPC_BF(ldpc_tab_128_180N, 128);
-    if (code_rate == gr::dvbs2::C13_18)   LDPC_BF(ldpc_tab_13_18N,   130);
-    if (code_rate == gr::dvbs2::C132_180) LDPC_BF(ldpc_tab_132_180N, 132);
-    if (code_rate == gr::dvbs2::C22_30)   LDPC_BF(ldpc_tab_22_30N,   132);
-    if (code_rate == gr::dvbs2::C135_180) LDPC_BF(ldpc_tab_135_180N, 135);
-    if (code_rate == gr::dvbs2::C140_180) LDPC_BF(ldpc_tab_140_180N, 140);
-    if (code_rate == gr::dvbs2::C7_9)     LDPC_BF(ldpc_tab_7_9N,     140);
-    if (code_rate == gr::dvbs2::C154_180) LDPC_BF(ldpc_tab_154_180N, 154);
-
+        if (code_rate == gr::dvbs2::C13_45)   LDPC_BF(ldpc_tab_13_45N,    52);
+        if (code_rate == gr::dvbs2::C9_20)    LDPC_BF(ldpc_tab_9_20N,     81);
+        if (code_rate == gr::dvbs2::C90_180)  LDPC_BF(ldpc_tab_90_180N,   90);
+        if (code_rate == gr::dvbs2::C96_180)  LDPC_BF(ldpc_tab_96_180N,   96);
+        if (code_rate == gr::dvbs2::C11_20)   LDPC_BF(ldpc_tab_11_20N,    99);
+        if (code_rate == gr::dvbs2::C100_180) LDPC_BF(ldpc_tab_100_180N, 100);
+        if (code_rate == gr::dvbs2::C104_180) LDPC_BF(ldpc_tab_104_180N, 104);
+        if (code_rate == gr::dvbs2::C26_45)   LDPC_BF(ldpc_tab_26_45N,   104);
+        if (code_rate == gr::dvbs2::C18_30)   LDPC_BF(ldpc_tab_18_30N,   108);
+        if (code_rate == gr::dvbs2::C28_45)   LDPC_BF(ldpc_tab_28_45N,   112);
+        if (code_rate == gr::dvbs2::C23_36)   LDPC_BF(ldpc_tab_23_36N,   115);
+        if (code_rate == gr::dvbs2::C116_180) LDPC_BF(ldpc_tab_116_180N, 116);
+        if (code_rate == gr::dvbs2::C20_30)   LDPC_BF(ldpc_tab_20_30N,   120);
+        if (code_rate == gr::dvbs2::C124_180) LDPC_BF(ldpc_tab_124_180N, 124);
+        if (code_rate == gr::dvbs2::C25_36)   LDPC_BF(ldpc_tab_25_36N,   125);
+        if (code_rate == gr::dvbs2::C128_180) LDPC_BF(ldpc_tab_128_180N, 128);
+        if (code_rate == gr::dvbs2::C13_18)   LDPC_BF(ldpc_tab_13_18N,   130);
+        if (code_rate == gr::dvbs2::C132_180) LDPC_BF(ldpc_tab_132_180N, 132);
+        if (code_rate == gr::dvbs2::C22_30)   LDPC_BF(ldpc_tab_22_30N,   132);
+        if (code_rate == gr::dvbs2::C135_180) LDPC_BF(ldpc_tab_135_180N, 135);
+        if (code_rate == gr::dvbs2::C140_180) LDPC_BF(ldpc_tab_140_180N, 140);
+        if (code_rate == gr::dvbs2::C7_9)     LDPC_BF(ldpc_tab_7_9N,     140);
+        if (code_rate == gr::dvbs2::C154_180) LDPC_BF(ldpc_tab_154_180N, 154);
+    }
+    else
+    {
+        if (code_rate == gr::dvbs2::C1_4)  LDPC_BF(ldpc_tab_1_4S, 9);
+        if (code_rate == gr::dvbs2::C1_3)  LDPC_BF(ldpc_tab_1_3S, 15);
+        if (code_rate == gr::dvbs2::C2_5)  LDPC_BF(ldpc_tab_2_5S, 18);
+        if (code_rate == gr::dvbs2::C1_2)  LDPC_BF(ldpc_tab_1_2S, 20);
+        if (code_rate == gr::dvbs2::C3_5)  LDPC_BF(ldpc_tab_3_5S, 27);
+        if (code_rate == gr::dvbs2::C2_3)  LDPC_BF(ldpc_tab_2_3S, 30);
+        if (code_rate == gr::dvbs2::C3_4)  LDPC_BF(ldpc_tab_3_4S, 33);
+        if (code_rate == gr::dvbs2::C4_5)  LDPC_BF(ldpc_tab_4_5S, 35);
+        if (code_rate == gr::dvbs2::C5_6)  LDPC_BF(ldpc_tab_5_6S, 37);
+        if (code_rate == gr::dvbs2::C8_9)  LDPC_BF(ldpc_tab_8_9S, 40);
+        if (code_rate == gr::dvbs2::C9_10)
+        {
+            fprintf(stderr, "9/10 code rate not supported for short FECFRAME.\n");
+            exit(1);
+        }
+    }
     ldpc_encode.table_length = index;
 }
 
@@ -281,19 +361,18 @@ void ldpc_bb_impl::ldpc_lookup_generate(void)
         const unsigned char *d;
         unsigned char *p;
         // Calculate the number of parity bits
-        int plen = FRAME_SIZE_NORMAL - nbch;
+        int plen = frame_size - nbch;
         d = in;
         p = &out[nbch];
         int consumed = 0;
 
-        // First zero all the parity bits
-        memset(p, 0, sizeof(unsigned char)*plen);
-
-        for (int i = 0; i < noutput_items; i += FRAME_SIZE_NORMAL)
+        for (int i = 0; i < noutput_items; i += frame_size)
         {
+            // First zero all the parity bits
+            memset(p, 0, sizeof(unsigned char)*plen);
             for(int j = 0; j < (int)nbch; j++)
             {
-                out[i + j] = in[i + j];
+                out[i + j] = in[consumed];
                 consumed++;
             }
             // now do the parity checking
@@ -305,8 +384,8 @@ void ldpc_bb_impl::ldpc_lookup_generate(void)
             {
                p[j] ^= p[j-1];
             }
-            d += FRAME_SIZE_NORMAL;
-            p += FRAME_SIZE_NORMAL;
+            d += nbch;
+            p += frame_size;
         }
 
         // Tell runtime system how many input items we consumed on
@@ -4334,6 +4413,310 @@ const int ldpc_bb_impl::ldpc_tab_22_30N[132][16]=
     {3,3969,8419,15116,0,0,0,0,0,0,0,0,0,0,0,0},
     {3,31,15593,16984,0,0,0,0,0,0,0,0,0,0,0,0},
     {3,11514,16605,17255,0,0,0,0,0,0,0,0,0,0,0,0}
+};
+
+const int ldpc_bb_impl::ldpc_tab_1_4S[9][13]=
+{
+    {12,6295,9626,304,7695,4839,4936,1660,144,11203,5567,6347,12557},
+    {12,10691,4988,3859,3734,3071,3494,7687,10313,5964,8069,8296,11090},
+    {12,10774,3613,5208,11177,7676,3549,8746,6583,7239,12265,2674,4292},
+    {12,11869,3708,5981,8718,4908,10650,6805,3334,2627,10461,9285,11120},
+    {3,7844,3079,10773,0,0,0,0,0,0,0,0,0},
+    {3,3385,10854,5747,0,0,0,0,0,0,0,0,0},
+    {3,1360,12010,12202,0,0,0,0,0,0,0,0,0},
+    {3,6189,4241,2343,0,0,0,0,0,0,0,0,0},
+    {3,9840,12726,4977,0,0,0,0,0,0,0,0,0}
+};
+
+const int ldpc_bb_impl::ldpc_tab_1_3S[15][13]=
+{
+    {12,416,8909,4156,3216,3112,2560,2912,6405,8593,4969,6723,6912},
+    {12,8978,3011,4339,9312,6396,2957,7288,5485,6031,10218,2226,3575},
+    {12,3383,10059,1114,10008,10147,9384,4290,434,5139,3536,1965,2291},
+    {12,2797,3693,7615,7077,743,1941,8716,6215,3840,5140,4582,5420},
+    {12,6110,8551,1515,7404,4879,4946,5383,1831,3441,9569,10472,4306},
+    {3,1505,5682,7778,0,0,0,0,0,0,0,0,0},
+    {3,7172,6830,6623,0,0,0,0,0,0,0,0,0},
+    {3,7281,3941,3505,0,0,0,0,0,0,0,0,0},
+    {3,10270,8669,914,0,0,0,0,0,0,0,0,0},
+    {3,3622,7563,9388,0,0,0,0,0,0,0,0,0},
+    {3,9930,5058,4554,0,0,0,0,0,0,0,0,0},
+    {3,4844,9609,2707,0,0,0,0,0,0,0,0,0},
+    {3,6883,3237,1714,0,0,0,0,0,0,0,0,0},
+    {3,4768,3878,10017,0,0,0,0,0,0,0,0,0},
+    {3,10127,3334,8267,0,0,0,0,0,0,0,0,0}
+};
+
+const int ldpc_bb_impl::ldpc_tab_2_5S[18][13]=
+{
+    {12,5650,4143,8750,583,6720,8071,635,1767,1344,6922,738,6658},
+    {12,5696,1685,3207,415,7019,5023,5608,2605,857,6915,1770,8016},
+    {12,3992,771,2190,7258,8970,7792,1802,1866,6137,8841,886,1931},
+    {12,4108,3781,7577,6810,9322,8226,5396,5867,4428,8827,7766,2254},
+    {12,4247,888,4367,8821,9660,324,5864,4774,227,7889,6405,8963},
+    {12,9693,500,2520,2227,1811,9330,1928,5140,4030,4824,806,3134},
+    {3,1652,8171,1435,0,0,0,0,0,0,0,0,0},
+    {3,3366,6543,3745,0,0,0,0,0,0,0,0,0},
+    {3,9286,8509,4645,0,0,0,0,0,0,0,0,0},
+    {3,7397,5790,8972,0,0,0,0,0,0,0,0,0},
+    {3,6597,4422,1799,0,0,0,0,0,0,0,0,0},
+    {3,9276,4041,3847,0,0,0,0,0,0,0,0,0},
+    {3,8683,7378,4946,0,0,0,0,0,0,0,0,0},
+    {3,5348,1993,9186,0,0,0,0,0,0,0,0,0},
+    {3,6724,9015,5646,0,0,0,0,0,0,0,0,0},
+    {3,4502,4439,8474,0,0,0,0,0,0,0,0,0},
+    {3,5107,7342,9442,0,0,0,0,0,0,0,0,0},
+    {3,1387,8910,2660,0,0,0,0,0,0,0,0,0}
+};
+
+const int ldpc_bb_impl::ldpc_tab_1_2S[20][9]=
+{
+    {8,20,712,2386,6354,4061,1062,5045,5158},
+    {8,21,2543,5748,4822,2348,3089,6328,5876},
+    {8,22,926,5701,269,3693,2438,3190,3507},
+    {8,23,2802,4520,3577,5324,1091,4667,4449},
+    {8,24,5140,2003,1263,4742,6497,1185,6202},
+    {3,0,4046,6934,0,0,0,0,0},
+    {3,1,2855,66,0,0,0,0,0},
+    {3,2,6694,212,0,0,0,0,0},
+    {3,3,3439,1158,0,0,0,0,0},
+    {3,4,3850,4422,0,0,0,0,0},
+    {3,5,5924,290,0,0,0,0,0},
+    {3,6,1467,4049,0,0,0,0,0},
+    {3,7,7820,2242,0,0,0,0,0},
+    {3,8,4606,3080,0,0,0,0,0},
+    {3,9,4633,7877,0,0,0,0,0},
+    {3,10,3884,6868,0,0,0,0,0},
+    {3,11,8935,4996,0,0,0,0,0},
+    {3,12,3028,764,0,0,0,0,0},
+    {3,13,5988,1057,0,0,0,0,0},
+    {3,14,7411,3450,0,0,0,0,0}
+};
+
+const int ldpc_bb_impl::ldpc_tab_3_5S[27][13]=
+{
+    {12,2765,5713,6426,3596,1374,4811,2182,544,3394,2840,4310,771},
+    {12,4951,211,2208,723,1246,2928,398,5739,265,5601,5993,2615},
+    {12,210,4730,5777,3096,4282,6238,4939,1119,6463,5298,6320,4016},
+    {12,4167,2063,4757,3157,5664,3956,6045,563,4284,2441,3412,6334},
+    {12,4201,2428,4474,59,1721,736,2997,428,3807,1513,4732,6195},
+    {12,2670,3081,5139,3736,1999,5889,4362,3806,4534,5409,6384,5809},
+    {12,5516,1622,2906,3285,1257,5797,3816,817,875,2311,3543,1205},
+    {12,4244,2184,5415,1705,5642,4886,2333,287,1848,1121,3595,6022},
+    {12,2142,2830,4069,5654,1295,2951,3919,1356,884,1786,396,4738},
+    {3,0,2161,2653,0,0,0,0,0,0,0,0,0},
+    {3,1,1380,1461,0,0,0,0,0,0,0,0,0},
+    {3,2,2502,3707,0,0,0,0,0,0,0,0,0},
+    {3,3,3971,1057,0,0,0,0,0,0,0,0,0},
+    {3,4,5985,6062,0,0,0,0,0,0,0,0,0},
+    {3,5,1733,6028,0,0,0,0,0,0,0,0,0},
+    {3,6,3786,1936,0,0,0,0,0,0,0,0,0},
+    {3,7,4292,956,0,0,0,0,0,0,0,0,0},
+    {3,8,5692,3417,0,0,0,0,0,0,0,0,0},
+    {3,9,266,4878,0,0,0,0,0,0,0,0,0},
+    {3,10,4913,3247,0,0,0,0,0,0,0,0,0},
+    {3,11,4763,3937,0,0,0,0,0,0,0,0,0},
+    {3,12,3590,2903,0,0,0,0,0,0,0,0,0},
+    {3,13,2566,4215,0,0,0,0,0,0,0,0,0},
+    {3,14,5208,4707,0,0,0,0,0,0,0,0,0},
+    {3,15,3940,3388,0,0,0,0,0,0,0,0,0},
+    {3,16,5109,4556,0,0,0,0,0,0,0,0,0},
+    {3,17,4908,4177,0,0,0,0,0,0,0,0,0}
+};
+
+const int ldpc_bb_impl::ldpc_tab_2_3S[30][14]=
+{
+    {13,0,2084,1613,1548,1286,1460,3196,4297,2481,3369,3451,4620,2622},
+    {13,1,122,1516,3448,2880,1407,1847,3799,3529,373,971,4358,3108},
+    {13,2,259,3399,929,2650,864,3996,3833,107,5287,164,3125,2350},
+    {3,3,342,3529,0,0,0,0,0,0,0,0,0,0},
+    {3,4,4198,2147,0,0,0,0,0,0,0,0,0,0},
+    {3,5,1880,4836,0,0,0,0,0,0,0,0,0,0},
+    {3,6,3864,4910,0,0,0,0,0,0,0,0,0,0},
+    {3,7,243,1542,0,0,0,0,0,0,0,0,0,0},
+    {3,8,3011,1436,0,0,0,0,0,0,0,0,0,0},
+    {3,9,2167,2512,0,0,0,0,0,0,0,0,0,0},
+    {3,10,4606,1003,0,0,0,0,0,0,0,0,0,0},
+    {3,11,2835,705,0,0,0,0,0,0,0,0,0,0},
+    {3,12,3426,2365,0,0,0,0,0,0,0,0,0,0},
+    {3,13,3848,2474,0,0,0,0,0,0,0,0,0,0},
+    {3,14,1360,1743,0,0,0,0,0,0,0,0,0,0},
+    {3,0,163,2536,0,0,0,0,0,0,0,0,0,0},
+    {3,1,2583,1180,0,0,0,0,0,0,0,0,0,0},
+    {3,2,1542,509,0,0,0,0,0,0,0,0,0,0},
+    {3,3,4418,1005,0,0,0,0,0,0,0,0,0,0},
+    {3,4,5212,5117,0,0,0,0,0,0,0,0,0,0},
+    {3,5,2155,2922,0,0,0,0,0,0,0,0,0,0},
+    {3,6,347,2696,0,0,0,0,0,0,0,0,0,0},
+    {3,7,226,4296,0,0,0,0,0,0,0,0,0,0},
+    {3,8,1560,487,0,0,0,0,0,0,0,0,0,0},
+    {3,9,3926,1640,0,0,0,0,0,0,0,0,0,0},
+    {3,10,149,2928,0,0,0,0,0,0,0,0,0,0},
+    {3,11,2364,563,0,0,0,0,0,0,0,0,0,0},
+    {3,12,635,688,0,0,0,0,0,0,0,0,0,0},
+    {3,13,231,1684,0,0,0,0,0,0,0,0,0,0},
+    {3,14,1129,3894,0,0,0,0,0,0,0,0,0,0}
+};
+
+const int ldpc_bb_impl::ldpc_tab_3_4S[33][13]=
+{
+    {12,3,3198,478,4207,1481,1009,2616,1924,3437,554,683,1801},
+    {3,4,2681,2135,0,0,0,0,0,0,0,0,0},
+    {3,5,3107,4027,0,0,0,0,0,0,0,0,0},
+    {3,6,2637,3373,0,0,0,0,0,0,0,0,0},
+    {3,7,3830,3449,0,0,0,0,0,0,0,0,0},
+    {3,8,4129,2060,0,0,0,0,0,0,0,0,0},
+    {3,9,4184,2742,0,0,0,0,0,0,0,0,0},
+    {3,10,3946,1070,0,0,0,0,0,0,0,0,0},
+    {3,11,2239,984,0,0,0,0,0,0,0,0,0},
+    {3,0,1458,3031,0,0,0,0,0,0,0,0,0},
+    {3,1,3003,1328,0,0,0,0,0,0,0,0,0},
+    {3,2,1137,1716,0,0,0,0,0,0,0,0,0},
+    {3,3,132,3725,0,0,0,0,0,0,0,0,0},
+    {3,4,1817,638,0,0,0,0,0,0,0,0,0},
+    {3,5,1774,3447,0,0,0,0,0,0,0,0,0},
+    {3,6,3632,1257,0,0,0,0,0,0,0,0,0},
+    {3,7,542,3694,0,0,0,0,0,0,0,0,0},
+    {3,8,1015,1945,0,0,0,0,0,0,0,0,0},
+    {3,9,1948,412,0,0,0,0,0,0,0,0,0},
+    {3,10,995,2238,0,0,0,0,0,0,0,0,0},
+    {3,11,4141,1907,0,0,0,0,0,0,0,0,0},
+    {3,0,2480,3079,0,0,0,0,0,0,0,0,0},
+    {3,1,3021,1088,0,0,0,0,0,0,0,0,0},
+    {3,2,713,1379,0,0,0,0,0,0,0,0,0},
+    {3,3,997,3903,0,0,0,0,0,0,0,0,0},
+    {3,4,2323,3361,0,0,0,0,0,0,0,0,0},
+    {3,5,1110,986,0,0,0,0,0,0,0,0,0},
+    {3,6,2532,142,0,0,0,0,0,0,0,0,0},
+    {3,7,1690,2405,0,0,0,0,0,0,0,0,0},
+    {3,8,1298,1881,0,0,0,0,0,0,0,0,0},
+    {3,9,615,174,0,0,0,0,0,0,0,0,0},
+    {3,10,1648,3112,0,0,0,0,0,0,0,0,0},
+    {3,11,1415,2808,0,0,0,0,0,0,0,0,0}
+};
+
+const int ldpc_bb_impl::ldpc_tab_4_5S[35][4]=
+{
+    {3,5,896,1565},
+    {3,6,2493,184},
+    {3,7,212,3210},
+    {3,8,727,1339},
+    {3,9,3428,612},
+    {3,0,2663,1947},
+    {3,1,230,2695},
+    {3,2,2025,2794},
+    {3,3,3039,283},
+    {3,4,862,2889},
+    {3,5,376,2110},
+    {3,6,2034,2286},
+    {3,7,951,2068},
+    {3,8,3108,3542},
+    {3,9,307,1421},
+    {3,0,2272,1197},
+    {3,1,1800,3280},
+    {3,2,331,2308},
+    {3,3,465,2552},
+    {3,4,1038,2479},
+    {3,5,1383,343},
+    {3,6,94,236},
+    {3,7,2619,121},
+    {3,8,1497,2774},
+    {3,9,2116,1855},
+    {3,0,722,1584},
+    {3,1,2767,1881},
+    {3,2,2701,1610},
+    {3,3,3283,1732},
+    {3,4,168,1099},
+    {3,5,3074,243},
+    {3,6,3460,945},
+    {3,7,2049,1746},
+    {3,8,566,1427},
+    {3,9,3545,1168}
+};
+
+const int ldpc_bb_impl::ldpc_tab_5_6S[37][14]=
+{
+    {13,3,2409,499,1481,908,559,716,1270,333,2508,2264,1702,2805},
+    {3,4,2447,1926,0,0,0,0,0,0,0,0,0,0},
+    {3,5,414,1224,0,0,0,0,0,0,0,0,0,0},
+    {3,6,2114,842,0,0,0,0,0,0,0,0,0,0},
+    {3,7,212,573,0,0,0,0,0,0,0,0,0,0},
+    {3,0,2383,2112,0,0,0,0,0,0,0,0,0,0},
+    {3,1,2286,2348,0,0,0,0,0,0,0,0,0,0},
+    {3,2,545,819,0,0,0,0,0,0,0,0,0,0},
+    {3,3,1264,143,0,0,0,0,0,0,0,0,0,0},
+    {3,4,1701,2258,0,0,0,0,0,0,0,0,0,0},
+    {3,5,964,166,0,0,0,0,0,0,0,0,0,0},
+    {3,6,114,2413,0,0,0,0,0,0,0,0,0,0},
+    {3,7,2243,81,0,0,0,0,0,0,0,0,0,0},
+    {3,0,1245,1581,0,0,0,0,0,0,0,0,0,0},
+    {3,1,775,169,0,0,0,0,0,0,0,0,0,0},
+    {3,2,1696,1104,0,0,0,0,0,0,0,0,0,0},
+    {3,3,1914,2831,0,0,0,0,0,0,0,0,0,0},
+    {3,4,532,1450,0,0,0,0,0,0,0,0,0,0},
+    {3,5,91,974,0,0,0,0,0,0,0,0,0,0},
+    {3,6,497,2228,0,0,0,0,0,0,0,0,0,0},
+    {3,7,2326,1579,0,0,0,0,0,0,0,0,0,0},
+    {3,0,2482,256,0,0,0,0,0,0,0,0,0,0},
+    {3,1,1117,1261,0,0,0,0,0,0,0,0,0,0},
+    {3,2,1257,1658,0,0,0,0,0,0,0,0,0,0},
+    {3,3,1478,1225,0,0,0,0,0,0,0,0,0,0},
+    {3,4,2511,980,0,0,0,0,0,0,0,0,0,0},
+    {3,5,2320,2675,0,0,0,0,0,0,0,0,0,0},
+    {3,6,435,1278,0,0,0,0,0,0,0,0,0,0},
+    {3,7,228,503,0,0,0,0,0,0,0,0,0,0},
+    {3,0,1885,2369,0,0,0,0,0,0,0,0,0,0},
+    {3,1,57,483,0,0,0,0,0,0,0,0,0,0},
+    {3,2,838,1050,0,0,0,0,0,0,0,0,0,0},
+    {3,3,1231,1990,0,0,0,0,0,0,0,0,0,0},
+    {3,4,1738,68,0,0,0,0,0,0,0,0,0,0},
+    {3,5,2392,951,0,0,0,0,0,0,0,0,0,0},
+    {3,6,163,645,0,0,0,0,0,0,0,0,0,0},
+    {3,7,2644,1704,0,0,0,0,0,0,0,0,0,0}
+};
+
+const int ldpc_bb_impl::ldpc_tab_8_9S[40][5]=
+{
+    {4,0,1558,712,805},
+    {4,1,1450,873,1337},
+    {4,2,1741,1129,1184},
+    {4,3,294,806,1566},
+    {4,4,482,605,923},
+    {3,0,926,1578,0},
+    {3,1,777,1374,0},
+    {3,2,608,151,0},
+    {3,3,1195,210,0},
+    {3,4,1484,692,0},
+    {3,0,427,488,0},
+    {3,1,828,1124,0},
+    {3,2,874,1366,0},
+    {3,3,1500,835,0},
+    {3,4,1496,502,0},
+    {3,0,1006,1701,0},
+    {3,1,1155,97,0},
+    {3,2,657,1403,0},
+    {3,3,1453,624,0},
+    {3,4,429,1495,0},
+    {3,0,809,385,0},
+    {3,1,367,151,0},
+    {3,2,1323,202,0},
+    {3,3,960,318,0},
+    {3,4,1451,1039,0},
+    {3,0,1098,1722,0},
+    {3,1,1015,1428,0},
+    {3,2,1261,1564,0},
+    {3,3,544,1190,0},
+    {3,4,1472,1246,0},
+    {3,0,508,630,0},
+    {3,1,421,1704,0},
+    {3,2,284,898,0},
+    {3,3,392,577,0},
+    {3,4,1155,556,0},
+    {3,0,631,1000,0},
+    {3,1,732,1368,0},
+    {3,2,1328,329,0},
+    {3,3,1515,506,0},
+    {3,4,1104,1172,0}
 };
 
   } /* namespace dvbs2 */

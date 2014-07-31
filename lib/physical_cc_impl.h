@@ -29,6 +29,7 @@ namespace gr {
     class physical_cc_impl : public physical_cc
     {
      private:
+      int frame_size;
       int slots;
       int pilot_mode;
       int pilot_symbols;
@@ -46,7 +47,7 @@ namespace gr {
       const static int ph_sync_seq[26];
 
      public:
-      physical_cc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots);
+      physical_cc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots, dvbs2_framesize_t framesize);
       ~physical_cc_impl();
 
       // Where all the action really happens

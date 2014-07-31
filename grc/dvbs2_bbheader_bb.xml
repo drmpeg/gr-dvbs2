@@ -3,7 +3,22 @@
   <key>dvbs2_bbheader_bb</key>
   <category>dvbs2</category>
   <import>import dvbs2</import>
-  <make>dvbs2.bbheader_bb($rate.val,$rolloff.val)</make>
+  <make>dvbs2.bbheader_bb($rate.val, $rolloff.val, $framesize.val)</make>
+  <param>
+    <name>FECFRAME size</name>
+    <key>framesize</key>
+    <type>enum</type>
+    <option>
+      <name>Normal</name>
+      <key>FECFRAME_NORMAL</key>
+      <opt>val:dvbs2.FECFRAME_NORMAL</opt>
+    </option>
+    <option>
+      <name>Short</name>
+      <key>FECFRAME_SHORT</key>
+      <opt>val:dvbs2.FECFRAME_SHORT</opt>
+    </option>
+  </param>
   <param>
     <name>Code rate</name>
     <key>rate</key>

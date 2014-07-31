@@ -29,6 +29,7 @@ namespace gr {
     class interleaver_bb_impl : public interleaver_bb
     {
      private:
+      int frame_size;
       int signal_constellation;
       int code_rate;
       int mod;
@@ -43,7 +44,7 @@ namespace gr {
       int rowaddr7;
 
      public:
-      interleaver_bb_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate);
+      interleaver_bb_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
       ~interleaver_bb_impl();
 
       // Where all the action really happens

@@ -47,7 +47,7 @@ namespace gr {
        * class. dvbs2::interleaver_bb::make is the public interface for
        * creating new instances.
        */
-      static sptr make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate);
+      static sptr make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
     };
 
   } // namespace dvbs2

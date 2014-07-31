@@ -126,6 +126,11 @@ namespace gr {
       PILOTS_OFF = 0,
       PILOTS_ON,
     };
+
+    enum dvbs2_framesize_t {
+      FECFRAME_NORMAL = 0,
+      FECFRAME_SHORT,
+    };
   } // namespace dvbs2
 } // namespace gr
 
@@ -133,6 +138,7 @@ typedef gr::dvbs2::dvbs2_code_rate_t dvbs2_code_rate_t;
 typedef gr::dvbs2::dvbs2_rolloff_factor_t dvbs2_rolloff_factor_t;
 typedef gr::dvbs2::dvbs2_constellation_t dvbs2_constellation_t;
 typedef gr::dvbs2::dvbs2_pilots_t dvbs2_pilots_t;
+typedef gr::dvbs2::dvbs2_framesize_t dvbs2_framesize_t;
 
 #endif /* INCLUDED_DVBS2_CONFIG_H */
 

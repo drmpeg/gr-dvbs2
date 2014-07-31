@@ -35,6 +35,7 @@ namespace gr {
       unsigned int m_poly_n_8[4];
       unsigned int m_poly_n_10[5];
       unsigned int m_poly_n_12[6];
+      unsigned int m_poly_s_12[6];
       int poly_mult(const int*, int, const int*, int, int*);
       void poly_pack(const int*, unsigned int*, int);
       void poly_reverse(int*, int*, int);
@@ -44,7 +45,7 @@ namespace gr {
       void bch_poly_build_tables(void);
 
      public:
-      bch_bb_impl(dvbs2_code_rate_t rate);
+      bch_bb_impl(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
       ~bch_bb_impl();
 
       // Where all the action really happens
