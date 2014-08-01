@@ -37,6 +37,7 @@ def main(args):
 
     symbol_rate = 5000000
     samp_rate = symbol_rate * 2
+    frame_size = dvbs2.FECFRAME_NORMAL
     constellation = dvbs2.MOD_16APSK
     code_rate = dvbs2.C9_10
     pilots = dvbs2.PILOTS_ON
@@ -259,13 +260,13 @@ def main(args):
 
     src = blocks.file_source(gr.sizeof_char, infile, True)
 
-    dvbs2_bbheader = dvbs2.bbheader_bb(code_rate, rolloff)
-    dvbs2_bbscrambler = dvbs2.bbscrambler_bb(code_rate)
-    dvbs2_bch = dvbs2.bch_bb(code_rate)
-    dvbs2_ldpc = dvbs2.ldpc_bb(code_rate)
-    dvbs2_interleaver = dvbs2.interleaver_bb(constellation, code_rate_interleaver)
+    dvbs2_bbheader = dvbs2.bbheader_bb(code_rate, rolloff, frame_size)
+    dvbs2_bbscrambler = dvbs2.bbscrambler_bb(code_rate, frame_size)
+    dvbs2_bch = dvbs2.bch_bb(code_rate, frame_size)
+    dvbs2_ldpc = dvbs2.ldpc_bb(code_rate, frame_size)
+    dvbs2_interleaver = dvbs2.interleaver_bb(constellation, code_rate_interleaver, frame_size)
     dvbs2_modulator = dvbs2.modulator_bc(constellation, code_rate_modulator)
-    dvbs2_physical = dvbs2.physical_cc(constellation, code_rate, pilots)
+    dvbs2_physical = dvbs2.physical_cc(constellation, code_rate, pilots, frame_size)
 
     fft_filter = filter.fft_filter_ccc(1, (firdes.root_raised_cosine(1, samp_rate, samp_rate/2, rrc_rolloff, rrc_taps)), 1)
     fft_filter.declare_sample_delay(0)
