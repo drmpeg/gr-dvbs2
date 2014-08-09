@@ -29,16 +29,16 @@ namespace gr {
   namespace dvbs2 {
 
     modulator_bc::sptr
-    modulator_bc::make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate)
+    modulator_bc::make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_framesize_t framesize)
     {
       return gnuradio::get_initial_sptr
-        (new modulator_bc_impl(constellation, rate));
+        (new modulator_bc_impl(constellation, rate, framesize));
     }
 
     /*
      * The private constructor
      */
-    modulator_bc_impl::modulator_bc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate)
+    modulator_bc_impl::modulator_bc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_framesize_t framesize)
       : gr::block("modulator_bc",
               gr::io_signature::make(1, 1, sizeof(unsigned char)),
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
@@ -80,11 +80,11 @@ namespace gr {
                 r3 = m;
                 switch(rate)
                 {
-                    case dvbs2::C100_180:
+                    case gr::dvbs2::C100_180:
                         r1 = r3 / 6.8;
                         r2 = r1 * 5.32;
                         break;
-                    case dvbs2::C104_180:
+                    case gr::dvbs2::C104_180:
                         r1 = r3 / 8.0;
                         r2 = r1 * 6.39;
                         break;
@@ -112,49 +112,89 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_16APSK:
                 r2 = m;
-                switch(rate)
+                if (framesize == gr::dvbs2::FECFRAME_NORMAL)
                 {
-                    case gr::dvbs2::C2_3:
-                        r1 = r2 / 3.15;
-                        break;
-                    case gr::dvbs2::C3_4:
-                        r1 = r2 / 2.85;
-                        break;
-                    case gr::dvbs2::C4_5:
-                        r1 = r2 / 2.75;
-                        break;
-                    case gr::dvbs2::C5_6:
-                        r1 = r2 / 2.70;
-                        break;
-                    case gr::dvbs2::C8_9:
-                        r1 = r2 / 2.60;
-                        break;
-                    case gr::dvbs2::C9_10:
-                        r1 = r2 / 2.57;
-                        break;
-                    case gr::dvbs2::C26_45:
-                    case gr::dvbs2::C3_5:
-                        r1 = r2 / 3.70;
-                        break;
-                    case gr::dvbs2::C28_45:
-                        r1 = r2 / 3.50;
-                        break;
-                    case gr::dvbs2::C23_36:
-                    case gr::dvbs2::C25_36:
-                        r1 = r2 / 3.10;
-                        break;
-                    case gr::dvbs2::C13_18:
-                        r1 = r2 / 2.85;
-                        break;
-                    case gr::dvbs2::C140_180:
-                        r1 = r2 / 3.60;
-                        break;
-                    case gr::dvbs2::C154_180:
-                        r1 = r2 / 3.20;
-                        break;
-                    default:
-                        r1 = 0;
-                        break;
+                    switch(rate)
+                    {
+                        case gr::dvbs2::C2_3:
+                            r1 = r2 / 3.15;
+                            break;
+                        case gr::dvbs2::C3_4:
+                            r1 = r2 / 2.85;
+                            break;
+                        case gr::dvbs2::C4_5:
+                            r1 = r2 / 2.75;
+                            break;
+                        case gr::dvbs2::C5_6:
+                            r1 = r2 / 2.70;
+                            break;
+                        case gr::dvbs2::C8_9:
+                            r1 = r2 / 2.60;
+                            break;
+                        case gr::dvbs2::C9_10:
+                            r1 = r2 / 2.57;
+                            break;
+                        case gr::dvbs2::C26_45:
+                        case gr::dvbs2::C3_5:
+                            r1 = r2 / 3.70;
+                            break;
+                        case gr::dvbs2::C28_45:
+                            r1 = r2 / 3.50;
+                            break;
+                        case gr::dvbs2::C23_36:
+                        case gr::dvbs2::C25_36:
+                            r1 = r2 / 3.10;
+                            break;
+                        case gr::dvbs2::C13_18:
+                            r1 = r2 / 2.85;
+                            break;
+                        case gr::dvbs2::C140_180:
+                            r1 = r2 / 3.60;
+                            break;
+                        case gr::dvbs2::C154_180:
+                            r1 = r2 / 3.20;
+                            break;
+                        default:
+                            r1 = 0;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch(rate)
+                    {
+                        case gr::dvbs2::C2_3:
+                            r1 = r2 / 3.15;
+                            break;
+                        case gr::dvbs2::C3_4:
+                            r1 = r2 / 2.85;
+                            break;
+                        case gr::dvbs2::C4_5:
+                            r1 = r2 / 2.75;
+                            break;
+                        case gr::dvbs2::C5_6:
+                            r1 = r2 / 2.70;
+                            break;
+                        case gr::dvbs2::C8_9:
+                            r1 = r2 / 2.60;
+                            break;
+                        case gr::dvbs2::C7_15:
+                            r1 = r2 / 3.32;
+                            break;
+                        case gr::dvbs2::C8_15:
+                            r1 = r2 / 3.50;
+                            break;
+                        case gr::dvbs2::C26_45:
+                        case gr::dvbs2::C3_5:
+                            r1 = r2 / 3.70;
+                            break;
+                        case gr::dvbs2::C32_45:
+                            r1 = r2 / 2.85;
+                            break;
+                        default:
+                            r1 = 0;
+                            break;
+                    }
                 }
                 m_16apsk[0].real()  = (r2 * cos(M_PI / 4.0));
                 m_16apsk[0].imag()  = (r2 * sin(M_PI / 4.0));
@@ -322,23 +362,23 @@ namespace gr {
                 r3 = m;
                 switch(rate)
                 {
-                    case dvbs2::C3_4:
+                    case gr::dvbs2::C3_4:
                         r1 = r3 / 5.27;
                         r2 = r1 * 2.84;
                         break;
-                    case dvbs2::C4_5:
+                    case gr::dvbs2::C4_5:
                         r1 = r3 / 4.87;
                         r2 = r1 * 2.72;
                         break;
-                    case dvbs2::C5_6:
+                    case gr::dvbs2::C5_6:
                         r1 = r3 / 4.64;
                         r2 = r1 * 2.64;
                         break;
-                    case dvbs2::C8_9:
+                    case gr::dvbs2::C8_9:
                         r1 = r3 / 4.33;
                         r2 = r1 * 2.54;
                         break;
-                    case dvbs2::C9_10:
+                    case gr::dvbs2::C9_10:
                         r1 = r3 / 4.30;
                         r2 = r1 * 2.53;
                         break;
@@ -414,16 +454,37 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_4_12_16APSK:
                 r3 = m;
-                switch(rate)
+                if (framesize == gr::dvbs2::FECFRAME_NORMAL)
                 {
-                    case dvbs2::C2_3:
-                        r1 = r3 / 5.55;
-                        r2 = r1 * 2.85;
-                        break;
-                    default:
-                        r1 = 0;
-                        r2 = 0;
-                        break;
+                    switch(rate)
+                    {
+                        case gr::dvbs2::C2_3:
+                            r1 = r3 / 5.55;
+                            r2 = r1 * 2.85;
+                            break;
+                        default:
+                            r1 = 0;
+                            r2 = 0;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch(rate)
+                    {
+                        case gr::dvbs2::C2_3:
+                            r1 = r3 / 5.54;
+                            r2 = r1 * 2.84;
+                            break;
+                        case gr::dvbs2::C32_45:
+                            r1 = r3 / 5.26;
+                            r2 = r1 * 2.84;
+                            break;
+                        default:
+                            r1 = 0;
+                            r2 = 0;
+                            break;
+                    }
                 }
                 m_32apsk[0].real()  = (r3 * cos(11 * M_PI / 16.0));
                 m_32apsk[0].imag()  = (r3 * sin(11 * M_PI / 16.0));
@@ -494,17 +555,17 @@ namespace gr {
                 r4 = m;
                 switch(rate)
                 {
-                    case dvbs2::C128_180:
+                    case gr::dvbs2::C128_180:
                         r1 = r4 / 5.6;
                         r3 = r1 * 2.99;
                         r2 = r1 * 2.6;
                         break;
-                    case dvbs2::C132_180:
+                    case gr::dvbs2::C132_180:
                         r1 = r4 / 5.6;
                         r3 = r1 * 2.86;
                         r2 = r1 * 2.6;
                         break;
-                    case dvbs2::C140_180:
+                    case gr::dvbs2::C140_180:
                         r1 = r4 / 5.6;
                         r3 = r1 * 3.08;
                         r2 = r1 * 2.6;
@@ -584,7 +645,7 @@ namespace gr {
                 r4 = m;
                 switch(rate)
                 {
-                    case dvbs2::C128_180:
+                    case gr::dvbs2::C128_180:
                         r1 = r4 / 3.95;
                         r3 = r1 * 2.72;
                         r2 = r1 * 1.88;
@@ -728,13 +789,13 @@ namespace gr {
                 r4 = m;
                 switch(rate)
                 {
-                    case dvbs2::C7_9:
-                    case dvbs2::C4_5:
+                    case gr::dvbs2::C7_9:
+                    case gr::dvbs2::C4_5:
                         r1 = r4 / 5.2;
                         r3 = r1 * 3.6;
                         r2 = r1 * 2.2;
                         break;
-                    case dvbs2::C5_6:
+                    case gr::dvbs2::C5_6:
                         r1 = r4 / 5.0;
                         r3 = r1 * 3.5;
                         r2 = r1 * 2.2;
@@ -878,7 +939,7 @@ namespace gr {
                 r4 = m;
                 switch(rate)
                 {
-                    case dvbs2::C132_180:
+                    case gr::dvbs2::C132_180:
                         r1 = r4 / 7.0;
                         r3 = r1 * 4.3;
                         r2 = r1 * 2.4;
@@ -1022,14 +1083,14 @@ namespace gr {
                 r6 = m;
                 switch(rate)
                 {
-                    case dvbs2::C135_180:
+                    case gr::dvbs2::C135_180:
                         r1 = r6 / 3.819;
                         r5 = r1 * 2.75;
                         r4 = r1 * 2.681;
                         r3 = r1 * 2.118;
                         r2 = r1 * 1.715;
                         break;
-                    case dvbs2::C140_180:
+                    case gr::dvbs2::C140_180:
                         r1 = r6 / 3.733;
                         r5 = r1 * 2.75;
                         r4 = r1 * 2.681;
@@ -2347,8 +2408,8 @@ namespace gr {
                     r8 = m;
                     switch(rate)
                     {
-                        case dvbs2::C116_180:
-                        case dvbs2::C124_180:
+                        case gr::dvbs2::C116_180:
+                        case gr::dvbs2::C124_180:
                             r1 = r8 / 6.536;
                             r7 = r1 * 5.078;
                             r6 = r1 * 4.235;
@@ -2357,7 +2418,7 @@ namespace gr {
                             r3 = r1 * 2.405;
                             r2 = r1 * 1.791;
                             break;
-                        case dvbs2::C128_180:
+                        case gr::dvbs2::C128_180:
                             r1 = r8 / 5.4;
                             r7 = r1 * 4.6;
                             r6 = r1 * 4.045;
@@ -2366,7 +2427,7 @@ namespace gr {
                             r3 = r1 * 2.409;
                             r2 = r1 * 1.794;
                             break;
-                        case dvbs2::C135_180:
+                        case gr::dvbs2::C135_180:
                             r1 = r8 / 5.2;
                             r7 = r1 * 4.5;
                             r6 = r1 * 4.045;
@@ -2899,6 +2960,16 @@ namespace gr {
                     m_256apsk[255].imag()   = (r6 * sin(43 * M_PI / 32.0));
                 }
                 break;
+            default:
+                m_qpsk[0].real() = (r1 * cos(M_PI / 4.0));
+                m_qpsk[0].imag() = (r1 * sin(M_PI / 4.0));
+                m_qpsk[1].real() = (r1 * cos(7 * M_PI / 4.0));
+                m_qpsk[1].imag() = (r1 * sin(7 * M_PI / 4.0));
+                m_qpsk[2].real() = (r1 * cos(3 * M_PI / 4.0));
+                m_qpsk[2].imag() = (r1 * sin(3 * M_PI / 4.0));
+                m_qpsk[3].real() = (r1 * cos(5 * M_PI / 4.0));
+                m_qpsk[3].imag() = (r1 * sin(5 * M_PI / 4.0));
+                break;
         }
         signal_constellation = constellation;
         set_output_multiple(2);
@@ -2982,6 +3053,13 @@ namespace gr {
                 {
                     index = *in++;
                     *out++ = m_256apsk[index & 0xff];
+                }
+                break;
+            default:
+                for (int i = 0; i < noutput_items; i++)
+                {
+                    index = *in++;
+                    *out++ = m_qpsk[index & 0x3];
                 }
                 break;
         }

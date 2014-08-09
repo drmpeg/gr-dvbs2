@@ -1,9 +1,24 @@
 <block>
-  <name>DVB-S2 Modulator</name>
+  <name>DVB-S2X Modulator</name>
   <key>dvbs2_modulator_bc</key>
   <category>dvbs2</category>
   <import>import dvbs2</import>
-  <make>dvbs2.modulator_bc($constellation.val, $rate.val)</make>
+  <make>dvbs2.modulator_bc($constellation.val, $rate.val, $framesize.val)</make>
+  <param>
+    <name>FECFRAME size</name>
+    <key>framesize</key>
+    <type>enum</type>
+    <option>
+      <name>Normal</name>
+      <key>FECFRAME_NORMAL</key>
+      <opt>val:dvbs2.FECFRAME_NORMAL</opt>
+    </option>
+    <option>
+      <name>Short</name>
+      <key>FECFRAME_SHORT</key>
+      <opt>val:dvbs2.FECFRAME_SHORT</opt>
+    </option>
+  </param>
   <param>
     <name>Constellation</name>
     <key>constellation</key>
@@ -82,6 +97,11 @@
       <name>Other</name>
       <key>C_OTHER</key>
       <opt>val:dvbs2.C_OTHER</opt>
+    </option>
+    <option>
+      <name>3/5</name>
+      <key>C3_5</key>
+      <opt>val:dvbs2.C3_5</opt>
     </option>
     <option>
       <name>2/3</name>
@@ -212,6 +232,21 @@
       <name>154/180</name>
       <key>C154_180</key>
       <opt>val:dvbs2.C154_180</opt>
+    </option>
+    <option>
+      <name>7/15</name>
+      <key>C7_15</key>
+      <opt>val:dvbs2.C7_15</opt>
+    </option>
+    <option>
+      <name>8/15</name>
+      <key>C8_15</key>
+      <opt>val:dvbs2.C8_15</opt>
+    </option>
+    <option>
+      <name>32/45</name>
+      <key>C32_45</key>
+      <opt>val:dvbs2.C32_45</opt>
     </option>
   </param>
   <sink>

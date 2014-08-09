@@ -69,6 +69,14 @@ namespace gr {
         m_bpsk[1][0].imag() = (r0 * sin(M_PI / 4.0));
         m_bpsk[1][1].real() = (r0 * cos(M_PI / 4.0));
         m_bpsk[1][1].imag() = (r0 * sin(5.0 * M_PI /4.0));
+        m_bpsk[2][0].real() = (r0 * cos(5.0 * M_PI / 4.0));
+        m_bpsk[2][0].imag() = (r0 * sin(M_PI / 4.0));
+        m_bpsk[2][1].real() = (r0 * cos(M_PI / 4.0));
+        m_bpsk[2][1].imag() = (r0 * sin(5.0 * M_PI /4.0));
+        m_bpsk[3][0].real() = (r0 * cos(5.0 * M_PI / 4.0));
+        m_bpsk[3][0].imag() = (r0 * sin(5.0 * M_PI / 4.0));
+        m_bpsk[3][1].real() = (r0 * cos(M_PI / 4.0));
+        m_bpsk[3][1].imag() = (r0 * sin(M_PI / 4.0));
 
         m_zero[0].real() = 0.0;    /* used for zero stuffing interpolation */
         m_zero[0].imag() = 0.0;
@@ -123,6 +131,24 @@ namespace gr {
                 case gr::dvbs2::C11_20:
                     modcod = 136;
                     break;
+                case gr::dvbs2::C11_45:
+                    modcod = 216;
+                    break;
+                case gr::dvbs2::C4_15:
+                    modcod = 218;
+                    break;
+                case gr::dvbs2::C14_45:
+                    modcod = 220;
+                    break;
+                case gr::dvbs2::C7_15:
+                    modcod = 222;
+                    break;
+                case gr::dvbs2::C8_15:
+                    modcod = 224;
+                    break;
+                case gr::dvbs2::C32_45:
+                    modcod = 226;
+                    break;
                 default:
                     modcod = 0;
                     break;
@@ -162,6 +188,18 @@ namespace gr {
                     break;
                 case gr::dvbs2::C13_18:
                     modcod = 146;
+                    break;
+                case gr::dvbs2::C7_15:
+                    modcod = 228;
+                    break;
+                case gr::dvbs2::C8_15:
+                    modcod = 230;
+                    break;
+                case gr::dvbs2::C26_45:
+                    modcod = 232;
+                    break;
+                case gr::dvbs2::C32_45:
+                    modcod = 234;
                     break;
                 default:
                     modcod = 0;
@@ -214,10 +252,24 @@ namespace gr {
                     modcod = 23;
                     break;
                 case gr::dvbs2::C26_45:
-                    modcod = 154;
+                    if (frame_size == FRAME_SIZE_NORMAL)
+                    {
+                        modcod = 154;
+                    }
+                    else
+                    {
+                        modcod = 240;
+                    }
                     break;
                 case gr::dvbs2::C3_5:
-                    modcod = 156;
+                    if (frame_size == FRAME_SIZE_NORMAL)
+                    {
+                        modcod = 156;
+                    }
+                    else
+                    {
+                        modcod = 242;
+                    }
                     break;
                 case gr::dvbs2::C28_45:
                     modcod = 160;
@@ -236,6 +288,15 @@ namespace gr {
                     break;
                 case gr::dvbs2::C154_180:
                     modcod = 172;
+                    break;
+                case gr::dvbs2::C7_15:
+                    modcod = 236;
+                    break;
+                case gr::dvbs2::C8_15:
+                    modcod = 238;
+                    break;
+                case gr::dvbs2::C32_45:
+                    modcod = 244;
                     break;
                 default:
                     modcod = 0;
@@ -307,7 +368,17 @@ namespace gr {
             switch (rate)
             {
                 case gr::dvbs2::C2_3:
-                    modcod = 174;
+                    if (frame_size == FRAME_SIZE_NORMAL)
+                    {
+                        modcod = 174;
+                    }
+                    else
+                    {
+                        modcod = 246;
+                    }
+                    break;
+                case gr::dvbs2::C32_45:
+                    modcod = 248;
                     break;
                 default:
                     modcod = 0;
@@ -393,7 +464,7 @@ namespace gr {
 
         if (constellation == gr::dvbs2::MOD_128APSK)
         {
-            slots = (frame_size / 7) / 90;
+            slots = 103;
             pilot_symbols = (slots / 16) * 36;
             if (!(slots % 16)) pilot_symbols -= 36;
             switch (rate)
@@ -449,9 +520,23 @@ namespace gr {
         pl_header_encode(modcod, type, &b[26]);
 
         // BPSK modulate and create the header
-        for (int i = 0; i < 90; i++)
+        for (int i = 0; i < 26; i++)
         {
             m_pl[i] =  m_bpsk[i & 1][b[i]];
+        }
+        if (modcod & 0x80)
+        {
+            for (int i = 26; i < 90; i++)
+            {
+                m_pl[i] =  m_bpsk[(i & 1) + 2][b[i]];
+            }
+        }
+        else
+        {
+            for (int i = 26; i < 90; i++)
+            {
+                m_pl[i] =  m_bpsk[i & 1][b[i]];
+            }
         }
         build_symbol_scrambler_table();
         if (!pilot_mode) pilot_symbols = 0;

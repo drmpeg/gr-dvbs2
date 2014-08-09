@@ -39,7 +39,7 @@ namespace gr {
       gr_complex m_256apsk[256];
 
      public:
-      modulator_bc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate);
+      modulator_bc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
       ~modulator_bc_impl();
 
       // Where all the action really happens

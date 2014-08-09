@@ -3,7 +3,7 @@
   <key>dvbs2_ldpc_bb</key>
   <category>dvbs2</category>
   <import>import dvbs2</import>
-  <make>dvbs2.ldpc_bb($rate.val, $framesize.val)</make>
+  <make>dvbs2.ldpc_bb($rate.val, $framesize.val, $constellation.val)</make>
   <param>
     <name>FECFRAME size</name>
     <key>framesize</key>
@@ -17,6 +17,21 @@
       <name>Short</name>
       <key>FECFRAME_SHORT</key>
       <opt>val:dvbs2.FECFRAME_SHORT</opt>
+    </option>
+  </param>
+  <param>
+    <name>Constellation</name>
+    <key>constellation</key>
+    <type>enum</type>
+    <option>
+      <name>Other</name>
+      <key>MOD_OTHER</key>
+      <opt>val:dvbs2.MOD_OTHER</opt>
+    </option>
+    <option>
+      <name>128APSK</name>
+      <key>MOD_128APSK</key>
+      <opt>val:dvbs2.MOD_128APSK</opt>
     </option>
   </param>
   <param>
@@ -192,6 +207,36 @@
       <name>154/180</name>
       <key>C154_180</key>
       <opt>val:dvbs2.C154_180</opt>
+    </option>
+    <option>
+      <name>11/45</name>
+      <key>C11_45</key>
+      <opt>val:dvbs2.C11_45</opt>
+    </option>
+    <option>
+      <name>4/15</name>
+      <key>C4_15</key>
+      <opt>val:dvbs2.C4_15</opt>
+    </option>
+    <option>
+      <name>14/45</name>
+      <key>C14_45</key>
+      <opt>val:dvbs2.C14_45</opt>
+    </option>
+    <option>
+      <name>7/15</name>
+      <key>C7_15</key>
+      <opt>val:dvbs2.C7_15</opt>
+    </option>
+    <option>
+      <name>8/15</name>
+      <key>C8_15</key>
+      <opt>val:dvbs2.C8_15</opt>
+    </option>
+    <option>
+      <name>32/45</name>
+      <key>C32_45</key>
+      <opt>val:dvbs2.C32_45</opt>
     </option>
   </param>
   <sink>

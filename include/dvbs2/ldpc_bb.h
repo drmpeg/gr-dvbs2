@@ -47,7 +47,7 @@ namespace gr {
        * class. dvbs2::ldpc_bb::make is the public interface for
        * creating new instances.
        */
-      static sptr make(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
+      static sptr make(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize, dvbs2_constellation_t constellation);
     };
 
   } // namespace dvbs2

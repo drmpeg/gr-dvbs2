@@ -190,8 +190,29 @@ namespace gr {
                     kbch = 14232;
                     break;
                 case gr::dvbs2::C9_10:
-                    fprintf(stderr, "9/10 code rate not supported for short FECFRAME.\n");
+                    fprintf(stderr, "9/10 code rate not supported for DVB-S2 short FECFRAME.\n");
                     exit(1);
+                    break;
+                case gr::dvbs2::C11_45:
+                    kbch = 3792;
+                    break;
+                case gr::dvbs2::C4_15:
+                    kbch = 4152;
+                    break;
+                case gr::dvbs2::C14_45:
+                    kbch = 4872;
+                    break;
+                case gr::dvbs2::C7_15:
+                    kbch = 7392;
+                    break;
+                case gr::dvbs2::C8_15:
+                    kbch = 8472;
+                    break;
+                case gr::dvbs2::C26_45:
+                    kbch = 9192;
+                    break;
+                case gr::dvbs2::C32_45:
+                    kbch = 11352;
                     break;
                 default:
                     kbch = 0;

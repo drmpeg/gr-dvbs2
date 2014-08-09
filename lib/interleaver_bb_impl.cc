@@ -71,7 +71,7 @@ namespace gr {
                     rowaddr1 = rows;
                     rowaddr2 = 0;
                 }
-                else if (rate == gr::dvbs2::C25_36 || rate == gr::dvbs2::C13_18)    /* 102 */
+                else if (rate == gr::dvbs2::C25_36 || rate == gr::dvbs2::C13_18 || rate == gr::dvbs2::C7_15 || rate == gr::dvbs2::C8_15)    /* 102 */
                 {
                     rowaddr0 = rows;
                     rowaddr1 = 0;
@@ -100,17 +100,37 @@ namespace gr {
                 rows = frame_size / mod;
                 if (rate == gr::dvbs2::C26_45)    /* 3201 */
                 {
-                    rowaddr0 = rows * 3;
-                    rowaddr1 = rows * 2;
-                    rowaddr2 = 0;
-                    rowaddr3 = rows;
+                    if (frame_size == FRAME_SIZE_NORMAL)
+                    {
+                        rowaddr0 = rows * 3;
+                        rowaddr1 = rows * 2;
+                        rowaddr2 = 0;
+                        rowaddr3 = rows;
+                    }
+                    else    /* 2130 */
+                    {
+                        rowaddr0 = rows * 2;
+                        rowaddr1 = rows;
+                        rowaddr2 = rows * 3;
+                        rowaddr3 = 0;
+                    }
                 }
                 else if (rate == gr::dvbs2::C3_5)    /* 3210 */
                 {
-                    rowaddr0 = rows * 3;
-                    rowaddr1 = rows * 2;
-                    rowaddr2 = rows;
-                    rowaddr3 = 0;
+                    if (frame_size == FRAME_SIZE_NORMAL)
+                    {
+                        rowaddr0 = rows * 3;
+                        rowaddr1 = rows * 2;
+                        rowaddr2 = rows;
+                        rowaddr3 = 0;
+                    }
+                    else    /* 3201 */
+                    {
+                        rowaddr0 = rows * 3;
+                        rowaddr1 = rows * 2;
+                        rowaddr2 = 0;
+                        rowaddr3 = rows;
+                    }
                 }
                 else if (rate == gr::dvbs2::C28_45)    /*3012 */
                 {
@@ -132,6 +152,13 @@ namespace gr {
                     rowaddr1 = rows * 3;
                     rowaddr2 = rows;
                     rowaddr3 = 0;
+                }
+                else if (rate == gr::dvbs2::C7_15 || rate == gr::dvbs2::C8_15)    /* 2103 */
+                {
+                    rowaddr0 = rows * 2;
+                    rowaddr1 = rows;
+                    rowaddr2 = 0;
+                    rowaddr3 = rows * 3;
                 }
                 else
                 {
@@ -191,11 +218,33 @@ namespace gr {
             case gr::dvbs2::MOD_4_12_16APSK:
                 mod = 5;
                 rows = frame_size / mod;
-                rowaddr0 = rows * 2;
-                rowaddr1 = rows;
-                rowaddr2 = rows * 4;
-                rowaddr3 = rows * 3;
-                rowaddr4 = 0;
+                if (frame_size == FRAME_SIZE_NORMAL)    /* 21430 */
+                {
+                    rowaddr0 = rows * 2;
+                    rowaddr1 = rows;
+                    rowaddr2 = rows * 4;
+                    rowaddr3 = rows * 3;
+                    rowaddr4 = 0;
+                }
+                else
+                {
+                    if (rate == gr::dvbs2::C2_3)    /* 41230 */
+                    {
+                        rowaddr0 = rows * 4;
+                        rowaddr1 = rows;
+                        rowaddr2 = rows * 2;
+                        rowaddr3 = rows * 3;
+                        rowaddr4 = 0;
+                    }
+                    else if (rate == gr::dvbs2::C32_45)    /* 10423 */
+                    {
+                        rowaddr0 = rows;
+                        rowaddr1 = 0;
+                        rowaddr2 = rows * 4;
+                        rowaddr3 = rows * 2;
+                        rowaddr4 = rows * 3;
+                    }
+                }
                 set_output_multiple(rows);
                 packed_items = rows;
                 break;
@@ -280,7 +329,7 @@ namespace gr {
                 break;
             case gr::dvbs2::MOD_128APSK:
                 mod = 7;
-                rows = frame_size / mod;
+                rows = (frame_size + 6) / mod;
                 if (rate == gr::dvbs2::C135_180)    /* 4250316 */
                 {
                     rowaddr0 = rows * 4;
@@ -301,8 +350,8 @@ namespace gr {
                     rowaddr5 = rows * 5;
                     rowaddr6 = rows * 6;
                 }
-                set_output_multiple(rows);
-                packed_items = rows;
+                set_output_multiple(rows + 12);
+                packed_items = rows + 12;
                 break;
             case gr::dvbs2::MOD_256APSK:
                 mod = 8;
@@ -365,6 +414,12 @@ namespace gr {
                 set_output_multiple(rows);
                 packed_items = rows;
                 break;
+            default:
+                mod = 2;
+                rows = frame_size / mod;
+                set_output_multiple(rows);
+                packed_items = rows;
+                break;
         }
     }
 
@@ -378,7 +433,14 @@ namespace gr {
     void
     interleaver_bb_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-        ninput_items_required[0] = noutput_items * mod;
+        if (signal_constellation == gr::dvbs2::MOD_128APSK)
+        {
+            ninput_items_required[0] = ((noutput_items / 9270) * 9258) * mod;
+        }
+        else
+        {
+            ninput_items_required[0] = noutput_items * mod;
+        }
     }
 
     int
@@ -481,7 +543,7 @@ namespace gr {
             case gr::dvbs2::MOD_128APSK:
                 for (int i = 0; i < noutput_items; i += packed_items)
                 {
-                    rows = frame_size / 7;
+                    rows = (frame_size + 6) / 7;
                     const unsigned char *c1, *c2, *c3, *c4, *c5, *c6, *c7;
                     c1 = &in[consumed + rowaddr0];
                     c2 = &in[consumed + rowaddr1];
@@ -494,6 +556,10 @@ namespace gr {
                     {
                         out[produced++] = (c1[j]<<6) | (c2[j]<<5) | (c3[j]<<4) | (c4[j]<<3) | (c5[j]<<2) | (c6[j]<<1) | c7[j];
                         consumed += 7;
+                    }
+                    for (int j = 0; j < 12; j++)
+                    {
+                        out[produced++] = 0x7f;
                     }
                 }
                 break;
@@ -514,6 +580,17 @@ namespace gr {
                     {
                         out[produced++] = (c1[j]<<7) | (c2[j]<<6) | (c3[j]<<5) | (c4[j]<<4) | (c5[j]<<3) | (c6[j]<<2) | (c7[j]<<1) | c8[j];
                         consumed += 8;
+                    }
+                }
+                break;
+            default:
+                for (int i = 0; i < noutput_items; i += packed_items)
+                {
+                    rows = frame_size / 2;
+                    for (int j = 0; j < rows; j++)
+                    {
+                        out[produced] = in[consumed++] << 1;
+                        out[produced++] |= in[consumed++];
                     }
                 }
                 break;

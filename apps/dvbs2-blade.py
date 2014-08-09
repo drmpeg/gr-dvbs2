@@ -256,6 +256,11 @@ def main(args):
     else:
         code_rate_modulator = dvbs2.C_OTHER
 
+    if constellation == dvbs2.MOD_128APSK:
+        constellation_ldpc = constellation
+    else:
+        constellation_ldpc = dvbs2.MOD_OTHER
+
     tb = gr.top_block()
 
     src = blocks.file_source(gr.sizeof_char, infile, True)
@@ -263,9 +268,9 @@ def main(args):
     dvbs2_bbheader = dvbs2.bbheader_bb(code_rate, rolloff, frame_size)
     dvbs2_bbscrambler = dvbs2.bbscrambler_bb(code_rate, frame_size)
     dvbs2_bch = dvbs2.bch_bb(code_rate, frame_size)
-    dvbs2_ldpc = dvbs2.ldpc_bb(code_rate, frame_size)
+    dvbs2_ldpc = dvbs2.ldpc_bb(code_rate, frame_size, constellation)
     dvbs2_interleaver = dvbs2.interleaver_bb(constellation, code_rate_interleaver, frame_size)
-    dvbs2_modulator = dvbs2.modulator_bc(constellation, code_rate_modulator)
+    dvbs2_modulator = dvbs2.modulator_bc(constellation, code_rate_modulator, frame_size)
     dvbs2_physical = dvbs2.physical_cc(constellation, code_rate, pilots, frame_size)
 
     fft_filter = filter.fft_filter_ccc(1, (firdes.root_raised_cosine(1, samp_rate, samp_rate/2, rrc_rolloff, rrc_taps)), 1)

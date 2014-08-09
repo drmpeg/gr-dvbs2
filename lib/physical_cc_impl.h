@@ -33,7 +33,7 @@ namespace gr {
       int slots;
       int pilot_mode;
       int pilot_symbols;
-      gr_complex m_bpsk[2][2];
+      gr_complex m_bpsk[4][2];
       gr_complex m_pl[90];
       gr_complex m_zero[1];
       int m_cscram[FRAME_SIZE_NORMAL];

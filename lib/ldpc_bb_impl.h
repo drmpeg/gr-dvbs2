@@ -36,6 +36,8 @@ namespace gr {
     {
      private:
       unsigned int frame_size;
+      unsigned int frame_size_real;
+      unsigned int signal_constellation;
       unsigned int nbch;
       unsigned int code_rate;
       unsigned int q_val;
@@ -90,8 +92,16 @@ namespace gr {
       const static int ldpc_tab_20_30N[120][17];
       const static int ldpc_tab_22_30N[132][16];
 
+      const static int ldpc_tab_11_45S[11][11];
+      const static int ldpc_tab_4_15S[12][22];
+      const static int ldpc_tab_14_45S[14][13];
+      const static int ldpc_tab_7_15S[21][25];
+      const static int ldpc_tab_8_15S[24][22];
+      const static int ldpc_tab_26_45S[26][14];
+      const static int ldpc_tab_32_45S[32][13];
+
      public:
-      ldpc_bb_impl(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
+      ldpc_bb_impl(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize, dvbs2_constellation_t constellation);
       ~ldpc_bb_impl();
 
       // Where all the action really happens

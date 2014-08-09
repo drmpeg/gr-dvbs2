@@ -93,6 +93,12 @@ namespace gr {
       C140_180,
       C7_9,
       C154_180,
+      C11_45,
+      C4_15,
+      C14_45,
+      C7_15,
+      C8_15,
+      C32_45,
       C_OTHER,
     };
 
@@ -120,6 +126,7 @@ namespace gr {
       MOD_4_12_20_28APSK,
       MOD_128APSK,
       MOD_256APSK,
+      MOD_OTHER,
     };
 
     enum dvbs2_pilots_t {
