@@ -62,7 +62,13 @@ def main(args):
             or code_rate == dvbs2.C9_10
             or code_rate == dvbs2.C13_45
             or code_rate == dvbs2.C9_20
-            or code_rate == dvbs2.C11_20):
+            or code_rate == dvbs2.C11_20
+            or code_rate == dvbs2.C11_45
+            or code_rate == dvbs2.C4_15
+            or code_rate == dvbs2.C14_45
+            or code_rate == dvbs2.C7_15
+            or code_rate == dvbs2.C8_15
+            or code_rate == dvbs2.C32_45):
             pass
         else:
             sys.stderr.write("Invalid code rate for QPSK\n");
@@ -77,7 +83,11 @@ def main(args):
             or code_rate == dvbs2.C9_10
             or code_rate == dvbs2.C23_36
             or code_rate == dvbs2.C25_36
-            or code_rate == dvbs2.C13_18):
+            or code_rate == dvbs2.C13_18
+            or code_rate == dvbs2.C7_15
+            or code_rate == dvbs2.C8_15
+            or code_rate == dvbs2.C26_45
+            or code_rate == dvbs2.C32_45):
             pass
         else:
             sys.stderr.write("Invalid code rate for 8PSK\n");
@@ -105,7 +115,12 @@ def main(args):
             or code_rate == dvbs2.C25_36
             or code_rate == dvbs2.C13_18
             or code_rate == dvbs2.C140_180
-            or code_rate == dvbs2.C154_180):
+            or code_rate == dvbs2.C154_180
+            or code_rate == dvbs2.C7_15
+            or code_rate == dvbs2.C8_15
+            or code_rate == dvbs2.C26_45
+            or code_rate == dvbs2.C3_5
+            or code_rate == dvbs2.C32_45):
             pass
         else:
             sys.stderr.write("Invalid code rate for 16APSK\n");
@@ -134,7 +149,8 @@ def main(args):
             sys.exit(1)
 
     if constellation == dvbs2.MOD_4_12_16APSK:
-        if (   code_rate == dvbs2.C2_3):
+        if (   code_rate == dvbs2.C2_3
+            or code_rate == dvbs2.C32_45):
             pass
         else:
             sys.stderr.write("Invalid code rate for 4+12+16rbAPSK\n");
