@@ -42,6 +42,7 @@ def main(args):
     code_rate = dvbs2.C9_10
     pilots = dvbs2.PILOTS_ON
     rolloff = dvbs2.RO_0_20
+    gold_code = 0
     rrc_taps = 50
     center_freq = 1280000000
     txvga1_gain = -10
@@ -287,7 +288,7 @@ def main(args):
     dvbs2_ldpc = dvbs2.ldpc_bb(code_rate, frame_size, constellation)
     dvbs2_interleaver = dvbs2.interleaver_bb(constellation, code_rate_interleaver, frame_size)
     dvbs2_modulator = dvbs2.modulator_bc(constellation, code_rate_modulator, frame_size)
-    dvbs2_physical = dvbs2.physical_cc(constellation, code_rate, pilots, frame_size)
+    dvbs2_physical = dvbs2.physical_cc(constellation, code_rate, pilots, frame_size, gold_code)
 
     fft_filter = filter.fft_filter_ccc(1, (firdes.root_raised_cosine(1, samp_rate, samp_rate/2, rrc_rolloff, rrc_taps)), 1)
     fft_filter.declare_sample_delay(0)
