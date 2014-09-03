@@ -24,21 +24,22 @@
 
 #include <gnuradio/io_signature.h>
 #include "physical_cc_impl.h"
+#include <stdio.h>
 
 namespace gr {
   namespace dvbs2 {
 
     physical_cc::sptr
-    physical_cc::make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots, dvbs2_framesize_t framesize)
+    physical_cc::make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots, dvbs2_framesize_t framesize, int goldcode)
     {
       return gnuradio::get_initial_sptr
-        (new physical_cc_impl(constellation, rate, pilots, framesize));
+        (new physical_cc_impl(constellation, rate, pilots, framesize, goldcode));
     }
 
     /*
      * The private constructor
      */
-    physical_cc_impl::physical_cc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots, dvbs2_framesize_t framesize)
+    physical_cc_impl::physical_cc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots, dvbs2_framesize_t framesize, int goldcode)
       : gr::block("physical_cc",
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
@@ -60,6 +61,13 @@ namespace gr {
 
         pilot_mode = pilots;
         if (pilot_mode) type |= 1;
+        if (goldcode < 0 || goldcode > 262141)
+        {
+            fprintf(stderr, "Gold Code must be between 0 and 262141 inclusive.\n");
+            fprintf(stderr, "Gold Code set to 0.\n");
+            goldcode = 0;
+        }
+        gold_code = goldcode;
 
         m_bpsk[0][0].real() = (r0 * cos(M_PI / 4.0));
         m_bpsk[0][0].imag() = (r0 * sin(M_PI / 4.0));
@@ -620,6 +628,16 @@ void physical_cc_impl::build_symbol_scrambler_table(void)
     // Initialisation
     x = 0x00001;
     y = 0x3FFFF;
+
+    for (int n = 0; n < gold_code; n++)
+    {
+        xa = parity_chk(x, 0x8050);
+        xb = parity_chk(x, 0x0081);
+        xc = x & 1;
+
+        x >>= 1;
+        if (xb) x |= 0x20000;
+    }
 
     for (int i = 0; i < FRAME_SIZE_NORMAL; i++)
     {

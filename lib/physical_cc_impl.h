@@ -33,6 +33,7 @@ namespace gr {
       int slots;
       int pilot_mode;
       int pilot_symbols;
+      int gold_code;
       gr_complex m_bpsk[4][2];
       gr_complex m_pl[90];
       gr_complex m_zero[1];
@@ -47,7 +48,7 @@ namespace gr {
       const static int ph_sync_seq[26];
 
      public:
-      physical_cc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots, dvbs2_framesize_t framesize);
+      physical_cc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots, dvbs2_framesize_t framesize, int goldcode);
       ~physical_cc_impl();
 
       // Where all the action really happens

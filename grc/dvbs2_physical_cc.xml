@@ -3,7 +3,7 @@
   <key>dvbs2_physical_cc</key>
   <category>dvbs2</category>
   <import>import dvbs2</import>
-  <make>dvbs2.physical_cc($constellation.val, $rate.val, $pilots.val, $framesize.val)</make>
+  <make>dvbs2.physical_cc($constellation.val, $rate.val, $pilots.val, $framesize.val, $goldcode)</make>
   <param>
     <name>FECFRAME size</name>
     <key>framesize</key>
@@ -308,6 +308,12 @@
       <key>PILOTS_ON</key>
       <opt>val:dvbs2.PILOTS_ON</opt>
     </option>
+  </param>
+  <param>
+    <name>Gold Code</name>
+    <key>goldcode</key>
+    <value>0</value>
+    <type>int</type>
   </param>
   <sink>
     <name>in</name>

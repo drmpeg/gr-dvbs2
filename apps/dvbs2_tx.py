@@ -2,7 +2,7 @@
 ##################################################
 # Gnuradio Python Flow Graph
 # Title: Dvbs2 Tx
-# Generated: Sat Aug  9 15:15:57 2014
+# Generated: Wed Sep  3 03:03:50 2014
 ##################################################
 
 from gnuradio import blocks
@@ -64,7 +64,7 @@ class dvbs2_tx(grc_wxgui.top_block_gui):
           
         self.fft_filter_xxx_0 = filter.fft_filter_ccc(1, (firdes.root_raised_cosine(1, samp_rate, samp_rate/2, rolloff, taps)), 1)
         self.fft_filter_xxx_0.declare_sample_delay(0)
-        self.dvbs2_physical_cc_0 = dvbs2.physical_cc(dvbs2.MOD_16APSK, dvbs2.C9_10, dvbs2.PILOTS_ON, dvbs2.FECFRAME_NORMAL)
+        self.dvbs2_physical_cc_0 = dvbs2.physical_cc(dvbs2.MOD_16APSK, dvbs2.C9_10, dvbs2.PILOTS_ON, dvbs2.FECFRAME_NORMAL, 0)
         self.dvbs2_modulator_bc_0 = dvbs2.modulator_bc(dvbs2.MOD_16APSK, dvbs2.C9_10, dvbs2.FECFRAME_NORMAL)
         self.dvbs2_ldpc_bb_0 = dvbs2.ldpc_bb(dvbs2.C9_10, dvbs2.FECFRAME_NORMAL, dvbs2.MOD_OTHER)
         self.dvbs2_interleaver_bb_0 = dvbs2.interleaver_bb(dvbs2.MOD_16APSK, dvbs2.C_OTHER, dvbs2.FECFRAME_NORMAL)
