@@ -1,11 +1,7 @@
 title: gr-dvbs2
 brief: A DVB-S2 and DVB-S2X transmitter.
 tags:
-  - DVB
-  - LDPC
-  - BCH
-  - 16APSK
-  - 32APSK
+  - In tree as of GNU Radio 3.7.7
 author:
   - Ron Economos <w6rz@comcast.net>
 copyright_owner:
