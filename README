@@ -2,7 +2,10 @@
 
 As of release 3.7.7, gr-dvbs2 is now part of GNU Radio
 in the gr-dtv component and the Digital Television
-category of gnuradio-companion.
+category of gnuradio-companion. However, for those
+that prefer forking and developing in a OOT module,
+all the changes in GNU Radio have been backported
+to gr-dvbs2.
 
 # Copyright 2014,2016 Ron Economos
 #
@@ -83,11 +86,12 @@ System configurations not supported are:
 8) Dummy Frame Insertion
 9) Wide-band mode
 
-Note: DVB-S2X extensions are not fully tested due to lack of
-available consumer or prosumer receivers. For DVB-S2X, optional
-Broadcast services configurations supported are 64APSK and
-64APSK-L. 128APSK, 256APSK and 256APSK-L constellations are
-included for experimentation.
+Note: DVB-S2X Broadcast services MODCOD's have been tested
+as of September 2016 with the Silicon Labs Si2183 demodulator.
+VL-SNR modes have been implemented, but are still untested.
+For DVB-S2X, optional Broadcast services configurations supported
+are 64APSK and 64APSK-L. 128APSK, 256APSK and 256APSK-L
+constellations are included for experimentation.
 
 https://www.dvb.org/resources/public/standards/a83-2_dvb-s2x_den302307-2.pdf
 

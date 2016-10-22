@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 Ron Economos.
+ * Copyright 2014,2016 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-
 
 #ifndef INCLUDED_DVBS2_CONFIG_H
 #define INCLUDED_DVBS2_CONFIG_H
@@ -46,6 +45,7 @@
 #define NPD_NOT_ACTIVE 0
 
 #define FRAME_SIZE_NORMAL 64800
+#define FRAME_SIZE_MEDIUM 32400
 #define FRAME_SIZE_SHORT  16200
 
 // BCH Code
@@ -53,8 +53,21 @@
 #define BCH_CODE_N10 1
 #define BCH_CODE_N12 2
 #define BCH_CODE_S12 3
+#define BCH_CODE_M12 4
 
 #define LDPC_ENCODE_TABLE_LENGTH (FRAME_SIZE_NORMAL * 10)
+
+#define NORMAL_PUNCTURING 3240
+#define MEDIUM_PUNCTURING 1620
+#define SHORT_PUNCTURING_SET1 810
+#define SHORT_PUNCTURING_SET2 1224
+
+#define VLSNR_OFF 0
+#define VLSNR_SET1 1
+#define VLSNR_SET2 2
+
+#define EXTRA_PILOT_SYMBOLS_SET1 ((18 * 34) + (3 * 36))
+#define EXTRA_PILOT_SYMBOLS_SET2 ((9 * 32) + 36)
 
 namespace gr {
   namespace dvbs2 {
@@ -99,6 +112,15 @@ namespace gr {
       C7_15,
       C8_15,
       C32_45,
+      C2_9_VLSNR,
+      C1_5_MEDIUM,
+      C11_45_MEDIUM,
+      C1_3_MEDIUM,
+      C1_5_VLSNR_SF2,
+      C11_45_VLSNR_SF2,
+      C1_5_VLSNR,
+      C4_15_VLSNR,
+      C1_3_VLSNR,
       C_OTHER,
     };
 
@@ -126,6 +148,8 @@ namespace gr {
       MOD_4_12_20_28APSK,
       MOD_128APSK,
       MOD_256APSK,
+      MOD_BPSK,
+      MOD_BPSK_SF2,
       MOD_OTHER,
     };
 
@@ -137,6 +161,7 @@ namespace gr {
     enum dvbs2_framesize_t {
       FECFRAME_NORMAL = 0,
       FECFRAME_SHORT,
+      FECFRAME_MEDIUM,
     };
   } // namespace dvbs2
 } // namespace gr

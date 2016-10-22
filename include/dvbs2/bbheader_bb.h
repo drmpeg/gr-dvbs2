@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 Ron Economos.
+ * Copyright 2014,2016 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,14 @@ namespace gr {
   namespace dvbs2 {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Formats MPEG-2 Transport Stream packets into FEC baseband frames
+     * and adds a 10-byte header.
      * \ingroup dvbs2
      *
+     * \details
+     * Input: 188-byte MPEG-2 Transport Stream packets.
+     * Output: Variable length FEC baseband frames (BBFRAME). The output frame
+     *         length is based on the FEC rate.
      */
     class DVBS2_API bbheader_bb : virtual public gr::block
     {
@@ -40,14 +45,13 @@ namespace gr {
       typedef boost::shared_ptr<bbheader_bb> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of dvbs2::bbheader_bb.
+       * \brief Create a baseband header formatter.
        *
-       * To avoid accidental use of raw pointers, dvbs2::bbheader_bb's
-       * constructor is in a private implementation
-       * class. dvbs2::bbheader_bb::make is the public interface for
-       * creating new instances.
+       * \param framesize FEC frame size (normal, medium or short).
+       * \param rate FEC code rate.
+       * \param rolloff DVB-S2 root-raised-cosine filter roll-off.
        */
-      static sptr make(dvbs2_code_rate_t rate, dvbs2_rolloff_factor_t rolloff, dvbs2_framesize_t framesize);
+      static sptr make(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_rolloff_factor_t rolloff);
     };
 
   } // namespace dvbs2

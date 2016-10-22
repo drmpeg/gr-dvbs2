@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 Ron Economos.
+ * Copyright 2014,2016 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,11 @@ namespace gr {
   namespace dvbs2 {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Modulates DVB-S2 frames.
      * \ingroup dvbs2
      *
+     * Input: Bit interleaved baseband frames.
+     * Output: QPSK, 8PSK, 16APSK or 32APSK modulated complex IQ values (XFECFRAME).
      */
     class DVBS2_API modulator_bc : virtual public gr::block
     {
@@ -40,14 +42,13 @@ namespace gr {
       typedef boost::shared_ptr<modulator_bc> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of dvbs2::modulator_bc.
+       * \brief Create a DVB-S2 constellation modulator.
        *
-       * To avoid accidental use of raw pointers, dvbs2::modulator_bc's
-       * constructor is in a private implementation
-       * class. dvbs2::modulator_bc::make is the public interface for
-       * creating new instances.
+       * \param framesize FEC frame size (normal or short).
+       * \param rate FEC code rate.
+       * \param constellation DVB-S2 constellation.
        */
-      static sptr make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
+      static sptr make(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation);
     };
 
   } // namespace dvbs2

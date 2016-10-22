@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 Ron Economos.
+ * Copyright 2014,2016 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,12 @@ namespace gr {
   namespace dvbs2 {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Scrambles FEC baseband frames with a PRBS encoder.
      * \ingroup dvbs2
      *
+     * \details
+     * Input: Variable length FEC baseband frames (BBFRAME).
+     * Output: Scrambled variable length FEC baseband frames (BBFRAME).
      */
     class DVBS2_API bbscrambler_bb : virtual public gr::sync_block
     {
@@ -40,14 +43,12 @@ namespace gr {
       typedef boost::shared_ptr<bbscrambler_bb> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of dvbs2::bbscrambler_bb.
+       * \brief Create a baseband frame scrambler.
        *
-       * To avoid accidental use of raw pointers, dvbs2::bbscrambler_bb's
-       * constructor is in a private implementation
-       * class. dvbs2::bbscrambler_bb::make is the public interface for
-       * creating new instances.
+       * \param framesize FEC frame size (normal, medium or short).
+       * \param rate FEC code rate.
        */
-      static sptr make(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
+      static sptr make(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate);
     };
 
   } // namespace dvbs2

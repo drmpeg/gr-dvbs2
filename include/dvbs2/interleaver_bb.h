@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 Ron Economos.
+ * Copyright 2014,2016 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,11 @@ namespace gr {
   namespace dvbs2 {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Bit interleaves DVB-S2 FEC baseband frames.
      * \ingroup dvbs2
      *
+     * Input: Normal or short FEC baseband frames with appended LPDC (LDPCFEC).
+     * Output: Bit interleaved baseband frames.
      */
     class DVBS2_API interleaver_bb : virtual public gr::block
     {
@@ -40,14 +42,13 @@ namespace gr {
       typedef boost::shared_ptr<interleaver_bb> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of dvbs2::interleaver_bb.
+       * \brief Create a DVB-S2 bit interleaver.
        *
-       * To avoid accidental use of raw pointers, dvbs2::interleaver_bb's
-       * constructor is in a private implementation
-       * class. dvbs2::interleaver_bb::make is the public interface for
-       * creating new instances.
+       * \param framesize FEC frame size (normal or short).
+       * \param rate FEC code rate.
+       * \param constellation DVB-S2 constellation.
        */
-      static sptr make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
+      static sptr make(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation);
     };
 
   } // namespace dvbs2

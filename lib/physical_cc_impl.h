@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 Ron Economos.
+ * Copyright 2014,2016 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 
 #include <dvbs2/physical_cc.h>
 
+#define VLSNR_HEADER_LENGTH 900
+
 namespace gr {
   namespace dvbs2 {
 
@@ -30,13 +32,18 @@ namespace gr {
     {
      private:
       int frame_size;
+      int signal_constellation;
       int slots;
       int pilot_mode;
       int pilot_symbols;
       int gold_code;
+      int vlsnr_header;
+      int vlsnr_set;
+      int b[VLSNR_HEADER_LENGTH];
       gr_complex m_bpsk[4][2];
       gr_complex m_pl[90];
-      gr_complex m_zero[1];
+      gr_complex m_vlsnr_header[VLSNR_HEADER_LENGTH];
+      gr_complex m_zero;
       int m_cscram[FRAME_SIZE_NORMAL];
       void b_64_8_code(unsigned char, int *);
       void pl_header_encode(unsigned char, unsigned char, int *);
@@ -46,18 +53,18 @@ namespace gr {
       const static unsigned long g[7];
       const static int ph_scram_tab[64];
       const static int ph_sync_seq[26];
+      const static int ph_vlsnr_seq[16][VLSNR_HEADER_LENGTH - 4];
 
      public:
-      physical_cc_impl(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots, dvbs2_framesize_t framesize, int goldcode);
+      physical_cc_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, dvbs2_pilots_t pilots, int goldcode);
       ~physical_cc_impl();
 
-      // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
       int general_work(int noutput_items,
-		       gr_vector_int &ninput_items,
-		       gr_vector_const_void_star &input_items,
-		       gr_vector_void_star &output_items);
+                       gr_vector_int &ninput_items,
+                       gr_vector_const_void_star &input_items,
+                       gr_vector_void_star &output_items);
     };
 
   } // namespace dvbs2

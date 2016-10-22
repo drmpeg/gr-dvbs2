@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 Ron Economos.
+ * Copyright 2014,2016 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,11 @@ namespace gr {
   namespace dvbs2 {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Encodes a LDPC (Low-Density Parity-Check) FEC.
      * \ingroup dvbs2
      *
+     * Input: Variable length FEC baseband frames with appended BCH (BCHFEC).
+     * Output: Normal, medium or short FEC baseband frames with appended LPDC (LDPCFEC).
      */
     class DVBS2_API ldpc_bb : virtual public gr::block
     {
@@ -40,14 +42,13 @@ namespace gr {
       typedef boost::shared_ptr<ldpc_bb> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of dvbs2::ldpc_bb.
+       * \brief Create a baseband frame LDPC encoder.
        *
-       * To avoid accidental use of raw pointers, dvbs2::ldpc_bb's
-       * constructor is in a private implementation
-       * class. dvbs2::ldpc_bb::make is the public interface for
-       * creating new instances.
+       * \param framesize FEC frame size (normal, medium or short).
+       * \param rate FEC code rate.
+       * \param constellation DVB-S2 constellation.
        */
-      static sptr make(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize, dvbs2_constellation_t constellation);
+      static sptr make(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation);
     };
 
   } // namespace dvbs2

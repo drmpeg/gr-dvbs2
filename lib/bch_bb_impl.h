@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 Ron Economos.
+ * Copyright 2014,2016 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ namespace gr {
       unsigned int m_poly_n_10[5];
       unsigned int m_poly_n_12[6];
       unsigned int m_poly_s_12[6];
+      unsigned int m_poly_m_12[6];
       int poly_mult(const int*, int, const int*, int, int*);
       void poly_pack(const int*, unsigned int*, int);
       void poly_reverse(int*, int*, int);
@@ -45,16 +46,15 @@ namespace gr {
       void bch_poly_build_tables(void);
 
      public:
-      bch_bb_impl(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
+      bch_bb_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate);
       ~bch_bb_impl();
 
-      // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
       int general_work(int noutput_items,
-		       gr_vector_int &ninput_items,
-		       gr_vector_const_void_star &input_items,
-		       gr_vector_void_star &output_items);
+                       gr_vector_int &ninput_items,
+                       gr_vector_const_void_star &input_items,
+                       gr_vector_void_star &output_items);
     };
 
   } // namespace dvbs2

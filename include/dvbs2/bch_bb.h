@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 Ron Economos.
+ * Copyright 2014,2016 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,12 @@ namespace gr {
   namespace dvbs2 {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Encodes a BCH ((Bose, Chaudhuri, Hocquenghem) FEC.
      * \ingroup dvbs2
      *
+     * \details
+     * Input: Variable length FEC baseband frames (BBFRAME).
+     * Output: Variable length FEC baseband frames with appended BCH (BCHFEC).
      */
     class DVBS2_API bch_bb : virtual public gr::block
     {
@@ -40,14 +43,12 @@ namespace gr {
       typedef boost::shared_ptr<bch_bb> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of dvbs2::bch_bb.
+       * \brief Create a baseband frame BCH encoder.
        *
-       * To avoid accidental use of raw pointers, dvbs2::bch_bb's
-       * constructor is in a private implementation
-       * class. dvbs2::bch_bb::make is the public interface for
-       * creating new instances.
+       * \param framesize FEC frame size (normal, medium or short).
+       * \param rate FEC code rate.
        */
-      static sptr make(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
+      static sptr make(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate);
     };
 
   } // namespace dvbs2

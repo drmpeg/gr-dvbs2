@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 Ron Economos.
+ * Copyright 2014,2016 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,11 @@ namespace gr {
   namespace dvbs2 {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Signals DVB-S2 physical layer frames.
      * \ingroup dvbs2
      *
+     * Input: QPSK, 8PSK, 16APSK or 32APSK modulated complex IQ values (XFECFRAME).
+     * Output: DVB-S2 PLFRAME.
      */
     class DVBS2_API physical_cc : virtual public gr::block
     {
@@ -40,14 +42,15 @@ namespace gr {
       typedef boost::shared_ptr<physical_cc> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of dvbs2::physical_cc.
+       * \brief Create a DVB-S2 physical layer framer.
        *
-       * To avoid accidental use of raw pointers, dvbs2::physical_cc's
-       * constructor is in a private implementation
-       * class. dvbs2::physical_cc::make is the public interface for
-       * creating new instances.
+       * \param framesize FEC frame size (normal or short).
+       * \param rate FEC code rate.
+       * \param constellation DVB-S2 constellation.
+       * \param pilots pilot symbols (on/off).
+       * \param goldcode physical layer scrambler Gold code (0 to 262141 inclusive).
        */
-      static sptr make(dvbs2_constellation_t constellation, dvbs2_code_rate_t rate, dvbs2_pilots_t pilots, dvbs2_framesize_t framesize, int goldcode);
+      static sptr make(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, dvbs2_pilots_t pilots, int goldcode);
     };
 
   } // namespace dvbs2
