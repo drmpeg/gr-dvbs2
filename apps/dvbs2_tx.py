@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Dvbs2 Tx
-# Generated: Fri Oct 21 09:54:07 2016
+# Generated: Tue Oct 25 18:15:30 2016
 ##################################################
 
 if __name__ == '__main__':
@@ -22,12 +22,12 @@ from gnuradio import eng_notation
 from gnuradio import filter
 from gnuradio import gr
 from gnuradio import qtgui
+from gnuradio import uhd
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from gnuradio.qtgui import Range, RangeWidget
 from optparse import OptionParser
 import dvbs2
-import osmosdr
 import sip
 import sys
 import time
@@ -63,11 +63,11 @@ class dvbs2_tx(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.symbol_rate = symbol_rate = 5000000
+        self.symbol_rate = symbol_rate = 6000000
         self.vga2_gain = vga2_gain = 10
         self.vga1_gain = vga1_gain = -8
         self.tx_gain = tx_gain = 50
-        self.taps = taps = 100
+        self.taps = taps = 200
         self.samp_rate = samp_rate = symbol_rate * 2
         self.rolloff = rolloff = 0.2
         self.center_freq = center_freq = 1280e6
@@ -75,15 +75,25 @@ class dvbs2_tx(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
+        self._tx_gain_range = Range(0, 89, 1, 50, 200)
+        self._tx_gain_win = RangeWidget(self._tx_gain_range, self.set_tx_gain, "tx_gain", "counter_slider", float)
+        self.top_layout.addWidget(self._tx_gain_win)
         self._vga2_gain_range = Range(0, 25, 1, 10, 200)
         self._vga2_gain_win = RangeWidget(self._vga2_gain_range, self.set_vga2_gain, "vga2_gain", "counter_slider", int)
         self.top_layout.addWidget(self._vga2_gain_win)
         self._vga1_gain_range = Range(-35, -4, 1, -8, 200)
         self._vga1_gain_win = RangeWidget(self._vga1_gain_range, self.set_vga1_gain, "vga1_gain", "counter_slider", int)
         self.top_layout.addWidget(self._vga1_gain_win)
-        self._tx_gain_range = Range(0, 89, 1, 50, 200)
-        self._tx_gain_win = RangeWidget(self._tx_gain_range, self.set_tx_gain, "tx_gain", "counter_slider", float)
-        self.top_layout.addWidget(self._tx_gain_win)
+        self.uhd_usrp_sink_0_0 = uhd.usrp_sink(
+        	",".join(("send_frame_size=65536,num_send_frames=256,master_clock_rate=" + str(samp_rate*4), "")),
+        	uhd.stream_args(
+        		cpu_format="fc32",
+        		channels=range(1),
+        	),
+        )
+        self.uhd_usrp_sink_0_0.set_samp_rate(samp_rate)
+        self.uhd_usrp_sink_0_0.set_center_freq(uhd.tune_request(center_freq, ((symbol_rate * (1 + rolloff)) / 2 ) + 1e5), 0)
+        self.uhd_usrp_sink_0_0.set_gain(tx_gain, 0)
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
         	1024, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
@@ -127,27 +137,16 @@ class dvbs2_tx(gr.top_block, Qt.QWidget):
         
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
-        self.osmosdr_sink_0 = osmosdr.sink( args="numchan=" + str(1) + " " + 'bladerf=0,buffers=128,buflen=32768' )
-        self.osmosdr_sink_0.set_sample_rate(samp_rate)
-        self.osmosdr_sink_0.set_center_freq(center_freq, 0)
-        self.osmosdr_sink_0.set_freq_corr(0, 0)
-        self.osmosdr_sink_0.set_gain(vga2_gain, 0)
-        self.osmosdr_sink_0.set_if_gain(0, 0)
-        self.osmosdr_sink_0.set_bb_gain(vga1_gain, 0)
-        self.osmosdr_sink_0.set_antenna('', 0)
-        self.osmosdr_sink_0.set_bandwidth(6000000, 0)
-          
         self.fft_filter_xxx_0 = filter.fft_filter_ccc(1, (firdes.root_raised_cosine(1.0, samp_rate, samp_rate/2, rolloff, taps)), 1)
         self.fft_filter_xxx_0.declare_sample_delay(0)
-        self.dvbs2_physical_cc_0 = dvbs2.physical_cc(dvbs2.FECFRAME_NORMAL, dvbs2.C9_10, dvbs2.MOD_16APSK, dvbs2.PILOTS_ON, 0)
-        self.dvbs2_modulator_bc_0 = dvbs2.modulator_bc(dvbs2.FECFRAME_NORMAL,
-        dvbs2.C9_10, dvbs2.MOD_16APSK)
-        self.dvbs2_ldpc_bb_0 = dvbs2.ldpc_bb(dvbs2.FECFRAME_NORMAL, dvbs2.C9_10, dvbs2.MOD_OTHER)
-        self.dvbs2_interleaver_bb_0 = dvbs2.interleaver_bb(dvbs2.FECFRAME_NORMAL, dvbs2.C9_10, dvbs2.MOD_16APSK)
-        self.dvbs2_bch_bb_0 = dvbs2.bch_bb(dvbs2.FECFRAME_NORMAL, dvbs2.C9_10)
-        self.dvbs2_bbscrambler_bb_0 = dvbs2.bbscrambler_bb(dvbs2.FECFRAME_NORMAL, dvbs2.C9_10)
-        self.dvbs2_bbheader_bb_0 = dvbs2.bbheader_bb(dvbs2.FECFRAME_NORMAL, dvbs2.C9_10, dvbs2.RO_0_20)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/run/shm/adv16apsk910.ts', True)
+        self.dvbs2_physical_cc_0 = dvbs2.physical_cc()
+        self.dvbs2_modulator_bc_0 = dvbs2.modulator_bc()
+        self.dvbs2_ldpc_bb_0 = dvbs2.ldpc_bb()
+        self.dvbs2_interleaver_bb_0 = dvbs2.interleaver_bb()
+        self.dvbs2_bch_bb_0 = dvbs2.bch_bb()
+        self.dvbs2_bbscrambler_bb_0 = dvbs2.bbscrambler_bb()
+        self.dvbs2_bbheader_bb_0 = dvbs2.bbheader_bb(dvbs2.FECFRAME_SHORT, dvbs2.C8_9, dvbs2.MOD_16APSK, dvbs2.PILOTS_ON, 0, dvbs2.RO_0_20)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/media/re/ssd/rhcpdvbs2.ts', True)
 
         ##################################################
         # Connections
@@ -160,8 +159,8 @@ class dvbs2_tx(gr.top_block, Qt.QWidget):
         self.connect((self.dvbs2_ldpc_bb_0, 0), (self.dvbs2_interleaver_bb_0, 0))    
         self.connect((self.dvbs2_modulator_bc_0, 0), (self.dvbs2_physical_cc_0, 0))    
         self.connect((self.dvbs2_physical_cc_0, 0), (self.fft_filter_xxx_0, 0))    
-        self.connect((self.fft_filter_xxx_0, 0), (self.osmosdr_sink_0, 0))    
         self.connect((self.fft_filter_xxx_0, 0), (self.qtgui_freq_sink_x_0, 0))    
+        self.connect((self.fft_filter_xxx_0, 0), (self.uhd_usrp_sink_0_0, 0))    
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "dvbs2_tx")
@@ -174,26 +173,27 @@ class dvbs2_tx(gr.top_block, Qt.QWidget):
     def set_symbol_rate(self, symbol_rate):
         self.symbol_rate = symbol_rate
         self.set_samp_rate(self.symbol_rate * 2)
+        self.uhd_usrp_sink_0_0.set_center_freq(uhd.tune_request(self.center_freq, ((self.symbol_rate * (1 + self.rolloff)) / 2 ) + 1e5), 0)
 
     def get_vga2_gain(self):
         return self.vga2_gain
 
     def set_vga2_gain(self, vga2_gain):
         self.vga2_gain = vga2_gain
-        self.osmosdr_sink_0.set_gain(self.vga2_gain, 0)
 
     def get_vga1_gain(self):
         return self.vga1_gain
 
     def set_vga1_gain(self, vga1_gain):
         self.vga1_gain = vga1_gain
-        self.osmosdr_sink_0.set_bb_gain(self.vga1_gain, 0)
 
     def get_tx_gain(self):
         return self.tx_gain
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
+        self.uhd_usrp_sink_0_0.set_gain(self.tx_gain, 0)
+        	
 
     def get_taps(self):
         return self.taps
@@ -207,8 +207,8 @@ class dvbs2_tx(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.uhd_usrp_sink_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_freq_sink_x_0.set_frequency_range(self.center_freq, self.samp_rate)
-        self.osmosdr_sink_0.set_sample_rate(self.samp_rate)
         self.fft_filter_xxx_0.set_taps((firdes.root_raised_cosine(1.0, self.samp_rate, self.samp_rate/2, self.rolloff, self.taps)))
 
     def get_rolloff(self):
@@ -216,6 +216,7 @@ class dvbs2_tx(gr.top_block, Qt.QWidget):
 
     def set_rolloff(self, rolloff):
         self.rolloff = rolloff
+        self.uhd_usrp_sink_0_0.set_center_freq(uhd.tune_request(self.center_freq, ((self.symbol_rate * (1 + self.rolloff)) / 2 ) + 1e5), 0)
         self.fft_filter_xxx_0.set_taps((firdes.root_raised_cosine(1.0, self.samp_rate, self.samp_rate/2, self.rolloff, self.taps)))
 
     def get_center_freq(self):
@@ -223,8 +224,8 @@ class dvbs2_tx(gr.top_block, Qt.QWidget):
 
     def set_center_freq(self, center_freq):
         self.center_freq = center_freq
+        self.uhd_usrp_sink_0_0.set_center_freq(uhd.tune_request(self.center_freq, ((self.symbol_rate * (1 + self.rolloff)) / 2 ) + 1e5), 0)
         self.qtgui_freq_sink_x_0.set_frequency_range(self.center_freq, self.samp_rate)
-        self.osmosdr_sink_0.set_center_freq(self.center_freq, 0)
 
 
 def main(top_block_cls=dvbs2_tx, options=None):

@@ -29,18 +29,19 @@ namespace gr {
     class modulator_bc_impl : public modulator_bc
     {
      private:
-      int signal_constellation;
       gr_complex m_bpsk[2][2];
       gr_complex m_qpsk[4];
       gr_complex m_8psk[8];
-      gr_complex m_16apsk[16];
-      gr_complex m_32apsk[32];
-      gr_complex m_64apsk[64];
-      gr_complex m_128apsk[128];
-      gr_complex m_256apsk[256];
+      gr_complex m_8apsk[8][2];
+      gr_complex m_16apsk[16][12];
+      gr_complex m_8_8apsk[16][3];
+      gr_complex m_32apsk[32][5];
+      gr_complex m_4_12_16apsk[32][3];
+      gr_complex m_4_8_4_16apsk[32][3];
+      void get_items(dvbs2_framesize_t, dvbs2_code_rate_t, dvbs2_constellation_t, int *, int *);
 
      public:
-      modulator_bc_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation);
+      modulator_bc_impl();
       ~modulator_bc_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

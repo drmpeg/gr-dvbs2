@@ -29,14 +29,12 @@ namespace gr {
     class bch_bb_impl : public bch_bb
     {
      private:
-      unsigned int kbch;
-      unsigned int nbch;
-      unsigned int bch_code;
       unsigned int m_poly_n_8[4];
       unsigned int m_poly_n_10[5];
       unsigned int m_poly_n_12[6];
       unsigned int m_poly_s_12[6];
       unsigned int m_poly_m_12[6];
+      void get_kbch_nbch(dvbs2_framesize_t, dvbs2_code_rate_t, unsigned int *, unsigned int *, unsigned int *);
       int poly_mult(const int*, int, const int*, int, int*);
       void poly_pack(const int*, unsigned int*, int);
       void poly_reverse(int*, int*, int);
@@ -46,7 +44,7 @@ namespace gr {
       void bch_poly_build_tables(void);
 
      public:
-      bch_bb_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate);
+      bch_bb_impl();
       ~bch_bb_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

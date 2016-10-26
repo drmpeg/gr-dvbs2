@@ -48,7 +48,7 @@ namespace gr {
        * \param framesize FEC frame size (normal, medium or short).
        * \param rate FEC code rate.
        */
-      static sptr make(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate);
+      static sptr make();
     };
 
   } // namespace dvbs2

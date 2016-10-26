@@ -29,333 +29,24 @@ namespace gr {
   namespace dvbs2 {
 
     ldpc_bb::sptr
-    ldpc_bb::make(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation)
+    ldpc_bb::make()
     {
       return gnuradio::get_initial_sptr
-        (new ldpc_bb_impl(framesize, rate, constellation));
+        (new ldpc_bb_impl());
     }
 
     /*
      * The private constructor
      */
-    ldpc_bb_impl::ldpc_bb_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation)
+    ldpc_bb_impl::ldpc_bb_impl()
       : gr::block("ldpc_bb",
               gr::io_signature::make(1, 1, sizeof(unsigned char)),
-              gr::io_signature::make(1, 1, sizeof(unsigned char))),
-      Xs(0),
-      P(0),
-      Xp(0)
+              gr::io_signature::make(1, 1, sizeof(unsigned char)))
     {
-      frame_size_type = framesize;
-      if (framesize == FECFRAME_NORMAL) {
-        frame_size = FRAME_SIZE_NORMAL;
-        frame_size_real = FRAME_SIZE_NORMAL;
-        switch (rate) {
-          case C1_4:
-            nbch = 16200;
-            q_val = 135;
-            break;
-          case C1_3:
-            nbch = 21600;
-            q_val = 120;
-            break;
-          case C2_5:
-            nbch = 25920;
-            q_val = 108;
-            break;
-          case C1_2:
-            nbch = 32400;
-            q_val = 90;
-            break;
-          case C3_5:
-            nbch = 38880;
-            q_val = 72;
-            break;
-          case C2_3:
-            nbch = 43200;
-            q_val = 60;
-            break;
-          case C3_4:
-            nbch = 48600;
-            q_val = 45;
-            break;
-          case C4_5:
-            nbch = 51840;
-            q_val = 36;
-            break;
-          case C5_6:
-            nbch = 54000;
-            q_val = 30;
-            break;
-          case C8_9:
-            nbch = 57600;
-            q_val = 20;
-            break;
-          case C9_10:
-            nbch = 58320;
-            q_val = 18;
-            break;
-          case C2_9_VLSNR:
-            nbch = 14400;
-            q_val = 140;
-            frame_size -= NORMAL_PUNCTURING;
-            frame_size_real -= NORMAL_PUNCTURING;
-            P = 15;
-            Xp = NORMAL_PUNCTURING;
-            break;
-          case C13_45:
-            nbch = 18720;
-            q_val = 128;
-            break;
-          case C9_20:
-            nbch = 29160;
-            q_val = 99;
-            break;
-          case C90_180:
-            nbch = 32400;
-            q_val = 90;
-            break;
-          case C96_180:
-            nbch = 34560;
-            q_val = 84;
-            break;
-          case C11_20:
-            nbch = 35640;
-            q_val = 81;
-            break;
-          case C100_180:
-            nbch = 36000;
-            q_val = 80;
-            break;
-          case C104_180:
-            nbch = 37440;
-            q_val = 76;
-            break;
-          case C26_45:
-            nbch = 37440;
-            q_val = 76;
-            break;
-          case C18_30:
-            nbch = 38880;
-            q_val = 72;
-            break;
-          case C28_45:
-            nbch = 40320;
-            q_val = 68;
-            break;
-          case C23_36:
-            nbch = 41400;
-            q_val = 65;
-            break;
-          case C116_180:
-            nbch = 41760;
-            q_val = 64;
-            break;
-          case C20_30:
-            nbch = 43200;
-            q_val = 60;
-            break;
-          case C124_180:
-            nbch = 44640;
-            q_val = 56;
-            break;
-          case C25_36:
-            nbch = 45000;
-            q_val = 55;
-            break;
-          case C128_180:
-            nbch = 46080;
-            q_val = 52;
-            break;
-          case C13_18:
-            nbch = 46800;
-            q_val = 50;
-            break;
-          case C132_180:
-            nbch = 47520;
-            q_val = 48;
-            break;
-          case C22_30:
-            nbch = 47520;
-            q_val = 48;
-            break;
-          case C135_180:
-            nbch = 48600;
-            q_val = 45;
-            break;
-          case C140_180:
-            nbch = 50400;
-            q_val = 40;
-            break;
-          case C7_9:
-            nbch = 50400;
-            q_val = 40;
-            break;
-          case C154_180:
-            nbch = 55440;
-            q_val = 26;
-            break;
-          default:
-            nbch = 0;
-            q_val = 0;
-            break;
-        }
-      }
-      else if (framesize == FECFRAME_SHORT) {
-        frame_size = FRAME_SIZE_SHORT;
-        frame_size_real = FRAME_SIZE_SHORT;
-        switch (rate) {
-          case C1_4:
-            nbch = 3240;
-            q_val = 36;
-            break;
-          case C1_3:
-            nbch = 5400;
-            q_val = 30;
-            break;
-          case C2_5:
-            nbch = 6480;
-            q_val = 27;
-            break;
-          case C1_2:
-            nbch = 7200;
-            q_val = 25;
-            break;
-          case C3_5:
-            nbch = 9720;
-            q_val = 18;
-            break;
-          case C2_3:
-            nbch = 10800;
-            q_val = 15;
-            break;
-          case C3_4:
-            nbch = 11880;
-            q_val = 12;
-            break;
-          case C4_5:
-            nbch = 12600;
-            q_val = 10;
-            break;
-          case C5_6:
-            nbch = 13320;
-            q_val = 8;
-            break;
-          case C8_9:
-            nbch = 14400;
-            q_val = 5;
-            break;
-          case C11_45:
-            nbch = 3960;
-            q_val = 34;
-            break;
-          case C4_15:
-            nbch = 4320;
-            q_val = 33;
-            break;
-          case C14_45:
-            nbch = 5040;
-            q_val = 31;
-            break;
-          case C7_15:
-            nbch = 7560;
-            q_val = 24;
-            break;
-          case C8_15:
-            nbch = 8640;
-            q_val = 21;
-            break;
-          case C26_45:
-            nbch = 9360;
-            q_val = 19;
-            break;
-          case C32_45:
-            nbch = 11520;
-            q_val = 13;
-            break;
-          case C1_5_VLSNR_SF2:
-            nbch = 2680;
-            q_val = 135;
-            frame_size -= SHORT_PUNCTURING_SET1;
-            frame_size_real -= SHORT_PUNCTURING_SET1;
-            Xs = 560;
-            P = 30;
-            Xp = 250;
-            break;
-          case C11_45_VLSNR_SF2:
-            nbch = 3960;
-            q_val = 34;
-            frame_size -= SHORT_PUNCTURING_SET1;
-            frame_size_real -= SHORT_PUNCTURING_SET1;
-            P = 15;
-            Xp = SHORT_PUNCTURING_SET1;
-            break;
-          case C1_5_VLSNR:
-            nbch = 3240;
-            q_val = 135;
-            frame_size -= SHORT_PUNCTURING_SET2;
-            frame_size_real -= SHORT_PUNCTURING_SET2;
-            P = 10;
-            Xp = SHORT_PUNCTURING_SET2;
-            break;
-          case C4_15_VLSNR:
-            nbch = 4320;
-            q_val = 33;
-            frame_size -= SHORT_PUNCTURING_SET2;
-            frame_size_real -= SHORT_PUNCTURING_SET2;
-            P = 8;
-            Xp = SHORT_PUNCTURING_SET2;
-            break;
-          case C1_3_VLSNR:
-            nbch = 5400;
-            q_val = 120;
-            frame_size -= SHORT_PUNCTURING_SET2;
-            frame_size_real -= SHORT_PUNCTURING_SET2;
-            P = 8;
-            Xp = SHORT_PUNCTURING_SET2;
-            break;
-          default:
-            nbch = 0;
-            q_val = 0;
-            break;
-        }
-      }
-      else {
-        frame_size = FRAME_SIZE_MEDIUM - MEDIUM_PUNCTURING;
-        frame_size_real = FRAME_SIZE_MEDIUM - MEDIUM_PUNCTURING;
-        switch (rate) {
-          case C1_5_MEDIUM:
-            nbch = 5840;
-            q_val = 72;
-            Xs = 640;
-            P = 25;
-            Xp = 980;
-            break;
-          case C11_45_MEDIUM:
-            nbch = 7920;
-            q_val = 68;
-            P = 15;
-            Xp = MEDIUM_PUNCTURING;
-            break;
-          case C1_3_MEDIUM:
-            nbch = 10800;
-            q_val = 60;
-            P = 13;
-            Xp = MEDIUM_PUNCTURING;
-            break;
-          default:
-            nbch = 0;
-            q_val = 0;
-            break;
-        }
-      }
-      code_rate = rate;
-      signal_constellation = constellation;
       ldpc_lookup_generate();
-      if (signal_constellation == MOD_128APSK) {
-        frame_size += 6;
-      }
-      set_output_multiple(frame_size);
+      set_min_output_buffer((FRAME_SIZE_NORMAL) * 5);
+      set_tag_propagation_policy(TPP_DONT);
+      set_output_multiple(FRAME_SIZE_NORMAL);
     }
 
     /*
@@ -368,15 +59,385 @@ namespace gr {
     void
     ldpc_bb_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-        ninput_items_required[0] = (noutput_items / frame_size) * nbch;
+        ninput_items_required[0] = noutput_items;
     }
 
-#define LDPC_BF(TABLE_NAME, ROWS) \
+    void
+    ldpc_bb_impl::get_nbch(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, unsigned int *nbch, unsigned int *q_val, unsigned int *frame_size, unsigned int *frame_size_real, int *Xs, int *P, int *Xp, int *table)
+    {
+      *Xs = 0;
+      *P = 0;
+      *Xp = 0;
+      if (framesize == FECFRAME_NORMAL) {
+        *frame_size = FRAME_SIZE_NORMAL;
+        *frame_size_real = FRAME_SIZE_NORMAL;
+        switch (rate) {
+          case C1_4:
+            *nbch = 16200;
+            *q_val = 135;
+            *table = 0;
+            break;
+          case C1_3:
+            *nbch = 21600;
+            *q_val = 120;
+            *table = 1;
+            break;
+          case C2_5:
+            *nbch = 25920;
+            *q_val = 108;
+            *table = 2;
+            break;
+          case C1_2:
+            *nbch = 32400;
+            *q_val = 90;
+            *table = 3;
+            break;
+          case C3_5:
+            *nbch = 38880;
+            *q_val = 72;
+            *table = 4;
+            break;
+          case C2_3:
+            *nbch = 43200;
+            *q_val = 60;
+            *table = 5;
+            break;
+          case C3_4:
+            *nbch = 48600;
+            *q_val = 45;
+            *table = 6;
+            break;
+          case C4_5:
+            *nbch = 51840;
+            *q_val = 36;
+            *table = 7;
+            break;
+          case C5_6:
+            *nbch = 54000;
+            *q_val = 30;
+            *table = 8;
+            break;
+          case C8_9:
+            *nbch = 57600;
+            *q_val = 20;
+            *table = 9;
+            break;
+          case C9_10:
+            *nbch = 58320;
+            *q_val = 18;
+            *table = 10;
+            break;
+          case C2_9_VLSNR:
+            *nbch = 14400;
+            *q_val = 140;
+            *table = 11;
+            *frame_size -= NORMAL_PUNCTURING;
+            *frame_size_real -= NORMAL_PUNCTURING;
+            *P = 15;
+            *Xp = NORMAL_PUNCTURING;
+            break;
+          case C13_45:
+            *nbch = 18720;
+            *q_val = 128;
+            *table = 12;
+            break;
+          case C9_20:
+            *nbch = 29160;
+            *q_val = 99;
+            *table = 13;
+            break;
+          case C90_180:
+            *nbch = 32400;
+            *q_val = 90;
+            *table = 14;
+            break;
+          case C96_180:
+            *nbch = 34560;
+            *q_val = 84;
+            *table = 15;
+            break;
+          case C11_20:
+            *nbch = 35640;
+            *q_val = 81;
+            *table = 16;
+            break;
+          case C100_180:
+            *nbch = 36000;
+            *q_val = 80;
+            *table = 17;
+            break;
+          case C104_180:
+            *nbch = 37440;
+            *q_val = 76;
+            *table = 18;
+            break;
+          case C26_45:
+            *nbch = 37440;
+            *q_val = 76;
+            *table = 19;
+            break;
+          case C18_30:
+            *nbch = 38880;
+            *q_val = 72;
+            *table = 20;
+            break;
+          case C28_45:
+            *nbch = 40320;
+            *q_val = 68;
+            *table = 21;
+            break;
+          case C23_36:
+            *nbch = 41400;
+            *q_val = 65;
+            *table = 22;
+            break;
+          case C116_180:
+            *nbch = 41760;
+            *q_val = 64;
+            *table = 23;
+            break;
+          case C20_30:
+            *nbch = 43200;
+            *q_val = 60;
+            *table = 24;
+            break;
+          case C124_180:
+            *nbch = 44640;
+            *q_val = 56;
+            *table = 25;
+            break;
+          case C25_36:
+            *nbch = 45000;
+            *q_val = 55;
+            *table = 26;
+            break;
+          case C128_180:
+            *nbch = 46080;
+            *q_val = 52;
+            *table = 27;
+            break;
+          case C13_18:
+            *nbch = 46800;
+            *q_val = 50;
+            *table = 28;
+            break;
+          case C132_180:
+            *nbch = 47520;
+            *q_val = 48;
+            *table = 29;
+            break;
+          case C22_30:
+            *nbch = 47520;
+            *q_val = 48;
+            *table = 30;
+            break;
+          case C135_180:
+            *nbch = 48600;
+            *q_val = 45;
+            *table = 31;
+            break;
+          case C140_180:
+            *nbch = 50400;
+            *q_val = 40;
+            *table = 32;
+            break;
+          case C7_9:
+            *nbch = 50400;
+            *q_val = 40;
+            *table = 33;
+            break;
+          case C154_180:
+            *nbch = 55440;
+            *q_val = 26;
+            *table = 34;
+            break;
+          default:
+            *nbch = 0;
+            *q_val = 0;
+            break;
+        }
+      }
+      else if (framesize == FECFRAME_SHORT) {
+        *frame_size = FRAME_SIZE_SHORT;
+        *frame_size_real = FRAME_SIZE_SHORT;
+        switch (rate) {
+          case C1_4:
+            *nbch = 3240;
+            *q_val = 36;
+            *table = 35;
+            break;
+          case C1_3:
+            *nbch = 5400;
+            *q_val = 30;
+            *table = 36;
+            break;
+          case C2_5:
+            *nbch = 6480;
+            *q_val = 27;
+            *table = 37;
+            break;
+          case C1_2:
+            *nbch = 7200;
+            *q_val = 25;
+            *table = 38;
+            break;
+          case C3_5:
+            *nbch = 9720;
+            *q_val = 18;
+            *table = 39;
+            break;
+          case C2_3:
+            *nbch = 10800;
+            *q_val = 15;
+            *table = 40;
+            break;
+          case C3_4:
+            *nbch = 11880;
+            *q_val = 12;
+            *table = 41;
+            break;
+          case C4_5:
+            *nbch = 12600;
+            *q_val = 10;
+            *table = 42;
+            break;
+          case C5_6:
+            *nbch = 13320;
+            *q_val = 8;
+            *table = 43;
+            break;
+          case C8_9:
+            *nbch = 14400;
+            *q_val = 5;
+            *table = 44;
+            break;
+          case C11_45:
+            *nbch = 3960;
+            *q_val = 34;
+            *table = 45;
+            break;
+          case C4_15:
+            *nbch = 4320;
+            *q_val = 33;
+            *table = 46;
+            break;
+          case C14_45:
+            *nbch = 5040;
+            *q_val = 31;
+            *table = 47;
+            break;
+          case C7_15:
+            *nbch = 7560;
+            *q_val = 24;
+            *table = 48;
+            break;
+          case C8_15:
+            *nbch = 8640;
+            *q_val = 21;
+            *table = 49;
+            break;
+          case C26_45:
+            *nbch = 9360;
+            *q_val = 19;
+            *table = 50;
+            break;
+          case C32_45:
+            *nbch = 11520;
+            *q_val = 13;
+            *table = 51;
+            break;
+          case C1_5_VLSNR_SF2:
+            *nbch = 2680;
+            *q_val = 135;
+            *table = 35;
+            *frame_size -= SHORT_PUNCTURING_SET1;
+            *frame_size_real -= SHORT_PUNCTURING_SET1;
+            *Xs = 560;
+            *P = 30;
+            *Xp = 250;
+            break;
+          case C11_45_VLSNR_SF2:
+            *nbch = 3960;
+            *q_val = 34;
+            *table = 45;
+            *frame_size -= SHORT_PUNCTURING_SET1;
+            *frame_size_real -= SHORT_PUNCTURING_SET1;
+            *P = 15;
+            *Xp = SHORT_PUNCTURING_SET1;
+            break;
+          case C1_5_VLSNR:
+            *nbch = 3240;
+            *q_val = 135;
+            *table = 35;
+            *frame_size -= SHORT_PUNCTURING_SET2;
+            *frame_size_real -= SHORT_PUNCTURING_SET2;
+            *P = 10;
+            *Xp = SHORT_PUNCTURING_SET2;
+            break;
+          case C4_15_VLSNR:
+            *nbch = 4320;
+            *q_val = 33;
+            *table = 46;
+            *frame_size -= SHORT_PUNCTURING_SET2;
+            *frame_size_real -= SHORT_PUNCTURING_SET2;
+            *P = 8;
+            *Xp = SHORT_PUNCTURING_SET2;
+            break;
+          case C1_3_VLSNR:
+            *nbch = 5400;
+            *q_val = 120;
+            *table = 36;
+            *frame_size -= SHORT_PUNCTURING_SET2;
+            *frame_size_real -= SHORT_PUNCTURING_SET2;
+            *P = 8;
+            *Xp = SHORT_PUNCTURING_SET2;
+            break;
+          default:
+            *nbch = 0;
+            *q_val = 0;
+            break;
+        }
+      }
+      else {
+        *frame_size = FRAME_SIZE_MEDIUM - MEDIUM_PUNCTURING;
+        *frame_size_real = FRAME_SIZE_MEDIUM - MEDIUM_PUNCTURING;
+        switch (rate) {
+          case C1_5_MEDIUM:
+            *nbch = 5840;
+            *q_val = 72;
+            *table = 52;
+            *Xs = 640;
+            *P = 25;
+            *Xp = 980;
+            break;
+          case C11_45_MEDIUM:
+            *nbch = 7920;
+            *q_val = 68;
+            *table = 53;
+            *P = 15;
+            *Xp = MEDIUM_PUNCTURING;
+            break;
+          case C1_3_MEDIUM:
+            *nbch = 10800;
+            *q_val = 60;
+            *table = 54;
+            *P = 13;
+            *Xp = MEDIUM_PUNCTURING;
+            break;
+          default:
+            *nbch = 0;
+            *q_val = 0;
+            break;
+        }
+      }
+    }
+
+#define LDPC_BF(TABLE_NAME, ROWS, TABLE) \
 for (int row = 0; row < ROWS; row++) { \
   for(int n = 0; n < 360; n++) { \
     for (int col = 1; col <= TABLE_NAME[row][0]; col++) { \
-      ldpc_encode.p[index] = (TABLE_NAME[row][col] + (n * q)) % pbits; \
-      ldpc_encode.d[index] = im; \
+      ldpc_encode[TABLE].p[index] = (TABLE_NAME[row][col] + (n * q)) % pbits; \
+      ldpc_encode[TABLE].d[index] = im; \
       index++; \
     } \
     im++; \
@@ -390,199 +451,398 @@ for (int row = 0; row < ROWS; row++) { \
       int index;
       int pbits;
       int q;
-      index = 0;
-      im = 0;
+      unsigned int nbch, q_val, frame_size, frame_size_real;
+      int Xs, P, Xp, table;
 
+      get_nbch(FECFRAME_NORMAL, C1_4, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
       pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
       q = q_val;
+      LDPC_BF(ldpc_tab_1_4N,  45, 0);
+      ldpc_encode[0].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C1_3, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_1_3N,  60, 1);
+      ldpc_encode[1].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C2_5, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_2_5N,  72, 2);
+      ldpc_encode[2].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C1_2, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_1_2N,  90, 3);
+      ldpc_encode[3].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C3_5, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_3_5N,  108, 4);
+      ldpc_encode[4].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C2_3, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_2_3N,  120, 5);
+      ldpc_encode[5].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C3_4, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_3_4N,  135, 6);
+      ldpc_encode[6].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C4_5, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_4_5N,  144, 7);
+      ldpc_encode[7].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C5_6, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_5_6N,  150, 8);
+      ldpc_encode[8].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C8_9, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_8_9N,  160, 9);
+      ldpc_encode[9].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C9_10, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_9_10N, 162, 10);
+      ldpc_encode[10].table_length = index;
 
-      if (frame_size_type == FECFRAME_NORMAL) {
-        if (code_rate == C1_4) {
-          LDPC_BF(ldpc_tab_1_4N,  45);
-        }
-        if (code_rate == C1_3) {
-          LDPC_BF(ldpc_tab_1_3N,  60);
-        }
-        if (code_rate == C2_5) {
-          LDPC_BF(ldpc_tab_2_5N,  72);
-        }
-        if (code_rate == C1_2) {
-          LDPC_BF(ldpc_tab_1_2N,  90);
-        }
-        if (code_rate == C3_5) {
-          LDPC_BF(ldpc_tab_3_5N,  108);
-        }
-        if (code_rate == C2_3) {
-          LDPC_BF(ldpc_tab_2_3N,  120);
-        }
-        if (code_rate == C3_4) {
-          LDPC_BF(ldpc_tab_3_4N,  135);
-        }
-        if (code_rate == C4_5) {
-          LDPC_BF(ldpc_tab_4_5N,  144);
-        }
-        if (code_rate == C5_6) {
-          LDPC_BF(ldpc_tab_5_6N,  150);
-        }
-        if (code_rate == C8_9) {
-          LDPC_BF(ldpc_tab_8_9N,  160);
-        }
-        if (code_rate == C9_10) {
-          LDPC_BF(ldpc_tab_9_10N, 162);
-        }
-        if (code_rate == C2_9_VLSNR) {
-          LDPC_BF(ldpc_tab_2_9N,      40);
-        }
-        if (code_rate == C13_45) {
-          LDPC_BF(ldpc_tab_13_45N,    52);
-        }
-        if (code_rate == C9_20) {
-          LDPC_BF(ldpc_tab_9_20N,     81);
-        }
-        if (code_rate == C90_180) {
-          LDPC_BF(ldpc_tab_90_180N,   90);
-        }
-        if (code_rate == C96_180) {
-          LDPC_BF(ldpc_tab_96_180N,   96);
-        }
-        if (code_rate == C11_20) {
-          LDPC_BF(ldpc_tab_11_20N,    99);
-        }
-        if (code_rate == C100_180) {
-          LDPC_BF(ldpc_tab_100_180N, 100);
-        }
-        if (code_rate == C104_180) {
-          LDPC_BF(ldpc_tab_104_180N, 104);
-        }
-        if (code_rate == C26_45) {
-          LDPC_BF(ldpc_tab_26_45N,   104);
-        }
-        if (code_rate == C18_30) {
-          LDPC_BF(ldpc_tab_18_30N,   108);
-        }
-        if (code_rate == C28_45) {
-          LDPC_BF(ldpc_tab_28_45N,   112);
-        }
-        if (code_rate == C23_36) {
-          LDPC_BF(ldpc_tab_23_36N,   115);
-        }
-        if (code_rate == C116_180) {
-          LDPC_BF(ldpc_tab_116_180N, 116);
-        }
-        if (code_rate == C20_30) {
-          LDPC_BF(ldpc_tab_20_30N,   120);
-        }
-        if (code_rate == C124_180) {
-          LDPC_BF(ldpc_tab_124_180N, 124);
-        }
-        if (code_rate == C25_36) {
-          LDPC_BF(ldpc_tab_25_36N,   125);
-        }
-        if (code_rate == C128_180) {
-          LDPC_BF(ldpc_tab_128_180N, 128);
-        }
-        if (code_rate == C13_18) {
-          LDPC_BF(ldpc_tab_13_18N,   130);
-        }
-        if (code_rate == C132_180) {
-          LDPC_BF(ldpc_tab_132_180N, 132);
-        }
-        if (code_rate == C22_30) {
-          LDPC_BF(ldpc_tab_22_30N,   132);
-        }
-        if (code_rate == C135_180) {
-          LDPC_BF(ldpc_tab_135_180N, 135);
-        }
-        if (code_rate == C140_180) {
-          LDPC_BF(ldpc_tab_140_180N, 140);
-        }
-        if (code_rate == C7_9) {
-          LDPC_BF(ldpc_tab_7_9N,     140);
-        }
-        if (code_rate == C154_180) {
-          LDPC_BF(ldpc_tab_154_180N, 154);
-        }
-      }
-      else if (frame_size_type == FECFRAME_SHORT) {
-        if (code_rate == C1_4) {
-          LDPC_BF(ldpc_tab_1_4S, 9);
-        }
-        if (code_rate == C1_3) {
-          LDPC_BF(ldpc_tab_1_3S, 15);
-        }
-        if (code_rate == C2_5) {
-          LDPC_BF(ldpc_tab_2_5S, 18);
-        }
-        if (code_rate == C1_2) {
-          LDPC_BF(ldpc_tab_1_2S, 20);
-        }
-        if (code_rate == C3_5) {
-          LDPC_BF(ldpc_tab_3_5S, 27);
-        }
-        if (code_rate == C2_3) {
-          LDPC_BF(ldpc_tab_2_3S, 30);
-        }
-        if (code_rate == C3_4) {
-          LDPC_BF(ldpc_tab_3_4S, 33);
-        }
-        if (code_rate == C4_5) {
-          LDPC_BF(ldpc_tab_4_5S, 35);
-        }
-        if (code_rate == C5_6) {
-          LDPC_BF(ldpc_tab_5_6S, 37);
-        }
-        if (code_rate == C8_9) {
-          LDPC_BF(ldpc_tab_8_9S, 40);
-        }
-        if (code_rate == C11_45) {
-          LDPC_BF(ldpc_tab_11_45S, 11);
-        }
-        if (code_rate == C4_15) {
-          LDPC_BF(ldpc_tab_4_15S,  12);
-        }
-        if (code_rate == C14_45) {
-          LDPC_BF(ldpc_tab_14_45S, 14);
-        }
-        if (code_rate == C7_15) {
-          LDPC_BF(ldpc_tab_7_15S,  21);
-        }
-        if (code_rate == C8_15) {
-          LDPC_BF(ldpc_tab_8_15S,  24);
-        }
-        if (code_rate == C26_45) {
-          LDPC_BF(ldpc_tab_26_45S, 26);
-        }
-        if (code_rate == C32_45) {
-          LDPC_BF(ldpc_tab_32_45S, 32);
-        }
-        if (code_rate == C1_5_VLSNR_SF2) {
-          LDPC_BF(ldpc_tab_1_4S,    9);
-        }
-        if (code_rate == C11_45_VLSNR_SF2) {
-          LDPC_BF(ldpc_tab_11_45S, 11);
-        }
-        if (code_rate == C1_5_VLSNR) {
-          LDPC_BF(ldpc_tab_1_4S,    9);
-        }
-        if (code_rate == C4_15_VLSNR) {
-          LDPC_BF(ldpc_tab_4_15S,  12);
-        }
-        if (code_rate == C1_3_VLSNR) {
-          LDPC_BF(ldpc_tab_1_3S,   15);
-        }
-      }
-      else {
-        if (code_rate == C1_5_MEDIUM) {
-          LDPC_BF(ldpc_tab_1_5M,   18);
-        }
-        if (code_rate == C11_45_MEDIUM) {
-          LDPC_BF(ldpc_tab_11_45M, 22);
-        }
-        if (code_rate == C1_3_MEDIUM) {
-          LDPC_BF(ldpc_tab_1_3M,   30);
-        }
-      }
-      ldpc_encode.table_length = index;
+      get_nbch(FECFRAME_NORMAL, C2_9_VLSNR, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_2_9N,      40, 11);
+      ldpc_encode[11].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C13_45, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_13_45N,    52, 12);
+      ldpc_encode[12].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C9_20, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_9_20N,     81, 13);
+      ldpc_encode[13].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C90_180, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_90_180N,   90, 14);
+      ldpc_encode[14].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C96_180, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_96_180N,   96, 15);
+      ldpc_encode[15].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C11_20, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_11_20N,    99, 16);
+      ldpc_encode[16].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C100_180, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_100_180N, 100, 17);
+      ldpc_encode[17].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C104_180, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_104_180N, 104, 18);
+      ldpc_encode[18].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C26_45, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_26_45N,   104, 19);
+      ldpc_encode[19].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C18_30, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_18_30N,   108, 20);
+      ldpc_encode[20].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C28_45, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_28_45N,   112, 21);
+      ldpc_encode[21].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C23_36, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_23_36N,   115, 22);
+      ldpc_encode[22].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C116_180, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_116_180N, 116, 23);
+      ldpc_encode[23].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C20_30, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_20_30N,   120, 24);
+      ldpc_encode[24].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C124_180, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_124_180N, 124, 25);
+      ldpc_encode[25].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C25_36, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_25_36N,   125, 26);
+      ldpc_encode[26].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C128_180, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_128_180N, 128, 27);
+      ldpc_encode[27].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C13_18, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_13_18N,   130, 28);
+      ldpc_encode[28].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C132_180, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_132_180N, 132, 29);
+      ldpc_encode[29].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C22_30, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_22_30N,   132, 30);
+      ldpc_encode[30].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C135_180, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_135_180N, 135, 31);
+      ldpc_encode[31].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C140_180, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_140_180N, 140, 32);
+      ldpc_encode[32].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C7_9, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_7_9N,     140, 33);
+      ldpc_encode[33].table_length = index;
+      get_nbch(FECFRAME_NORMAL, C154_180, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_154_180N, 154, 34);
+      ldpc_encode[34].table_length = index;
+
+      get_nbch(FECFRAME_SHORT, C1_4, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_1_4S, 9, 35);
+      ldpc_encode[35].table_length = index;
+      get_nbch(FECFRAME_SHORT, C1_3, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_1_3S, 15, 36);
+      ldpc_encode[36].table_length = index;
+      get_nbch(FECFRAME_SHORT, C2_5, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_2_5S, 18, 37);
+      ldpc_encode[37].table_length = index;
+      get_nbch(FECFRAME_SHORT, C1_2, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_1_2S, 20, 38);
+      ldpc_encode[38].table_length = index;
+      get_nbch(FECFRAME_SHORT, C3_5, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_3_5S, 27, 39);
+      ldpc_encode[39].table_length = index;
+      get_nbch(FECFRAME_SHORT, C2_3, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_2_3S, 30, 40);
+      ldpc_encode[40].table_length = index;
+      get_nbch(FECFRAME_SHORT, C3_4, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_3_4S, 33, 41);
+      ldpc_encode[41].table_length = index;
+      get_nbch(FECFRAME_SHORT, C4_5, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_4_5S, 35, 42);
+      ldpc_encode[42].table_length = index;
+      get_nbch(FECFRAME_SHORT, C5_6, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_5_6S, 37, 43);
+      ldpc_encode[43].table_length = index;
+      get_nbch(FECFRAME_SHORT, C8_9, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_8_9S, 40, 44);
+      ldpc_encode[44].table_length = index;
+
+      get_nbch(FECFRAME_SHORT, C11_45, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_11_45S, 11, 45);
+      ldpc_encode[45].table_length = index;
+      get_nbch(FECFRAME_SHORT, C4_15, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_4_15S,  12, 46);
+      ldpc_encode[46].table_length = index;
+      get_nbch(FECFRAME_SHORT, C14_45, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_14_45S, 14, 47);
+      ldpc_encode[47].table_length = index;
+      get_nbch(FECFRAME_SHORT, C7_15, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_7_15S,  21, 48);
+      ldpc_encode[48].table_length = index;
+      get_nbch(FECFRAME_SHORT, C8_15, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_8_15S,  24, 49);
+      ldpc_encode[49].table_length = index;
+      get_nbch(FECFRAME_SHORT, C26_45, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_26_45S, 26, 50);
+      ldpc_encode[50].table_length = index;
+      get_nbch(FECFRAME_SHORT, C32_45, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_32_45S, 32, 51);
+      ldpc_encode[51].table_length = index;
+
+      get_nbch(FECFRAME_MEDIUM, C1_5_MEDIUM, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_1_5M,   18, 52);
+      ldpc_encode[52].table_length = index;
+      get_nbch(FECFRAME_MEDIUM, C11_45_MEDIUM, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_11_45M, 22, 53);
+      ldpc_encode[53].table_length = index;
+      get_nbch(FECFRAME_MEDIUM, C1_3_MEDIUM, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+      im = 0;
+      index = 0;
+      pbits = (frame_size_real + Xp) - nbch;    //number of parity bits
+      q = q_val;
+      LDPC_BF(ldpc_tab_1_3M,   30, 54);
+      ldpc_encode[54].table_length = index;
     }
 
     int
@@ -594,64 +854,100 @@ for (int row = 0; row < ROWS; row++) { \
       const unsigned char *in = (const unsigned char *) input_items[0];
       unsigned char *out = (unsigned char *) output_items[0];
       const unsigned char *d;
-      unsigned char *p;
+      unsigned char *p = &out[0];
       unsigned char *b = (unsigned char *) output_items[0];
       unsigned char *s;
       // Calculate the number of parity bits
-      int plen = (frame_size_real + Xp) - nbch;
+      int plen;
       d = in;
-      p = &out[nbch];
       int consumed = 0;
+      int produced = 0;
       int puncture, index;
+      dvbs2_framesize_t framesize;
+      dvbs2_code_rate_t rate;
+      dvbs2_constellation_t constellation;
+      dvbs2_pilots_t pilots;
+      unsigned int goldcode;
+      unsigned int nbch, q_val, frame_size, frame_size_real;
+      int Xs, P, Xp, table;
+      static unsigned int check = 0;
 
-      for (int i = 0; i < noutput_items; i += frame_size) {
-        if (Xs != 0) {
-          s = &shortening_buffer[0];
-          memset(s, 0, sizeof(unsigned char) * Xs);
-          memcpy(&s[Xs], &in[consumed], sizeof(unsigned char) * nbch);
-          d = s;
-        }
-        if (P != 0) {
-          p = &puncturing_buffer[nbch];
-          b = &out[i + nbch];
-        }
-        // First zero all the parity bits
-        memset(p, 0, sizeof(unsigned char) * plen);
-        for (int j = 0; j < (int)nbch; j++) {
-          out[i + j] = in[consumed];
-          consumed++;
-        }
-        // now do the parity checking
-        for (int j = 0; j < ldpc_encode.table_length; j++) {
-          p[ldpc_encode.p[j]] ^= d[ldpc_encode.d[j]];
-        }
-        if (P != 0) {
-          puncture = 0;
-          for (int j = 0; j < plen; j += P) {
-            p[j] = 0x55;
-            puncture++;
-            if (puncture == Xp) {
-              break;
+      std::vector<tag_t> tags;
+      const uint64_t nread = this->nitems_read(0); //number of items read on port 0
+
+      // Read all tags on the input buffer
+      this->get_tags_in_range(tags, 0, nread, nread + noutput_items, pmt::string_to_symbol("modcod"));
+
+      for (int i = 0; i < (int)tags.size(); i++) {
+        framesize = (dvbs2_framesize_t)((pmt::to_long(tags[i].value)) & 0xff);
+        rate = (dvbs2_code_rate_t)(((pmt::to_long(tags[i].value)) >> 8) & 0xff);
+        constellation = (dvbs2_constellation_t)(((pmt::to_long(tags[i].value)) >> 16) & 0xff);
+        pilots = (dvbs2_pilots_t)(((pmt::to_long(tags[i].value)) >> 24) & 0xff);
+        goldcode = (unsigned int)(((pmt::to_long(tags[i].value)) >> 32) & 0x3ffff);
+        get_nbch(framesize, rate, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
+        if (frame_size + produced <= (unsigned int)noutput_items) {
+          if (goldcode != check) {
+            printf("ldpc index = %d, %d\n", goldcode, check);
+            check = goldcode + 1;
+          }
+          else {
+            check++;
+          }
+          const uint64_t tagoffset = this->nitems_written(0);
+          const uint64_t tagmodcod = (uint64_t(goldcode) << 32) | (uint64_t(pilots) << 24) | (uint64_t(constellation) << 16) | (uint64_t(rate) << 8) | uint64_t(framesize);
+          pmt::pmt_t key = pmt::string_to_symbol("modcod");
+          pmt::pmt_t value = pmt::from_long(tagmodcod);
+          this->add_item_tag(0, tagoffset, key, value);
+          plen = (frame_size_real + Xp) - nbch;
+          p += nbch;
+          if (Xs != 0) {
+            s = &shortening_buffer[0];
+            memset(s, 0, sizeof(unsigned char) * Xs);
+            memcpy(&s[Xs], &in[consumed], sizeof(unsigned char) * nbch);
+            d = s;
+          }
+          if (P != 0) {
+            p = &puncturing_buffer[nbch];
+            b = &out[produced + nbch];
+          }
+          // First zero all the parity bits
+          memset(p, 0, sizeof(unsigned char) * plen);
+          for (int j = 0; j < (int)nbch; j++) {
+            out[produced + j] = in[consumed];
+            consumed++;
+          }
+          produced += nbch;
+          // now do the parity checking
+          for (int j = 0; j < ldpc_encode[table].table_length; j++) {
+            p[ldpc_encode[table].p[j]] ^= d[ldpc_encode[table].d[j]];
+          }
+          if (P != 0) {
+            puncture = 0;
+            for (int j = 0; j < plen; j += P) {
+              p[j] = 0x55;
+              puncture++;
+              if (puncture == Xp) {
+                break;
+              }
             }
-          }
-          index = 0;
-          for (int j = 0; j < plen; j++) {
-            if (p[j] != 0x55) {
-              b[index++] = p[j];
+            index = 0;
+            for (int j = 0; j < plen; j++) {
+              if (p[j] != 0x55) {
+                b[index++] = p[j];
+              }
             }
+            p = &out[nbch];
           }
-          p = &out[nbch];
-        }
-        for (int j = 1; j < (plen - Xp); j++) {
-          p[j] ^= p[j-1];
-        }
-        if (signal_constellation == MOD_128APSK) {
-          for (int j = 0; j < 6; j++) {
-            p[j + plen] = 0;
+          for (int j = 1; j < (plen - Xp); j++) {
+            p[j] ^= p[j-1];
           }
+          produced += plen - Xp;
+          d += nbch;
+          p += frame_size - nbch;
         }
-        d += nbch;
-        p += frame_size;
+        else {
+          break;
+        }
       }
 
       // Tell runtime system how many input items we consumed on
@@ -659,7 +955,7 @@ for (int row = 0; row < ROWS; row++) { \
       consume_each (consumed);
 
       // Tell runtime system how many output items we produced.
-      return noutput_items;
+      return produced;
     }
 
     const int ldpc_bb_impl::ldpc_tab_1_4N[45][13]=

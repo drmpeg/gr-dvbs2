@@ -29,22 +29,15 @@ namespace gr {
     class interleaver_bb_impl : public interleaver_bb
     {
      private:
-      int frame_size;
-      int signal_constellation;
-      int code_rate;
-      int mod;
-      int packed_items;
       int rowaddr0;
       int rowaddr1;
       int rowaddr2;
       int rowaddr3;
       int rowaddr4;
-      int rowaddr5;
-      int rowaddr6;
-      int rowaddr7;
+      void get_rows(dvbs2_framesize_t, dvbs2_code_rate_t, dvbs2_constellation_t, int *);
 
      public:
-      interleaver_bb_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation);
+      interleaver_bb_impl();
       ~interleaver_bb_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

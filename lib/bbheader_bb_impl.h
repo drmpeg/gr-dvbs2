@@ -51,6 +51,10 @@ namespace gr {
       unsigned int count;
       unsigned char crc;
       unsigned int frame_size;
+      unsigned int code_rate;
+      unsigned int signal_constellation;
+      unsigned int pilot_mode;
+      unsigned int gold_code;
       unsigned char bsave;
       bool dvbs2x;
       bool alternate;
@@ -62,7 +66,7 @@ namespace gr {
       int add_crc8_bits(unsigned char *, int);
 
      public:
-      bbheader_bb_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_rolloff_factor_t rolloff);
+      bbheader_bb_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, dvbs2_pilots_t pilots, int goldcode, dvbs2_rolloff_factor_t rolloff);
       ~bbheader_bb_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

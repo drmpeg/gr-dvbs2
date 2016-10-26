@@ -35,20 +35,11 @@ namespace gr {
     class ldpc_bb_impl : public ldpc_bb
     {
      private:
-      unsigned int frame_size;
-      unsigned int frame_size_real;
-      unsigned int frame_size_type;
-      unsigned int signal_constellation;
-      unsigned int nbch;
-      unsigned int code_rate;
-      unsigned int q_val;
-      int Xs;
-      int P;
-      int Xp;
       unsigned char puncturing_buffer[FRAME_SIZE_NORMAL];
       unsigned char shortening_buffer[FRAME_SIZE_NORMAL];
+      void get_nbch(dvbs2_framesize_t, dvbs2_code_rate_t, unsigned int *, unsigned int *, unsigned int *, unsigned int *, int *, int *, int *, int *);
       void ldpc_lookup_generate(void);
-      ldpc_encode_table ldpc_encode;
+      ldpc_encode_table ldpc_encode[55];
 
       const static int ldpc_tab_1_4N[45][13];
       const static int ldpc_tab_1_3N[60][13];
@@ -111,7 +102,7 @@ namespace gr {
       const static int ldpc_tab_1_3M[30][13];
 
      public:
-      ldpc_bb_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation);
+      ldpc_bb_impl();
       ~ldpc_bb_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

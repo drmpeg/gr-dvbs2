@@ -186,7 +186,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>5000000</value>
+      <value>6000000</value>
     </param>
   </block>
   <block>
@@ -213,7 +213,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>100</value>
+      <value>200</value>
     </param>
   </block>
   <block>
@@ -472,15 +472,15 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>1</value>
     </param>
     <param>
       <key>file</key>
-      <value>/run/shm/adv16apsk910.ts</value>
+      <value>/media/re/ssd/rhcpdvbs2.ts</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(176, 36)</value>
+      <value>(176, 52)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -582,11 +582,15 @@
     </param>
     <param>
       <key>rate3</key>
-      <value>C1_4</value>
+      <value>C8_9</value>
     </param>
     <param>
       <key>comment</key>
       <value></value>
+    </param>
+    <param>
+      <key>constellation</key>
+      <value>MOD_16APSK</value>
     </param>
     <param>
       <key>affinity</key>
@@ -598,14 +602,18 @@
     </param>
     <param>
       <key>framesize</key>
-      <value>FECFRAME_NORMAL</value>
+      <value>FECFRAME_SHORT</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(408, 28)</value>
+      <value>(408, 24)</value>
     </param>
     <param>
       <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>goldcode</key>
       <value>0</value>
     </param>
     <param>
@@ -621,6 +629,10 @@
       <value>0</value>
     </param>
     <param>
+      <key>pilots</key>
+      <value>PILOTS_ON</value>
+    </param>
+    <param>
       <key>rolloff</key>
       <value>RO_0_20</value>
     </param>
@@ -630,18 +642,6 @@
     <param>
       <key>alias</key>
       <value></value>
-    </param>
-    <param>
-      <key>rate1</key>
-      <value>C9_10</value>
-    </param>
-    <param>
-      <key>rate2</key>
-      <value>C1_5_MEDIUM</value>
-    </param>
-    <param>
-      <key>rate3</key>
-      <value>C1_4</value>
     </param>
     <param>
       <key>comment</key>
@@ -656,12 +656,8 @@
       <value>True</value>
     </param>
     <param>
-      <key>framesize</key>
-      <value>FECFRAME_NORMAL</value>
-    </param>
-    <param>
       <key>_coordinate</key>
-      <value>(624, 36)</value>
+      <value>(656, 64)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -687,18 +683,6 @@
       <value></value>
     </param>
     <param>
-      <key>rate1</key>
-      <value>C9_10</value>
-    </param>
-    <param>
-      <key>rate2</key>
-      <value>C1_5_MEDIUM</value>
-    </param>
-    <param>
-      <key>rate3</key>
-      <value>C1_4</value>
-    </param>
-    <param>
       <key>comment</key>
       <value></value>
     </param>
@@ -711,12 +695,8 @@
       <value>True</value>
     </param>
     <param>
-      <key>framesize</key>
-      <value>FECFRAME_NORMAL</value>
-    </param>
-    <param>
       <key>_coordinate</key>
-      <value>(848, 36)</value>
+      <value>(848, 64)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -742,24 +722,8 @@
       <value></value>
     </param>
     <param>
-      <key>rate1</key>
-      <value>C9_10</value>
-    </param>
-    <param>
-      <key>rate2</key>
-      <value>C1_5_MEDIUM</value>
-    </param>
-    <param>
-      <key>rate3</key>
-      <value>C1_4</value>
-    </param>
-    <param>
       <key>comment</key>
       <value></value>
-    </param>
-    <param>
-      <key>constellation</key>
-      <value>MOD_16APSK</value>
     </param>
     <param>
       <key>affinity</key>
@@ -770,12 +734,8 @@
       <value>True</value>
     </param>
     <param>
-      <key>framesize</key>
-      <value>FECFRAME_NORMAL</value>
-    </param>
-    <param>
       <key>_coordinate</key>
-      <value>(184, 172)</value>
+      <value>(184, 200)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -801,24 +761,8 @@
       <value></value>
     </param>
     <param>
-      <key>rate1</key>
-      <value>C9_10</value>
-    </param>
-    <param>
-      <key>rate4</key>
-      <value>C1_5_MEDIUM</value>
-    </param>
-    <param>
-      <key>rate5</key>
-      <value>C1_4</value>
-    </param>
-    <param>
       <key>comment</key>
       <value></value>
-    </param>
-    <param>
-      <key>constellation</key>
-      <value>MOD_OTHER</value>
     </param>
     <param>
       <key>affinity</key>
@@ -829,12 +773,8 @@
       <value>True</value>
     </param>
     <param>
-      <key>framesize</key>
-      <value>FECFRAME_NORMAL</value>
-    </param>
-    <param>
       <key>_coordinate</key>
-      <value>(1064, 28)</value>
+      <value>(1064, 64)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -860,24 +800,8 @@
       <value></value>
     </param>
     <param>
-      <key>rate1</key>
-      <value>C9_10</value>
-    </param>
-    <param>
-      <key>rate2</key>
-      <value>C1_5_MEDIUM</value>
-    </param>
-    <param>
-      <key>rate3</key>
-      <value>C1_4</value>
-    </param>
-    <param>
       <key>comment</key>
       <value></value>
-    </param>
-    <param>
-      <key>constellation</key>
-      <value>MOD_16APSK</value>
     </param>
     <param>
       <key>affinity</key>
@@ -888,12 +812,8 @@
       <value>True</value>
     </param>
     <param>
-      <key>framesize</key>
-      <value>FECFRAME_NORMAL</value>
-    </param>
-    <param>
       <key>_coordinate</key>
-      <value>(448, 172)</value>
+      <value>(448, 200)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -919,24 +839,8 @@
       <value></value>
     </param>
     <param>
-      <key>rate1</key>
-      <value>C9_10</value>
-    </param>
-    <param>
-      <key>rate2</key>
-      <value>C1_5_MEDIUM</value>
-    </param>
-    <param>
-      <key>rate3</key>
-      <value>C1_4</value>
-    </param>
-    <param>
       <key>comment</key>
       <value></value>
-    </param>
-    <param>
-      <key>constellation</key>
-      <value>MOD_16APSK</value>
     </param>
     <param>
       <key>affinity</key>
@@ -947,19 +851,11 @@
       <value>True</value>
     </param>
     <param>
-      <key>framesize</key>
-      <value>FECFRAME_NORMAL</value>
-    </param>
-    <param>
       <key>_coordinate</key>
-      <value>(184, 320)</value>
+      <value>(184, 352)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>goldcode</key>
       <value>0</value>
     </param>
     <param>
@@ -973,10 +869,6 @@
     <param>
       <key>minoutbuf</key>
       <value>0</value>
-    </param>
-    <param>
-      <key>pilots</key>
-      <value>PILOTS_ON</value>
     </param>
   </block>
   <block>
@@ -1954,7 +1846,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -3020,7 +2912,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>0</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>

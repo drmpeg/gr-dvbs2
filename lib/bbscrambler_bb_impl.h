@@ -29,12 +29,12 @@ namespace gr {
     class bbscrambler_bb_impl : public bbscrambler_bb
     {
      private:
-      unsigned int kbch;
       unsigned char bb_randomise[FRAME_SIZE_NORMAL];
+      void get_kbch(dvbs2_framesize_t, dvbs2_code_rate_t, unsigned int *);
       void init_bb_randomiser(void);
 
      public:
-      bbscrambler_bb_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate);
+      bbscrambler_bb_impl();
       ~bbscrambler_bb_impl();
 
       int work(int noutput_items,

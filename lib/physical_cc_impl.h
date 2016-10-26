@@ -31,14 +31,6 @@ namespace gr {
     class physical_cc_impl : public physical_cc
     {
      private:
-      int frame_size;
-      int signal_constellation;
-      int slots;
-      int pilot_mode;
-      int pilot_symbols;
-      int gold_code;
-      int vlsnr_header;
-      int vlsnr_set;
       int b[VLSNR_HEADER_LENGTH];
       gr_complex m_bpsk[4][2];
       gr_complex m_pl[90];
@@ -49,6 +41,7 @@ namespace gr {
       void pl_header_encode(unsigned char, unsigned char, int *);
       int parity_chk(long, long);
       void build_symbol_scrambler_table(void);
+      void get_slots(dvbs2_framesize_t, dvbs2_code_rate_t, dvbs2_constellation_t, dvbs2_pilots_t, int, int *, int *, int *, int *);
 
       const static unsigned long g[7];
       const static int ph_scram_tab[64];
@@ -56,7 +49,7 @@ namespace gr {
       const static int ph_vlsnr_seq[16][VLSNR_HEADER_LENGTH - 4];
 
      public:
-      physical_cc_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, dvbs2_pilots_t pilots, int goldcode);
+      physical_cc_impl();
       ~physical_cc_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

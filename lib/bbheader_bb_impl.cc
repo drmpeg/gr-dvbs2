@@ -29,16 +29,16 @@ namespace gr {
   namespace dvbs2 {
 
     bbheader_bb::sptr
-    bbheader_bb::make(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_rolloff_factor_t rolloff)
+    bbheader_bb::make(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, dvbs2_pilots_t pilots, int goldcode, dvbs2_rolloff_factor_t rolloff)
     {
       return gnuradio::get_initial_sptr
-        (new bbheader_bb_impl(framesize, rate, rolloff));
+        (new bbheader_bb_impl(framesize, rate, constellation, pilots, goldcode, rolloff));
     }
 
     /*
      * The private constructor
      */
-    bbheader_bb_impl::bbheader_bb_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_rolloff_factor_t rolloff)
+    bbheader_bb_impl::bbheader_bb_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, dvbs2_pilots_t pilots, int goldcode, dvbs2_rolloff_factor_t rolloff)
       : gr::block("bbheader_bb",
               gr::io_signature::make(1, 1, sizeof(unsigned char)),
               gr::io_signature::make(1, 1, sizeof(unsigned char)))
@@ -49,6 +49,15 @@ namespace gr {
       alternate = TRUE;
       nibble = TRUE;
       frame_size = framesize;
+      code_rate = rate;
+      signal_constellation =  constellation;
+      pilot_mode = pilots;
+      if (goldcode < 0 || goldcode > 262141) {
+        GR_LOG_WARN(d_logger, "Gold Code must be between 0 and 262141 inclusive.");
+        GR_LOG_WARN(d_logger, "Gold Code set to 0.");
+        goldcode = 0;
+      }
+      gold_code = goldcode;
       BBHeader *f = &m_format[0].bb_header;
       if (framesize == FECFRAME_NORMAL) {
         switch (rate) {
@@ -427,6 +436,12 @@ namespace gr {
       unsigned char b;
 
       for (int i = 0; i < noutput_items; i += kbch) {
+        const uint64_t tagoffset = this->nitems_written(0);
+        const uint64_t tagmodcod = (uint64_t(gold_code) << 32) | (uint64_t(pilot_mode) << 24) | (uint64_t(signal_constellation) << 16) | (uint64_t(code_rate) << 8) | uint64_t(frame_size);
+        pmt::pmt_t key = pmt::string_to_symbol("modcod");
+        pmt::pmt_t value = pmt::from_long(tagmodcod);
+        this->add_item_tag(0, tagoffset, key, value);
+        gold_code++;
         if (frame_size != FECFRAME_MEDIUM) {
           add_bbheader(&out[offset], count, nibble);
           offset = offset + 80;

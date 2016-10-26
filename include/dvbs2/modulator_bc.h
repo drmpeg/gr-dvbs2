@@ -48,7 +48,7 @@ namespace gr {
        * \param rate FEC code rate.
        * \param constellation DVB-S2 constellation.
        */
-      static sptr make(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation);
+      static sptr make();
     };
 
   } // namespace dvbs2
