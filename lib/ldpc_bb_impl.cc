@@ -862,6 +862,7 @@ for (int row = 0; row < ROWS; row++) { \
       d = in;
       int consumed = 0;
       int produced = 0;
+      int produced_per_iteration;
       int puncture, index;
       dvbs2_framesize_t framesize;
       dvbs2_code_rate_t rate;
@@ -886,6 +887,7 @@ for (int row = 0; row < ROWS; row++) { \
         goldcode = (unsigned int)(((pmt::to_long(tags[i].value)) >> 32) & 0x3ffff);
         get_nbch(framesize, rate, &nbch, &q_val, &frame_size, &frame_size_real, &Xs, &P, &Xp, &table);
         if (frame_size + produced <= (unsigned int)noutput_items) {
+          produced_per_iteration = 0;
           if (goldcode != check) {
             printf("ldpc index = %d, %d\n", goldcode, check);
             check = goldcode + 1;
@@ -917,6 +919,7 @@ for (int row = 0; row < ROWS; row++) { \
             consumed++;
           }
           produced += nbch;
+          produced_per_iteration += nbch;
           // now do the parity checking
           for (int j = 0; j < ldpc_encode[table].table_length; j++) {
             p[ldpc_encode[table].p[j]] ^= d[ldpc_encode[table].d[j]];
@@ -942,8 +945,10 @@ for (int row = 0; row < ROWS; row++) { \
             p[j] ^= p[j-1];
           }
           produced += plen - Xp;
+          produced_per_iteration += plen - Xp;
           d += nbch;
           p += frame_size - nbch;
+          produce(0, produced_per_iteration);
         }
         else {
           break;
@@ -955,7 +960,7 @@ for (int row = 0; row < ROWS; row++) { \
       consume_each (consumed);
 
       // Tell runtime system how many output items we produced.
-      return produced;
+      return WORK_CALLED_PRODUCE;
     }
 
     const int ldpc_bb_impl::ldpc_tab_1_4N[45][13]=

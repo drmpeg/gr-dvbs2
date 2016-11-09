@@ -321,6 +321,7 @@ namespace gr {
       unsigned char *out = (unsigned char *) output_items[0];
       int consumed = 0;
       int produced = 0;
+      int produced_per_iteration;
       dvbs2_framesize_t framesize;
       dvbs2_code_rate_t rate;
       dvbs2_constellation_t constellation;
@@ -344,6 +345,7 @@ namespace gr {
         goldcode = (unsigned int)(((pmt::to_long(tags[i].value)) >> 32) & 0x3ffff);
         get_rows(framesize, rate, constellation, &frame_size);
         if (produced <= noutput_items) {
+          produced_per_iteration = 0;
           if (goldcode != check) {
             printf("interleaver index = %d, %d\n", goldcode, check);
             check = goldcode + 1;
@@ -361,6 +363,7 @@ namespace gr {
               rows = frame_size;
               for (int j = 0; j < rows; j++) {
                 out[produced++] = in[consumed++];
+                produced_per_iteration++;
               }
               break;
             case MOD_BPSK_SF2:
@@ -368,6 +371,7 @@ namespace gr {
               for (int j = 0; j < rows; j++) {
                 out[produced++] = in[consumed];
                 out[produced++] = in[consumed++];
+                produced_per_iteration += 2;
               }
               break;
             case MOD_QPSK:
@@ -375,6 +379,7 @@ namespace gr {
               for (int j = 0; j < rows; j++) {
                 out[produced] = in[consumed++] << 1;
                 out[produced++] |= in[consumed++];
+                produced_per_iteration++;
               }
               break;
             case MOD_8PSK:
@@ -385,6 +390,7 @@ namespace gr {
               c3 = &in[consumed + rowaddr2];
               for (int j = 0; j < rows; j++) {
                 out[produced++] = (c1[j]<<2) | (c2[j]<<1) | (c3[j]);
+                produced_per_iteration++;
                 consumed += 3;
               }
               break;
@@ -397,6 +403,7 @@ namespace gr {
               c4 = &in[consumed + rowaddr3];
               for (int j = 0; j < rows; j++) {
                 out[produced++] = (c1[j]<<3) | (c2[j]<<2) | (c3[j]<<1) | (c4[j]);
+                produced_per_iteration++;
                 consumed += 4;
               }
               break;
@@ -411,6 +418,7 @@ namespace gr {
               c5 = &in[consumed + rowaddr4];
               for (int j = 0; j < rows; j++) {
                 out[produced++] = (c1[j]<<4) | (c2[j]<<3) | (c3[j]<<2) | (c4[j]<<1) | c5[j];
+                produced_per_iteration++;
                 consumed += 5;
               }
               break;
@@ -419,9 +427,11 @@ namespace gr {
               for (int j = 0; j < rows; j++) {
                 out[produced] = in[consumed++] << 1;
                 out[produced++] |= in[consumed++];
+                produced_per_iteration++;
               }
               break;
           }
+          produce(0, produced_per_iteration);
         }
         else {
           break;
@@ -433,7 +443,7 @@ namespace gr {
       consume_each (consumed);
 
       // Tell runtime system how many output items we produced.
-      return produced;
+      return WORK_CALLED_PRODUCE;
     }
 
   } /* namespace dvbs2 */

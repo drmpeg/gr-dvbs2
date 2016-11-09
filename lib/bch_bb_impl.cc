@@ -599,6 +599,7 @@ namespace gr {
       unsigned int shift[6];
       int consumed = 0;
       int produced = 0;
+      int produced_per_iteration;
       dvbs2_framesize_t framesize;
       dvbs2_code_rate_t rate;
       dvbs2_constellation_t constellation;
@@ -620,8 +621,8 @@ namespace gr {
         pilots = (dvbs2_pilots_t)(((pmt::to_long(tags[i].value)) >> 24) & 0xff);
         goldcode = (unsigned int)(((pmt::to_long(tags[i].value)) >> 32) & 0x3ffff);
         get_kbch_nbch(framesize, rate, &kbch, &nbch, &bch_code);
-        printf("tags = %d, noutput_items = %d, produced = %d, consumed = %d, value = %d, nread = %d\n", (unsigned int)tags.size(), noutput_items, produced, consumed, goldcode, (unsigned int)nread);
         if (nbch + produced <= (unsigned int)noutput_items) {
+          produced_per_iteration = 0;
           if (goldcode != check) {
             printf("bch index = %d, %d\n", goldcode, check);
             check = goldcode + 1;
@@ -655,12 +656,14 @@ namespace gr {
               }
               consumed += kbch;
               produced += kbch;
+              produced_per_iteration += kbch;
               // Now add the parity bits to the output
               for (int n = 0; n < 192; n++) {
                 *out++ = (shift[5] & 1);
                 reg_6_shift(shift);
               }
               produced += 192;
+              produced_per_iteration += 192;
               break;
             case BCH_CODE_N10:
               //Zero the shift register
@@ -681,12 +684,14 @@ namespace gr {
               }
               consumed += kbch;
               produced += kbch;
+              produced_per_iteration += kbch;
               // Now add the parity bits to the output
               for( int n = 0; n < 160; n++ ) {
                 *out++ = (shift[4] & 1);
                 reg_5_shift(shift);
               }
               produced += 160;
+              produced_per_iteration += 160;
               break;
             case BCH_CODE_N8:
               //Zero the shift register
@@ -706,12 +711,14 @@ namespace gr {
               }
               consumed += kbch;
               produced += kbch;
+              produced_per_iteration += kbch;
               // Now add the parity bits to the output
               for (int n = 0; n < 128; n++) {
                 *out++ = shift[3] & 1;
                 reg_4_shift(shift);
               }
               produced += 128;
+              produced_per_iteration += 128;
               break;
             case BCH_CODE_S12:
               //Zero the shift register
@@ -733,12 +740,14 @@ namespace gr {
               }
               consumed += kbch;
               produced += kbch;
+              produced_per_iteration += kbch;
               // Now add the parity bits to the output
               for (int n = 0; n < 168; n++) {
                 *out++ = (shift[5] & 0x01000000) ? 1 : 0;
                 reg_6_shift(shift);
               }
               produced += 168;
+              produced_per_iteration += 168;
               break;
             case BCH_CODE_M12:
               //Zero the shift register
@@ -760,14 +769,17 @@ namespace gr {
               }
               consumed += kbch;
               produced += kbch;
+              produced_per_iteration += kbch;
               // Now add the parity bits to the output
               for (int n = 0; n < 180; n++) {
                 *out++ = (shift[5] & 0x00001000) ? 1 : 0;
                 reg_6_shift(shift);
               }
               produced += 180;
+              produced_per_iteration += 180;
               break;
           }
+          produce(0, produced_per_iteration);
         }
         else {
           break;
@@ -779,7 +791,7 @@ namespace gr {
       consume_each (consumed);
 
       // Tell runtime system how many output items we produced.
-      return produced;
+      return WORK_CALLED_PRODUCE;
     }
 
   } /* namespace dvbs2 */

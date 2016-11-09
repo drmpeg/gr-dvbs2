@@ -645,6 +645,7 @@ namespace gr {
               break;
           }
           produced += num_items;
+          produce(0, num_items);
         }
         else {
           break;
@@ -656,7 +657,7 @@ namespace gr {
       consume_each (produced);
 
       // Tell runtime system how many output items we produced.
-      return noutput_items;
+      return WORK_CALLED_PRODUCE;
     }
 
   } /* namespace dvbs2 */

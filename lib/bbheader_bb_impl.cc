@@ -498,6 +498,7 @@ namespace gr {
             }
           }
         }
+        produce(0, kbch);
       }
 
       // Tell runtime system how many input items we consumed on
@@ -505,7 +506,7 @@ namespace gr {
       consume_each (consumed);
 
       // Tell runtime system how many output items we produced.
-      return noutput_items;
+      return WORK_CALLED_PRODUCE;
     }
 
   } /* namespace dvbs2 */

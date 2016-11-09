@@ -700,6 +700,7 @@ namespace gr {
       dvbs2_constellation_t constellation;
       dvbs2_pilots_t pilots;
       unsigned int goldcode;
+      static unsigned int check = 0;
 
       std::vector<tag_t> tags;
       const uint64_t nread = this->nitems_read(0); //number of items read on port 0
@@ -714,8 +715,14 @@ namespace gr {
         pilots = (dvbs2_pilots_t)(((pmt::to_long(tags[i].value)) >> 24) & 0xff);
         goldcode = (unsigned int)(((pmt::to_long(tags[i].value)) >> 32) & 0x3ffff);
         get_slots(framesize, rate, constellation, pilots, goldcode, &slots, &pilot_symbols, &vlsnr_set, &vlsnr_header);
-//        printf("tags = %d, noutput_items = %d, produced = %d, space = %d, index = %d, %d\n", (unsigned int)tags.size(), noutput_items, produced, (((slots * 90) + 90 + pilot_symbols) * 2), goldcode, (unsigned int)nread);
         if (produced + (((slots * 90) + 90 + pilot_symbols) * 2) <= noutput_items) {
+          if (goldcode != check) {
+            printf("physical index = %d, %d\n", goldcode, check);
+            check = goldcode + 1;
+          }
+          else {
+            check++;
+          }
           if (vlsnr_set == VLSNR_OFF) {
             n = 0;
             slot_count = 0;
@@ -1129,7 +1136,6 @@ namespace gr {
         }
       }
 
-//      printf("consumed = %d, produced = %d\n", consumed, produced);
       // Tell runtime system how many input items we consumed on
       // each input stream.
       consume_each (consumed);
