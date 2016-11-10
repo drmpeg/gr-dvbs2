@@ -429,7 +429,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>adv.cfile</value>
+      <value>dvbs2vcm.cfile</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -472,11 +472,11 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>1</value>
+      <value>True</value>
     </param>
     <param>
       <key>file</key>
-      <value>/media/re/ssd/rhcpdvbs2.ts</value>
+      <value>overflow8psk_2_89.ts</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -489,6 +489,116 @@
     <param>
       <key>id</key>
       <value>blocks_file_source_0</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>byte</value>
+    </param>
+    <param>
+      <key>repeat</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_file_source</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>file</key>
+      <value>sweetnothing8psk_2_910.ts</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(176, 124)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_file_source_0_0</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>byte</value>
+    </param>
+    <param>
+      <key>repeat</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_file_source</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>file</key>
+      <value>cosmic8psk_2_56.ts</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(176, 204)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_file_source_0_0_0</value>
     </param>
     <param>
       <key>maxoutbuf</key>
@@ -573,24 +683,72 @@
       <value></value>
     </param>
     <param>
-      <key>rate1</key>
-      <value>C9_10</value>
+      <key>rate1_1</key>
+      <value>C8_9</value>
     </param>
     <param>
-      <key>rate2</key>
+      <key>rate1_2</key>
       <value>C1_5_MEDIUM</value>
     </param>
     <param>
-      <key>rate3</key>
-      <value>C8_9</value>
+      <key>rate1_3</key>
+      <value>C1_4</value>
+    </param>
+    <param>
+      <key>rate2_1</key>
+      <value>C9_10</value>
+    </param>
+    <param>
+      <key>rate2_2</key>
+      <value>C1_5_MEDIUM</value>
+    </param>
+    <param>
+      <key>rate2_3</key>
+      <value>C1_4</value>
+    </param>
+    <param>
+      <key>rate3_1</key>
+      <value>C5_6</value>
+    </param>
+    <param>
+      <key>rate3_2</key>
+      <value>C1_5_MEDIUM</value>
+    </param>
+    <param>
+      <key>rate3_3</key>
+      <value>C1_4</value>
+    </param>
+    <param>
+      <key>rate4_1</key>
+      <value>C1_4</value>
+    </param>
+    <param>
+      <key>rate4_2</key>
+      <value>C1_5_MEDIUM</value>
+    </param>
+    <param>
+      <key>rate4_3</key>
+      <value>C1_4</value>
     </param>
     <param>
       <key>comment</key>
       <value></value>
     </param>
     <param>
-      <key>constellation</key>
-      <value>MOD_16APSK</value>
+      <key>constellation1</key>
+      <value>MOD_8PSK</value>
+    </param>
+    <param>
+      <key>constellation2</key>
+      <value>MOD_8PSK</value>
+    </param>
+    <param>
+      <key>constellation3</key>
+      <value>MOD_8PSK</value>
+    </param>
+    <param>
+      <key>constellation4</key>
+      <value>MOD_QPSK</value>
     </param>
     <param>
       <key>affinity</key>
@@ -601,19 +759,43 @@
       <value>True</value>
     </param>
     <param>
-      <key>framesize</key>
-      <value>FECFRAME_SHORT</value>
+      <key>framesize1</key>
+      <value>FECFRAME_NORMAL</value>
+    </param>
+    <param>
+      <key>framesize2</key>
+      <value>FECFRAME_NORMAL</value>
+    </param>
+    <param>
+      <key>framesize3</key>
+      <value>FECFRAME_NORMAL</value>
+    </param>
+    <param>
+      <key>framesize4</key>
+      <value>FECFRAME_NORMAL</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(408, 24)</value>
+      <value>(448, 12)</value>
     </param>
     <param>
       <key>_rotation</key>
       <value>0</value>
     </param>
     <param>
-      <key>goldcode</key>
+      <key>goldcode1</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>goldcode2</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>goldcode3</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>goldcode4</key>
       <value>0</value>
     </param>
     <param>
@@ -629,8 +811,24 @@
       <value>0</value>
     </param>
     <param>
-      <key>pilots</key>
+      <key>nstreams</key>
+      <value>3</value>
+    </param>
+    <param>
+      <key>pilots1</key>
       <value>PILOTS_ON</value>
+    </param>
+    <param>
+      <key>pilots2</key>
+      <value>PILOTS_ON</value>
+    </param>
+    <param>
+      <key>pilots3</key>
+      <value>PILOTS_ON</value>
+    </param>
+    <param>
+      <key>pilots4</key>
+      <value>PILOTS_OFF</value>
     </param>
     <param>
       <key>rolloff</key>
@@ -657,7 +855,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(656, 64)</value>
+      <value>(704, 120)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -696,7 +894,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(848, 64)</value>
+      <value>(880, 120)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -735,7 +933,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(184, 200)</value>
+      <value>(184, 288)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -774,7 +972,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1064, 64)</value>
+      <value>(1064, 120)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -813,7 +1011,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(448, 200)</value>
+      <value>(448, 288)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -852,7 +1050,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(184, 352)</value>
+      <value>(184, 392)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -895,7 +1093,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(464, 332)</value>
+      <value>(464, 372)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1850,7 +2048,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1040, 228)</value>
+      <value>(1040, 244)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1993,7 +2191,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(776, 204)</value>
+      <value>(776, 228)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -3072,6 +3270,18 @@
     <sink_block_id>dvbs2_bbheader_bb_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_file_source_0_0</source_block_id>
+    <sink_block_id>dvbs2_bbheader_bb_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>1</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_file_source_0_0_0</source_block_id>
+    <sink_block_id>dvbs2_bbheader_bb_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>2</sink_key>
   </connection>
   <connection>
     <source_block_id>blocks_throttle_0</source_block_id>

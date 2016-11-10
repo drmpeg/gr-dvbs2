@@ -329,7 +329,6 @@ namespace gr {
       unsigned int goldcode;
       int frame_size, rows;
       const unsigned char *c1, *c2, *c3, *c4, *c5;
-      static unsigned int check = 0;
 
       std::vector<tag_t> tags;
       const uint64_t nread = this->nitems_read(0); //number of items read on port 0
@@ -346,13 +345,6 @@ namespace gr {
         get_rows(framesize, rate, constellation, &frame_size);
         if (produced <= noutput_items) {
           produced_per_iteration = 0;
-          if (goldcode != check) {
-            printf("interleaver index = %d, %d\n", goldcode, check);
-            check = goldcode + 1;
-          }
-          else {
-            check++;
-          }
           const uint64_t tagoffset = this->nitems_written(0);
           const uint64_t tagmodcod = (uint64_t(goldcode) << 32) | (uint64_t(pilots) << 24) | (uint64_t(constellation) << 16) | (uint64_t(rate) << 8) | uint64_t(framesize);
           pmt::pmt_t key = pmt::string_to_symbol("modcod");

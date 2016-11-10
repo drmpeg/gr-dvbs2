@@ -606,7 +606,6 @@ namespace gr {
       dvbs2_pilots_t pilots;
       unsigned int goldcode;
       unsigned int kbch, nbch, bch_code;
-      static unsigned int check = 0;
 
       std::vector<tag_t> tags;
       const uint64_t nread = this->nitems_read(0); //number of items read on port 0
@@ -623,13 +622,6 @@ namespace gr {
         get_kbch_nbch(framesize, rate, &kbch, &nbch, &bch_code);
         if (nbch + produced <= (unsigned int)noutput_items) {
           produced_per_iteration = 0;
-          if (goldcode != check) {
-            printf("bch index = %d, %d\n", goldcode, check);
-            check = goldcode + 1;
-          }
-          else {
-            check++;
-          }
           const uint64_t tagoffset = this->nitems_written(0);
           const uint64_t tagmodcod = (uint64_t(goldcode) << 32) | (uint64_t(pilots) << 24) | (uint64_t(constellation) << 16) | (uint64_t(rate) << 8) | uint64_t(framesize);
           pmt::pmt_t key = pmt::string_to_symbol("modcod");

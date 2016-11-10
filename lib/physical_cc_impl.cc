@@ -700,7 +700,6 @@ namespace gr {
       dvbs2_constellation_t constellation;
       dvbs2_pilots_t pilots;
       unsigned int goldcode;
-      static unsigned int check = 0;
 
       std::vector<tag_t> tags;
       const uint64_t nread = this->nitems_read(0); //number of items read on port 0
@@ -716,13 +715,6 @@ namespace gr {
         goldcode = (unsigned int)(((pmt::to_long(tags[i].value)) >> 32) & 0x3ffff);
         get_slots(framesize, rate, constellation, pilots, goldcode, &slots, &pilot_symbols, &vlsnr_set, &vlsnr_header);
         if (produced + (((slots * 90) + 90 + pilot_symbols) * 2) <= noutput_items) {
-          if (goldcode != check) {
-            printf("physical index = %d, %d\n", goldcode, check);
-            check = goldcode + 1;
-          }
-          else {
-            check++;
-          }
           if (vlsnr_set == VLSNR_OFF) {
             n = 0;
             slot_count = 0;

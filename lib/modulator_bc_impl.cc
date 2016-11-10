@@ -552,7 +552,6 @@ namespace gr {
       dvbs2_constellation_t constellation;
       dvbs2_pilots_t pilots;
       unsigned int goldcode;
-      static unsigned int check = 0;
 
       std::vector<tag_t> tags;
       const uint64_t nread = this->nitems_read(0); //number of items read on port 0
@@ -568,13 +567,6 @@ namespace gr {
         goldcode = (unsigned int)(((pmt::to_long(tags[i].value)) >> 32) & 0x3ffff);
         get_items(framesize, rate, constellation, &num_items, &constellation_index);
         if (produced <= noutput_items) {
-          if (goldcode != check) {
-            printf("modulator index = %d, %d\n", goldcode, check);
-            check = goldcode + 1;
-          }
-          else {
-            check++;
-          }
           const uint64_t tagoffset = this->nitems_written(0);
           const uint64_t tagmodcod = (uint64_t(goldcode) << 32) | (uint64_t(pilots) << 24) | (uint64_t(constellation) << 16) | (uint64_t(rate) << 8) | uint64_t(framesize);
           pmt::pmt_t key = pmt::string_to_symbol("modcod");

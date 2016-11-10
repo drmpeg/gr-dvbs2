@@ -47,26 +47,28 @@ namespace gr {
     class bbheader_bb_impl : public bbheader_bb
     {
      private:
-      unsigned int kbch;
-      unsigned int count;
-      unsigned char crc;
-      unsigned int frame_size;
-      unsigned int code_rate;
-      unsigned int signal_constellation;
-      unsigned int pilot_mode;
-      unsigned int gold_code;
-      unsigned char bsave;
-      bool dvbs2x;
-      bool alternate;
-      bool nibble;
-      FrameFormat m_format[1];
+      int num_streams;
+      int stream;
+      unsigned int kbch[4];
+      unsigned int count[4];
+      unsigned char crc[4];
+      unsigned int frame_size[4];
+      unsigned int code_rate[4];
+      unsigned int signal_constellation[4];
+      unsigned int pilot_mode[4];
+      unsigned int gold_code[4];
+      unsigned char bsave[4];
+      bool dvbs2x[4];
+      bool alternate[4];
+      bool nibble[4];
+      FrameFormat m_format[1][4];
       unsigned char crc_tab[256];
-      void add_bbheader(unsigned char *, int, bool);
+      void add_bbheader(unsigned char *, int, bool, int);
       void build_crc8_table(void);
       int add_crc8_bits(unsigned char *, int);
 
      public:
-      bbheader_bb_impl(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, dvbs2_pilots_t pilots, int goldcode, dvbs2_rolloff_factor_t rolloff);
+      bbheader_bb_impl(int nstreams, dvbs2_framesize_t framesize1, dvbs2_code_rate_t rate1, dvbs2_constellation_t constellation1, dvbs2_pilots_t pilots1, int goldcode1, dvbs2_framesize_t framesize2, dvbs2_code_rate_t rate2, dvbs2_constellation_t constellation2, dvbs2_pilots_t pilots2, int goldcode2, dvbs2_framesize_t framesize3, dvbs2_code_rate_t rate3, dvbs2_constellation_t constellation3, dvbs2_pilots_t pilots3, int goldcode3, dvbs2_framesize_t framesize4, dvbs2_code_rate_t rate4, dvbs2_constellation_t constellation4, dvbs2_pilots_t pilots4, int goldcode4, dvbs2_rolloff_factor_t rolloff);
       ~bbheader_bb_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

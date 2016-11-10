@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Dvbs2 Tx
-# Generated: Tue Oct 25 18:15:30 2016
+# Generated: Wed Nov  9 23:54:42 2016
 ##################################################
 
 if __name__ == '__main__':
@@ -145,13 +145,17 @@ class dvbs2_tx(gr.top_block, Qt.QWidget):
         self.dvbs2_interleaver_bb_0 = dvbs2.interleaver_bb()
         self.dvbs2_bch_bb_0 = dvbs2.bch_bb()
         self.dvbs2_bbscrambler_bb_0 = dvbs2.bbscrambler_bb()
-        self.dvbs2_bbheader_bb_0 = dvbs2.bbheader_bb(dvbs2.FECFRAME_SHORT, dvbs2.C8_9, dvbs2.MOD_16APSK, dvbs2.PILOTS_ON, 0, dvbs2.RO_0_20)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/media/re/ssd/rhcpdvbs2.ts', True)
+        self.dvbs2_bbheader_bb_0 = dvbs2.bbheader_bb(3, dvbs2.FECFRAME_NORMAL, dvbs2.C8_9, dvbs2.MOD_8PSK, dvbs2.PILOTS_ON, 0, dvbs2.FECFRAME_NORMAL, dvbs2.C9_10, dvbs2.MOD_8PSK, dvbs2.PILOTS_ON, 0, dvbs2.FECFRAME_NORMAL, dvbs2.C5_6, dvbs2.MOD_8PSK, dvbs2.PILOTS_ON, 0, dvbs2.FECFRAME_NORMAL, dvbs2.C1_4, dvbs2.MOD_QPSK, dvbs2.PILOTS_OFF, 0, dvbs2.RO_0_20)
+        self.blocks_file_source_0_0_0 = blocks.file_source(gr.sizeof_char*1, 'cosmic8psk_2_56.ts', True)
+        self.blocks_file_source_0_0 = blocks.file_source(gr.sizeof_char*1, 'sweetnothing8psk_2_910.ts', True)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, 'overflow8psk_2_89.ts', True)
 
         ##################################################
         # Connections
         ##################################################
         self.connect((self.blocks_file_source_0, 0), (self.dvbs2_bbheader_bb_0, 0))    
+        self.connect((self.blocks_file_source_0_0, 0), (self.dvbs2_bbheader_bb_0, 1))    
+        self.connect((self.blocks_file_source_0_0_0, 0), (self.dvbs2_bbheader_bb_0, 2))    
         self.connect((self.dvbs2_bbheader_bb_0, 0), (self.dvbs2_bbscrambler_bb_0, 0))    
         self.connect((self.dvbs2_bbscrambler_bb_0, 0), (self.dvbs2_bch_bb_0, 0))    
         self.connect((self.dvbs2_bch_bb_0, 0), (self.dvbs2_ldpc_bb_0, 0))    
