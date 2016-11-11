@@ -34,7 +34,7 @@ namespace gr {
       int rowaddr2;
       int rowaddr3;
       int rowaddr4;
-      void get_rows(dvbs2_framesize_t, dvbs2_code_rate_t, dvbs2_constellation_t, int *);
+      void get_rows(dvbs2_framesize_t, dvbs2_code_rate_t, dvbs2_constellation_t, int *, int *);
 
      public:
       interleaver_bb_impl();

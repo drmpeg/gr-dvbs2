@@ -61,7 +61,7 @@ namespace gr {
     }
 
     void
-    interleaver_bb_impl::get_rows(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, int *frame_size)
+    interleaver_bb_impl::get_rows(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, int *frame_size, int *mod_order)
     {
       int mod, rows;
 
@@ -309,6 +309,7 @@ namespace gr {
           rows = *frame_size / mod;
           break;
       }
+      *mod_order = mod;
     }
 
     int
@@ -327,7 +328,7 @@ namespace gr {
       dvbs2_constellation_t constellation;
       dvbs2_pilots_t pilots;
       unsigned int goldcode;
-      int frame_size, rows;
+      int frame_size, mod_order, rows;
       const unsigned char *c1, *c2, *c3, *c4, *c5;
 
       std::vector<tag_t> tags;
@@ -342,8 +343,8 @@ namespace gr {
         constellation = (dvbs2_constellation_t)(((pmt::to_long(tags[i].value)) >> 16) & 0xff);
         pilots = (dvbs2_pilots_t)(((pmt::to_long(tags[i].value)) >> 24) & 0xff);
         goldcode = (unsigned int)(((pmt::to_long(tags[i].value)) >> 32) & 0x3ffff);
-        get_rows(framesize, rate, constellation, &frame_size);
-        if (produced <= noutput_items) {
+        get_rows(framesize, rate, constellation, &frame_size, &mod_order);
+        if ((produced + (frame_size / mod_order)) <= noutput_items) {
           produced_per_iteration = 0;
           const uint64_t tagoffset = this->nitems_written(0);
           const uint64_t tagmodcod = (uint64_t(goldcode) << 32) | (uint64_t(pilots) << 24) | (uint64_t(constellation) << 16) | (uint64_t(rate) << 8) | uint64_t(framesize);
