@@ -483,7 +483,7 @@ namespace gr {
         pmt::pmt_t key = pmt::string_to_symbol("modcod");
         pmt::pmt_t value = pmt::from_long(tagmodcod);
         this->add_item_tag(0, tagoffset, key, value);
-        gold_code[0]++;
+        gold_code[0]++;    /* VCM gold code not supported for now, use it for stream tag debugging instead. */
         if (frame_size[i] != FECFRAME_MEDIUM) {
           add_bbheader(&out[offset], count[i], nibble[i], i);
           offset = offset + 80;

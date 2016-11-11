@@ -57,7 +57,7 @@ namespace gr {
       m_zero = gr_complex(0.0, 0.0);
       build_symbol_scrambler_table();
       set_tag_propagation_policy(TPP_DONT);
-      set_output_multiple((((FRAME_SIZE_NORMAL / 4) + 90) + (11 * 36)) * 4);
+      set_output_multiple(FRAME_SIZE_NORMAL + 1764);
     }
 
     /*
@@ -1125,6 +1125,9 @@ namespace gr {
               }
             }
           }
+        }
+        else {
+          break;
         }
       }
 
