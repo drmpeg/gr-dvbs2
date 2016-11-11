@@ -476,7 +476,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>overflow8psk_2_89.ts</value>
+      <value>overflowqpsk_276_45.ts</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -531,7 +531,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>sweetnothing8psk_2_910.ts</value>
+      <value>sweetnothing8psk_184_56.ts</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -586,7 +586,7 @@
     </param>
     <param>
       <key>file</key>
-      <value>cosmic8psk_2_56.ts</value>
+      <value>cosmic16apsk_138_89.ts</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -684,7 +684,7 @@
     </param>
     <param>
       <key>rate1_1</key>
-      <value>C8_9</value>
+      <value>C4_5</value>
     </param>
     <param>
       <key>rate1_2</key>
@@ -696,7 +696,7 @@
     </param>
     <param>
       <key>rate2_1</key>
-      <value>C9_10</value>
+      <value>C5_6</value>
     </param>
     <param>
       <key>rate2_2</key>
@@ -708,7 +708,7 @@
     </param>
     <param>
       <key>rate3_1</key>
-      <value>C5_6</value>
+      <value>C8_9</value>
     </param>
     <param>
       <key>rate3_2</key>
@@ -736,7 +736,7 @@
     </param>
     <param>
       <key>constellation1</key>
-      <value>MOD_8PSK</value>
+      <value>MOD_QPSK</value>
     </param>
     <param>
       <key>constellation2</key>
@@ -744,7 +744,7 @@
     </param>
     <param>
       <key>constellation3</key>
-      <value>MOD_8PSK</value>
+      <value>MOD_16APSK</value>
     </param>
     <param>
       <key>constellation4</key>
