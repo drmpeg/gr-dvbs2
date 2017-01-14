@@ -16,6 +16,7 @@
 #include "dvbs2/modulator_bc.h"
 #include "dvbs2/physical_cc.h"
 #include "dvbs2/interleaver_bb.h"
+#include "dvbs2/bbheader_source.h"
 %}
 
 
@@ -34,3 +35,5 @@ GR_SWIG_BLOCK_MAGIC2(dvbs2, modulator_bc);
 GR_SWIG_BLOCK_MAGIC2(dvbs2, physical_cc);
 %include "dvbs2/interleaver_bb.h"
 GR_SWIG_BLOCK_MAGIC2(dvbs2, interleaver_bb);
+%include "dvbs2/bbheader_source.h"
+GR_SWIG_BLOCK_MAGIC2(dvbs2, bbheader_source);

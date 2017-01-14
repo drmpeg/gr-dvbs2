@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014,2016 Ron Economos.
+ * Copyright 2014,2016,2017 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -158,6 +158,16 @@ namespace gr {
       FECFRAME_SHORT,
       FECFRAME_MEDIUM,
     };
+
+    enum dvbs2_ping_reply_t {
+      PING_REPLY_OFF = 0,
+      PING_REPLY_ON,
+    };
+
+    enum dvbs2_ipaddr_spoof_t {
+      IPADDR_SPOOF_OFF = 0,
+      IPADDR_SPOOF_ON,
+    };
   } // namespace dvbs2
 } // namespace gr
 
@@ -166,6 +176,8 @@ typedef gr::dvbs2::dvbs2_rolloff_factor_t dvbs2_rolloff_factor_t;
 typedef gr::dvbs2::dvbs2_constellation_t dvbs2_constellation_t;
 typedef gr::dvbs2::dvbs2_pilots_t dvbs2_pilots_t;
 typedef gr::dvbs2::dvbs2_framesize_t dvbs2_framesize_t;
+typedef gr::dvbs2::dvbs2_ping_reply_t dvbs2_ping_reply_t;
+typedef gr::dvbs2::dvbs2_ipaddr_spoof_t dvbs2_ipaddr_spoof_t;
 
 #endif /* INCLUDED_DVBS2_CONFIG_H */
 

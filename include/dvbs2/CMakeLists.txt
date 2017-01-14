@@ -28,5 +28,6 @@ install(FILES
     ldpc_bb.h
     modulator_bc.h
     physical_cc.h
-    interleaver_bb.h DESTINATION include/dvbs2
+    interleaver_bb.h
+    bbheader_source.h DESTINATION include/dvbs2
 )

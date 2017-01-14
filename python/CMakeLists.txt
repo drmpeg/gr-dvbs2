@@ -48,3 +48,4 @@ GR_ADD_TEST(qa_ldpc_bb ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_ldpc_
 GR_ADD_TEST(qa_modulator_bc ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_modulator_bc.py)
 GR_ADD_TEST(qa_physical_cc ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_physical_cc.py)
 GR_ADD_TEST(qa_interleaver_bb ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_interleaver_bb.py)
+GR_ADD_TEST(qa_bbheader_source ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_bbheader_source.py)

@@ -33,6 +33,7 @@ list(APPEND dvbs2_sources
     modulator_bc_impl.cc
     physical_cc_impl.cc
     interleaver_bb_impl.cc
+    bbheader_source_impl.cc
 )
 
 set(dvbs2_sources "${dvbs2_sources}" PARENT_SCOPE)
@@ -42,16 +43,16 @@ if(NOT dvbs2_sources)
 endif(NOT dvbs2_sources)
 
 add_library(gnuradio-dvbs2 SHARED ${dvbs2_sources})
-target_link_libraries(gnuradio-dvbs2 ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES})
+target_link_libraries(gnuradio-dvbs2 ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES} ${PCAP_LIBRARIES})
 set_target_properties(gnuradio-dvbs2 PROPERTIES DEFINE_SYMBOL "gnuradio_dvbs2_EXPORTS")
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 if(APPLE)
     set_target_properties(gnuradio-dvbs2 PROPERTIES
         INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
     )
 endif(APPLE)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 ########################################################################
 # Install built library files

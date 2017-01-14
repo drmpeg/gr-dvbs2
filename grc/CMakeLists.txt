@@ -24,5 +24,6 @@ install(FILES
     dvbs2_ldpc_bb.xml
     dvbs2_modulator_bc.xml
     dvbs2_physical_cc.xml
-    dvbs2_interleaver_bb.xml DESTINATION share/gnuradio/grc/blocks
+    dvbs2_interleaver_bb.xml
+    dvbs2_bbheader_source.xml DESTINATION share/gnuradio/grc/blocks
 )
