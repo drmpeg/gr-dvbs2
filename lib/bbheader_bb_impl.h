@@ -23,6 +23,8 @@
 
 #include <dvbs2/bbheader_bb.h>
 
+#define NUM_STREAMS 4
+
 typedef struct{
     int ts_gs;
     int sis_mis;
@@ -49,19 +51,19 @@ namespace gr {
      private:
       int num_streams;
       int stream;
-      unsigned int kbch[4];
-      unsigned int count[4];
-      unsigned char crc[4];
-      unsigned int frame_size[4];
-      unsigned int code_rate[4];
-      unsigned int signal_constellation[4];
-      unsigned int pilot_mode[4];
-      unsigned int gold_code[4];
-      unsigned char bsave[4];
-      bool dvbs2x[4];
-      bool alternate[4];
-      bool nibble[4];
-      FrameFormat m_format[1][4];
+      unsigned int kbch[NUM_STREAMS];
+      unsigned int count[NUM_STREAMS];
+      unsigned char crc[NUM_STREAMS];
+      unsigned int frame_size[NUM_STREAMS];
+      unsigned int code_rate[NUM_STREAMS];
+      unsigned int signal_constellation[NUM_STREAMS];
+      unsigned int pilot_mode[NUM_STREAMS];
+      unsigned int gold_code[NUM_STREAMS];
+      unsigned char bsave[NUM_STREAMS];
+      bool dvbs2x[NUM_STREAMS];
+      bool alternate[NUM_STREAMS];
+      bool nibble[NUM_STREAMS];
+      FrameFormat m_format[1][NUM_STREAMS];
       unsigned char crc_tab[256];
       void add_bbheader(unsigned char *, int, bool, int);
       void build_crc8_table(void);

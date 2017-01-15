@@ -470,7 +470,7 @@ namespace gr {
     {
       const unsigned char *in;
       unsigned char *out = (unsigned char *) output_items[0];
-      int consumed[4] = {0, 0, 0, 0};
+      int consumed[NUM_STREAMS] = {0, 0, 0, 0};
       int produced = 0;
       int i, offset = 0;
       unsigned char b;

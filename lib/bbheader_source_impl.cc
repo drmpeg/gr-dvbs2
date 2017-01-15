@@ -54,8 +54,8 @@ namespace gr {
     {
       char errbuf[PCAP_ERRBUF_SIZE];
       char dev[IFNAMSIZ];
-      char default_if[4][5] = {"tap0", "tap1", "tap2", "tap3"};
-      char mac_address[4][20];
+      char default_if[NUM_STREAMS][5] = {"tap0", "tap1", "tap2", "tap3"};
+      char mac_address[NUM_STREAMS][20];
       struct bpf_program fp;
       bpf_u_int32 netp = 0;
       char filter[50];
@@ -594,36 +594,6 @@ namespace gr {
       // Add CRC to BB header, at end
       int len = BB_HEADER_LENGTH_BITS;
       m_frame_offset_bits += add_crc8_bits(m_frame, len);
-    }
-
-    void
-    bbheader_source_impl::add_inband_type_b(unsigned char *out, int ts_rate)
-    {
-      int temp, m_frame_offset_bits;
-      unsigned char *m_frame = out;
-
-      m_frame[0] = 0;
-      m_frame[1] = 1;
-      m_frame_offset_bits = 2;
-      for (int n = 30; n >= 0; n--) {
-        m_frame[m_frame_offset_bits++] = 0;
-      }
-      for (int n = 21; n >= 0; n--) {
-        m_frame[m_frame_offset_bits++] = 0;
-      }
-      for (int n = 1; n >= 0; n--) {
-        m_frame[m_frame_offset_bits++] = 0;
-      }
-      for (int n = 9; n >= 0; n--) {
-        m_frame[m_frame_offset_bits++] = 0;
-      }
-      temp = ts_rate;
-      for (int n = 26; n >= 0; n--) {
-        m_frame[m_frame_offset_bits++] = temp & (1 << n) ? 1 : 0;
-      }
-      for (int n = 9; n >= 0; n--) {
-        m_frame[m_frame_offset_bits++] = 0;
-      }
     }
 
     int

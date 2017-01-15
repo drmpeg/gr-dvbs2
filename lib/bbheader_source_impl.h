@@ -41,6 +41,8 @@
 #define TOTAL_LENGTH_SIZE 2
 #define MAX_GSE_LENGTH 4096
 
+#define NUM_STREAMS 4
+
 typedef struct{
     int ts_gs;
     int sis_mis;
@@ -67,38 +69,37 @@ namespace gr {
      private:
       int num_streams;
       int stream;
-      unsigned int kbch[4];
-      unsigned int count[4];
-      unsigned char crc[4];
-      unsigned int frame_size[4];
-      unsigned int code_rate[4];
-      unsigned int signal_constellation[4];
-      unsigned int pilot_mode[4];
-      unsigned int gold_code[4];
+      unsigned int kbch[NUM_STREAMS];
+      unsigned int count[NUM_STREAMS];
+      unsigned char crc[NUM_STREAMS];
+      unsigned int frame_size[NUM_STREAMS];
+      unsigned int code_rate[NUM_STREAMS];
+      unsigned int signal_constellation[NUM_STREAMS];
+      unsigned int pilot_mode[NUM_STREAMS];
+      unsigned int gold_code[NUM_STREAMS];
       int ping_reply_mode;
       int ipaddr_spoof_mode;
-      bool dvbs2x[4];
-      bool alternate[4];
-      bool nibble[4];
-      FrameFormat m_format[1][4];
+      bool dvbs2x[NUM_STREAMS];
+      bool alternate[NUM_STREAMS];
+      bool nibble[NUM_STREAMS];
+      FrameFormat m_format[1][NUM_STREAMS];
       unsigned char crc_tab[256];
       unsigned int crc32_table[256];
-      pcap_t* descr[4];
-      int fd[4];
-      unsigned char *packet_ptr[4];
-      bool packet_fragmented[4];
-      int packet_length[4];
-      bool last_packet_valid[4];
-      const unsigned char *packet[4];
+      pcap_t* descr[NUM_STREAMS];
+      int fd[NUM_STREAMS];
+      unsigned char *packet_ptr[NUM_STREAMS];
+      bool packet_fragmented[NUM_STREAMS];
+      int packet_length[NUM_STREAMS];
+      bool last_packet_valid[NUM_STREAMS];
+      const unsigned char *packet[NUM_STREAMS];
       unsigned char frag_id_pool;
-      unsigned char frag_id[4];
-      int crc32_partial[4];
+      unsigned char frag_id[NUM_STREAMS];
+      int crc32_partial[NUM_STREAMS];
       unsigned char src_addr[sizeof(in_addr)];
       unsigned char dst_addr[sizeof(in_addr)];
       void add_bbheader(unsigned char *, int, int, bool, int);
       void build_crc8_table(void);
       int add_crc8_bits(unsigned char *, int);
-      void add_inband_type_b(unsigned char *, int);
       void crc32_init(void);
       int crc32_calc(unsigned char *, int, int);
       int checksum(unsigned short *, int, int);
