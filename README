@@ -1,11 +1,7 @@
 ******** NOTICE ********
 
-As of release 3.7.7, gr-dvbs2 is now part of GNU Radio
-in the gr-dtv component and the Digital Television
-category of gnuradio-companion. However, for those
-that prefer forking and developing in a OOT module,
-all the changes in GNU Radio have been backported
-to gr-dvbs2.
+This is a special branch of gr-dvbs2 that implements VCM/ACM and
+includes a VCM/ACM capable DVB-GSE block.
 
 # Copyright 2014,2016 Ron Economos
 #
@@ -73,18 +69,18 @@ System configurations:
 8) FECFRAME short 16,200 bits
 9) Single Transport Stream
 10) Roll-off 0.35, 0.25 and 0.20
+11) VCM (Variable Coding and Modulation)
+12) ACM (Adaptive Coding and Modulation)
+13) Multiple Transport Streams
+14) Multiple Generic Streams
+15) Single Generic Stream
+16) Dummy Frame Insertion
 
 System configurations not supported are:
 
-1) VCM (Variable Coding and Modulation)
-2) ACM (Adaptive Coding and Modulation)
-3) Multiple Transport Streams
-4) Single Generic Stream
-5) Multiple Generic Streams
-6) Input Stream Synchronizer
-7) Null Packet Detection
-8) Dummy Frame Insertion
-9) Wide-band mode
+1) Input Stream Synchronizer
+2) Null Packet Detection
+3) Wide-band mode
 
 Note: DVB-S2X Broadcast services MODCOD's have been tested
 as of September 2016 with the Silicon Labs Si2183 demodulator.
