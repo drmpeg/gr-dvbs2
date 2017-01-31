@@ -34,6 +34,7 @@ namespace gr {
       int b[VLSNR_HEADER_LENGTH];
       gr_complex m_bpsk[4][2];
       gr_complex m_pl[90];
+      gr_complex m_pl_dummy[90];
       gr_complex m_vlsnr_header[VLSNR_HEADER_LENGTH];
       gr_complex m_zero;
       int m_cscram[FRAME_SIZE_NORMAL];

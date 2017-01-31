@@ -56,6 +56,23 @@ namespace gr {
 
       m_zero = gr_complex(0.0, 0.0);
       build_symbol_scrambler_table();
+
+      // Create the dummy PL header.
+      // Add the sync sequence SOF
+      for (int i = 0; i < 26; i++) {
+        b[i] = ph_sync_seq[i];
+      }
+      // Add the mode and code
+      pl_header_encode(0, 0, &b[26]);
+
+      // BPSK modulate and create the header
+      for (int i = 0; i < 26; i++) {
+        m_pl_dummy[i] = m_bpsk[i & 1][b[i]];
+      }
+      for (int i = 26; i < 90; i++) {
+        m_pl_dummy[i] = m_bpsk[i & 1][b[i]];
+      }
+
       set_tag_propagation_policy(TPP_DONT);
       set_output_multiple(FRAME_SIZE_NORMAL + 1764);
     }
@@ -699,7 +716,7 @@ namespace gr {
       dvbs2_code_rate_t rate;
       dvbs2_constellation_t constellation;
       dvbs2_pilots_t pilots;
-      unsigned int goldcode;
+      unsigned int goldcode, dummy;
 
       std::vector<tag_t> tags;
       const uint64_t nread = this->nitems_read(0); //number of items read on port 0
@@ -708,23 +725,444 @@ namespace gr {
       this->get_tags_in_range(tags, 0, nread, nread + noutput_items, pmt::string_to_symbol("modcod"));
 
       for (int i = 0; i < (int)tags.size(); i++) {
-        framesize = (dvbs2_framesize_t)((pmt::to_long(tags[i].value)) & 0xff);
+        dummy = (unsigned int)((pmt::to_long(tags[i].value)) & 0x1);
+        framesize = (dvbs2_framesize_t)(((pmt::to_long(tags[i].value)) >> 1) & 0x7f);
         rate = (dvbs2_code_rate_t)(((pmt::to_long(tags[i].value)) >> 8) & 0xff);
         constellation = (dvbs2_constellation_t)(((pmt::to_long(tags[i].value)) >> 16) & 0xff);
         pilots = (dvbs2_pilots_t)(((pmt::to_long(tags[i].value)) >> 24) & 0xff);
         goldcode = (unsigned int)(((pmt::to_long(tags[i].value)) >> 32) & 0x3ffff);
+        if (dummy == 0) {
+          printf("dummy = %d, framesize = %d, rate = %d, const = %d, pilots = %d, code = %d\n", dummy, framesize, rate, constellation, pilots, goldcode);
+        }
         get_slots(framesize, rate, constellation, pilots, goldcode, &slots, &pilot_symbols, &vlsnr_set, &vlsnr_header);
-        if (produced + (((slots * 90) + 90 + pilot_symbols) * 2) <= noutput_items) {
-          if (vlsnr_set == VLSNR_OFF) {
+        if (dummy == 0) {
+          if (produced + (((slots * 90) + 90 + pilot_symbols) * 2) <= noutput_items) {
+            if (vlsnr_set == VLSNR_OFF) {
+              n = 0;
+              slot_count = 0;
+              for (int plh = 0; plh < 90; plh++) {
+                out[produced++] = m_pl[plh];
+                out[produced++] = m_zero;
+              }
+              for (int j = 0; j < slots; j++) {
+                for (int k = 0; k < 90; k++) {
+                  tempin = in[consumed++];
+                  switch (m_cscram[n++]) {
+                    case 0:
+                      tempout = tempin;
+                      break;
+                    case 1:
+                      tempout = gr_complex(-tempin.imag(),  tempin.real());
+                      break;
+                    case 2:
+                      tempout = -tempin;
+                      break;
+                    case 3:
+                      tempout = gr_complex( tempin.imag(), -tempin.real());
+                      break;
+                  }
+                  out[produced++] = tempout;
+                  out[produced++] = m_zero;
+                }
+                slot_count = (slot_count + 1) % 16;
+                if ((slot_count == 0) && (j < slots - 1)) {
+                  if (pilots) {
+                    // Add pilots if needed
+                    for (int p = 0; p < 36; p++) {
+                      tempin = m_bpsk[0][0];
+                      switch (m_cscram[n++]) {
+                        case 0:
+                          tempout = tempin;
+                          break;
+                        case 1:
+                          tempout = gr_complex(-tempin.imag(),  tempin.real());
+                          break;
+                        case 2:
+                          tempout = -tempin;
+                          break;
+                        case 3:
+                          tempout = gr_complex( tempin.imag(), -tempin.real());
+                          break;
+                      }
+                      out[produced++] = tempout;
+                      out[produced++] = m_zero;
+                    }
+                  }
+                }
+              }
+            }
+            else if (vlsnr_set == VLSNR_SET1) {
+              n = 0;
+              slot_count = 10;
+              group = 0;
+              symbols = 0;
+              for (int plh = 0; plh < 90; plh++) {
+                out[produced++] = m_pl[plh];
+                out[produced++] = m_zero;
+              }
+              for (int vlh = 0; vlh < VLSNR_HEADER_LENGTH; vlh++) {
+                out[produced++] = m_vlsnr_header[vlh];
+                out[produced++] = m_zero;
+              }
+              for (int j = 0; j < slots; j++) {
+                for (int k = 0; k < 90; k++) {
+                  tempin = in[consumed++];
+                  if (constellation == MOD_QPSK) {
+                    switch (m_cscram[n++]) {
+                      case 0:
+                        tempout = tempin;
+                        break;
+                      case 1:
+                        tempout = gr_complex(-tempin.imag(),  tempin.real());
+                        break;
+                      case 2:
+                        tempout = -tempin;
+                        break;
+                      case 3:
+                        tempout = gr_complex( tempin.imag(), -tempin.real());
+                        break;
+                    }
+                  }
+                  else {
+                    switch (m_cscram[n++]) {
+                      case 0:
+                        tempout = tempin;
+                        break;
+                      case 1:
+                        tempout = -tempin;
+                        break;
+                      case 2:
+                        tempout = tempin;
+                        break;
+                      case 3:
+                        tempout = -tempin;
+                        break;
+                    }
+                  }
+                  out[produced++] = tempout;
+                  out[produced++] = m_zero;
+                  symbols++;
+                  if (group <= 18 && symbols == 703) {
+                    for (int p = 0; p < 34; p++) {
+                      tempin = m_bpsk[0][0];
+                      switch (m_cscram[n++]) {
+                        case 0:
+                          tempout = tempin;
+                          break;
+                        case 1:
+                          tempout = gr_complex(-tempin.imag(),  tempin.real());
+                          break;
+                        case 2:
+                          tempout = -tempin;
+                          break;
+                        case 3:
+                          tempout = gr_complex( tempin.imag(), -tempin.real());
+                          break;
+                      }
+                      out[produced++] = tempout;
+                      out[produced++] = m_zero;
+                    }
+                    for (int x = (k + 1 + 34) - 90; x < 90; x++) {
+                      tempin = in[consumed++];
+                      if (constellation == MOD_QPSK) {
+                        switch (m_cscram[n++]) {
+                          case 0:
+                            tempout = tempin;
+                            break;
+                          case 1:
+                            tempout = gr_complex(-tempin.imag(),  tempin.real());
+                            break;
+                          case 2:
+                            tempout = -tempin;
+                            break;
+                          case 3:
+                            tempout = gr_complex( tempin.imag(), -tempin.real());
+                            break;
+                        }
+                      }
+                      else {
+                        switch (m_cscram[n++]) {
+                          case 0:
+                            tempout = tempin;
+                            break;
+                          case 1:
+                            tempout = -tempin;
+                            break;
+                          case 2:
+                            tempout = tempin;
+                            break;
+                          case 3:
+                            tempout = -tempin;
+                            break;
+                        }
+                      }
+                      out[produced++] = tempout;
+                      out[produced++] = m_zero;
+                      symbols++;
+                    }
+                    slot_count = (slot_count + 1) % 16;
+                    j++;
+                    break;
+                  }
+                  else if ((group > 18 && group <= 21) && symbols == 702) {
+                    for (int p = 0; p < 36; p++) {
+                      tempin = m_bpsk[0][0];
+                      switch (m_cscram[n++]) {
+                        case 0:
+                          tempout = tempin;
+                            break;
+                        case 1:
+                          tempout = gr_complex(-tempin.imag(),  tempin.real());
+                          break;
+                        case 2:
+                          tempout = -tempin;
+                          break;
+                        case 3:
+                          tempout = gr_complex( tempin.imag(), -tempin.real());
+                          break;
+                      }
+                      out[produced++] = tempout;
+                      out[produced++] = m_zero;
+                    }
+                    for (int x = (k + 1 + 36) - 90; x < 90; x++) {
+                      tempin = in[consumed++];
+                      if (constellation == MOD_QPSK) {
+                        switch (m_cscram[n++]) {
+                          case 0:
+                            tempout = tempin;
+                            break;
+                          case 1:
+                            tempout = gr_complex(-tempin.imag(),  tempin.real());
+                            break;
+                          case 2:
+                            tempout = -tempin;
+                            break;
+                          case 3:
+                            tempout = gr_complex( tempin.imag(), -tempin.real());
+                            break;
+                        }
+                      }
+                      else {
+                        switch (m_cscram[n++]) {
+                          case 0:
+                            tempout = tempin;
+                            break;
+                          case 1:
+                            tempout = -tempin;
+                            break;
+                          case 2:
+                            tempout = tempin;
+                            break;
+                          case 3:
+                            tempout = -tempin;
+                            break;
+                        }
+                      }
+                      out[produced++] = tempout;
+                      out[produced++] = m_zero;
+                      symbols++;
+                    }
+                    slot_count = (slot_count + 1) % 16;
+                    j++;
+                    break;
+                  }
+                }
+                slot_count = (slot_count + 1) % 16;
+                if ((slot_count == 0) && (j < slots - 1)) {
+                  if (pilots) {
+                    // Add pilots if needed
+                    group++;
+                    symbols = 0;
+                    for (int p = 0; p < 36; p++) {
+                      tempin = m_bpsk[0][0];
+                      switch (m_cscram[n++]) {
+                        case 0:
+                          tempout = tempin;
+                          break;
+                        case 1:
+                          tempout = gr_complex(-tempin.imag(),  tempin.real());
+                          break;
+                        case 2:
+                          tempout = -tempin;
+                          break;
+                        case 3:
+                          tempout = gr_complex( tempin.imag(), -tempin.real());
+                          break;
+                      }
+                      out[produced++] = tempout;
+                      out[produced++] = m_zero;
+                    }
+                  }
+                }
+              }
+            }
+            else {    /* VL-SNR set 2 */
+              n = 0;
+              slot_count = 10;
+              group = 0;
+              symbols = 0;
+              for (int plh = 0; plh < 90; plh++) {
+                out[produced++] = m_pl[plh];
+                out[produced++] = m_zero;
+              }
+              for (int vlh = 0; vlh < VLSNR_HEADER_LENGTH; vlh++) {
+                out[produced++] = m_vlsnr_header[vlh];
+                out[produced++] = m_zero;
+              }
+              for (int j = 0; j < slots; j++) {
+                for (int k = 0; k < 90; k++) {
+                  tempin = in[consumed++];
+                  switch (m_cscram[n++]) {
+                    case 0:
+                      tempout = tempin;
+                      break;
+                    case 1:
+                      tempout = -tempin;
+                      break;
+                    case 2:
+                      tempout = tempin;
+                      break;
+                    case 3:
+                      tempout = -tempin;
+                      break;
+                  }
+                  out[produced++] = tempout;
+                  out[produced++] = m_zero;
+                  symbols++;
+                  if (group <= 9 && symbols == 704) {
+                    for (int p = 0; p < 32; p++) {
+                      tempin = m_bpsk[0][0];
+                      switch (m_cscram[n++]) {
+                        case 0:
+                          tempout = tempin;
+                          break;
+                        case 1:
+                          tempout = gr_complex(-tempin.imag(),  tempin.real());
+                          break;
+                        case 2:
+                          tempout = -tempin;
+                          break;
+                        case 3:
+                          tempout = gr_complex( tempin.imag(), -tempin.real());
+                          break;
+                      }
+                      out[produced++] = tempout;
+                      out[produced++] = m_zero;
+                    }
+                    for (int x = (k + 1 + 32) - 90; x < 90; x++) {
+                      tempin = in[consumed++];
+                      switch (m_cscram[n++]) {
+                        case 0:
+                          tempout = tempin;
+                          break;
+                        case 1:
+                          tempout = -tempin;
+                          break;
+                        case 2:
+                          tempout = tempin;
+                          break;
+                        case 3:
+                          tempout = -tempin;
+                          break;
+                      }
+                      out[produced++] = tempout;
+                      out[produced++] = m_zero;
+                      symbols++;
+                    }
+                    slot_count = (slot_count + 1) % 16;
+                    j++;
+                    break;
+                  }
+                  else if ((group == 10) && symbols == 702) {
+                    for (int p = 0; p < 36; p++) {
+                      tempin = m_bpsk[0][0];
+                      switch (m_cscram[n++]) {
+                        case 0:
+                          tempout = tempin;
+                          break;
+                        case 1:
+                          tempout = gr_complex(-tempin.imag(),  tempin.real());
+                          break;
+                        case 2:
+                          tempout = -tempin;
+                          break;
+                        case 3:
+                          tempout = gr_complex( tempin.imag(), -tempin.real());
+                          break;
+                      }
+                      out[produced++] = tempout;
+                      out[produced++] = m_zero;
+                    }
+                    for (int x = (k + 1 + 36) - 90; x < 90; x++) {
+                      tempin = in[consumed++];
+                      switch (m_cscram[n++]) {
+                        case 0:
+                          tempout = tempin;
+                          break;
+                        case 1:
+                          tempout = -tempin;
+                          break;
+                        case 2:
+                          tempout = tempin;
+                          break;
+                        case 3:
+                          tempout = -tempin;
+                          break;
+                      }
+                      out[produced++] = tempout;
+                      out[produced++] = m_zero;
+                      symbols++;
+                    }
+                    slot_count = (slot_count + 1) % 16;
+                    j++;
+                    break;
+                  }
+                }
+                slot_count = (slot_count + 1) % 16;
+                if ((slot_count == 0) && (j < slots - 1)) {
+                  if (pilots) {
+                    // Add pilots if needed
+                    group++;
+                    symbols = 0;
+                    for (int p = 0; p < 36; p++) {
+                      tempin = m_bpsk[0][0];
+                      switch (m_cscram[n++]) {
+                        case 0:
+                          tempout = tempin;
+                          break;
+                        case 1:
+                          tempout = gr_complex(-tempin.imag(),  tempin.real());
+                          break;
+                        case 2:
+                          tempout = -tempin;
+                          break;
+                        case 3:
+                          tempout = gr_complex( tempin.imag(), -tempin.real());
+                          break;
+                      }
+                      out[produced++] = tempout;
+                      out[produced++] = m_zero;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          else {
+            break;
+          }
+        }
+        else {
+          if (produced + (((36 * 90) + 90) * 2) <= noutput_items) {
             n = 0;
-            slot_count = 0;
+            consumed += slots * 90;
             for (int plh = 0; plh < 90; plh++) {
-              out[produced++] = m_pl[plh];
+              out[produced++] = m_pl_dummy[plh];
               out[produced++] = m_zero;
             }
-            for (int j = 0; j < slots; j++) {
+            for (int j = 0; j < 36; j++) {
               for (int k = 0; k < 90; k++) {
-                tempin = in[consumed++];
+                tempin = m_bpsk[0][0];
                 switch (m_cscram[n++]) {
                   case 0:
                     tempout = tempin;
@@ -742,392 +1180,11 @@ namespace gr {
                 out[produced++] = tempout;
                 out[produced++] = m_zero;
               }
-              slot_count = (slot_count + 1) % 16;
-              if ((slot_count == 0) && (j < slots - 1)) {
-                if (pilots) {
-                  // Add pilots if needed
-                  for (int p = 0; p < 36; p++) {
-                    tempin = m_bpsk[0][0];
-                    switch (m_cscram[n++]) {
-                      case 0:
-                        tempout = tempin;
-                        break;
-                      case 1:
-                        tempout = gr_complex(-tempin.imag(),  tempin.real());
-                        break;
-                      case 2:
-                        tempout = -tempin;
-                        break;
-                      case 3:
-                        tempout = gr_complex( tempin.imag(), -tempin.real());
-                        break;
-                    }
-                    out[produced++] = tempout;
-                    out[produced++] = m_zero;
-                  }
-                }
-              }
             }
           }
-          else if (vlsnr_set == VLSNR_SET1) {
-            n = 0;
-            slot_count = 10;
-            group = 0;
-            symbols = 0;
-            for (int plh = 0; plh < 90; plh++) {
-              out[produced++] = m_pl[plh];
-              out[produced++] = m_zero;
-            }
-            for (int vlh = 0; vlh < VLSNR_HEADER_LENGTH; vlh++) {
-              out[produced++] = m_vlsnr_header[vlh];
-              out[produced++] = m_zero;
-            }
-            for (int j = 0; j < slots; j++) {
-              for (int k = 0; k < 90; k++) {
-                tempin = in[consumed++];
-                if (constellation == MOD_QPSK) {
-                  switch (m_cscram[n++]) {
-                    case 0:
-                      tempout = tempin;
-                      break;
-                    case 1:
-                      tempout = gr_complex(-tempin.imag(),  tempin.real());
-                      break;
-                    case 2:
-                      tempout = -tempin;
-                      break;
-                    case 3:
-                      tempout = gr_complex( tempin.imag(), -tempin.real());
-                      break;
-                  }
-                }
-                else {
-                  switch (m_cscram[n++]) {
-                    case 0:
-                      tempout = tempin;
-                      break;
-                    case 1:
-                      tempout = -tempin;
-                      break;
-                    case 2:
-                      tempout = tempin;
-                      break;
-                    case 3:
-                      tempout = -tempin;
-                      break;
-                  }
-                }
-                out[produced++] = tempout;
-                out[produced++] = m_zero;
-                symbols++;
-                if (group <= 18 && symbols == 703) {
-                  for (int p = 0; p < 34; p++) {
-                    tempin = m_bpsk[0][0];
-                    switch (m_cscram[n++]) {
-                      case 0:
-                        tempout = tempin;
-                        break;
-                      case 1:
-                        tempout = gr_complex(-tempin.imag(),  tempin.real());
-                        break;
-                      case 2:
-                        tempout = -tempin;
-                        break;
-                      case 3:
-                        tempout = gr_complex( tempin.imag(), -tempin.real());
-                        break;
-                    }
-                    out[produced++] = tempout;
-                    out[produced++] = m_zero;
-                  }
-                  for (int x = (k + 1 + 34) - 90; x < 90; x++) {
-                    tempin = in[consumed++];
-                    if (constellation == MOD_QPSK) {
-                      switch (m_cscram[n++]) {
-                        case 0:
-                          tempout = tempin;
-                          break;
-                        case 1:
-                          tempout = gr_complex(-tempin.imag(),  tempin.real());
-                          break;
-                        case 2:
-                          tempout = -tempin;
-                          break;
-                        case 3:
-                          tempout = gr_complex( tempin.imag(), -tempin.real());
-                          break;
-                      }
-                    }
-                    else {
-                      switch (m_cscram[n++]) {
-                        case 0:
-                          tempout = tempin;
-                          break;
-                        case 1:
-                          tempout = -tempin;
-                          break;
-                        case 2:
-                          tempout = tempin;
-                          break;
-                        case 3:
-                          tempout = -tempin;
-                          break;
-                      }
-                    }
-                    out[produced++] = tempout;
-                    out[produced++] = m_zero;
-                    symbols++;
-                  }
-                  slot_count = (slot_count + 1) % 16;
-                  j++;
-                  break;
-                }
-                else if ((group > 18 && group <= 21) && symbols == 702) {
-                  for (int p = 0; p < 36; p++) {
-                    tempin = m_bpsk[0][0];
-                    switch (m_cscram[n++]) {
-                      case 0:
-                        tempout = tempin;
-                          break;
-                      case 1:
-                        tempout = gr_complex(-tempin.imag(),  tempin.real());
-                        break;
-                      case 2:
-                        tempout = -tempin;
-                        break;
-                      case 3:
-                        tempout = gr_complex( tempin.imag(), -tempin.real());
-                        break;
-                    }
-                    out[produced++] = tempout;
-                    out[produced++] = m_zero;
-                  }
-                  for (int x = (k + 1 + 36) - 90; x < 90; x++) {
-                    tempin = in[consumed++];
-                    if (constellation == MOD_QPSK) {
-                      switch (m_cscram[n++]) {
-                        case 0:
-                          tempout = tempin;
-                          break;
-                        case 1:
-                          tempout = gr_complex(-tempin.imag(),  tempin.real());
-                          break;
-                        case 2:
-                          tempout = -tempin;
-                          break;
-                        case 3:
-                          tempout = gr_complex( tempin.imag(), -tempin.real());
-                          break;
-                      }
-                    }
-                    else {
-                      switch (m_cscram[n++]) {
-                        case 0:
-                          tempout = tempin;
-                          break;
-                        case 1:
-                          tempout = -tempin;
-                          break;
-                        case 2:
-                          tempout = tempin;
-                          break;
-                        case 3:
-                          tempout = -tempin;
-                          break;
-                      }
-                    }
-                    out[produced++] = tempout;
-                    out[produced++] = m_zero;
-                    symbols++;
-                  }
-                  slot_count = (slot_count + 1) % 16;
-                  j++;
-                  break;
-                }
-              }
-              slot_count = (slot_count + 1) % 16;
-              if ((slot_count == 0) && (j < slots - 1)) {
-                if (pilots) {
-                  // Add pilots if needed
-                  group++;
-                  symbols = 0;
-                  for (int p = 0; p < 36; p++) {
-                    tempin = m_bpsk[0][0];
-                    switch (m_cscram[n++]) {
-                      case 0:
-                        tempout = tempin;
-                        break;
-                      case 1:
-                        tempout = gr_complex(-tempin.imag(),  tempin.real());
-                        break;
-                      case 2:
-                        tempout = -tempin;
-                        break;
-                      case 3:
-                        tempout = gr_complex( tempin.imag(), -tempin.real());
-                        break;
-                    }
-                    out[produced++] = tempout;
-                    out[produced++] = m_zero;
-                  }
-                }
-              }
-            }
+          else {
+            break;
           }
-          else {    /* VL-SNR set 2 */
-            n = 0;
-            slot_count = 10;
-            group = 0;
-            symbols = 0;
-            for (int plh = 0; plh < 90; plh++) {
-              out[produced++] = m_pl[plh];
-              out[produced++] = m_zero;
-            }
-            for (int vlh = 0; vlh < VLSNR_HEADER_LENGTH; vlh++) {
-              out[produced++] = m_vlsnr_header[vlh];
-              out[produced++] = m_zero;
-            }
-            for (int j = 0; j < slots; j++) {
-              for (int k = 0; k < 90; k++) {
-                tempin = in[consumed++];
-                switch (m_cscram[n++]) {
-                  case 0:
-                    tempout = tempin;
-                    break;
-                  case 1:
-                    tempout = -tempin;
-                    break;
-                  case 2:
-                    tempout = tempin;
-                    break;
-                  case 3:
-                    tempout = -tempin;
-                    break;
-                }
-                out[produced++] = tempout;
-                out[produced++] = m_zero;
-                symbols++;
-                if (group <= 9 && symbols == 704) {
-                  for (int p = 0; p < 32; p++) {
-                    tempin = m_bpsk[0][0];
-                    switch (m_cscram[n++]) {
-                      case 0:
-                        tempout = tempin;
-                        break;
-                      case 1:
-                        tempout = gr_complex(-tempin.imag(),  tempin.real());
-                        break;
-                      case 2:
-                        tempout = -tempin;
-                        break;
-                      case 3:
-                        tempout = gr_complex( tempin.imag(), -tempin.real());
-                        break;
-                    }
-                    out[produced++] = tempout;
-                    out[produced++] = m_zero;
-                  }
-                  for (int x = (k + 1 + 32) - 90; x < 90; x++) {
-                    tempin = in[consumed++];
-                    switch (m_cscram[n++]) {
-                      case 0:
-                        tempout = tempin;
-                        break;
-                      case 1:
-                        tempout = -tempin;
-                        break;
-                      case 2:
-                        tempout = tempin;
-                        break;
-                      case 3:
-                        tempout = -tempin;
-                        break;
-                    }
-                    out[produced++] = tempout;
-                    out[produced++] = m_zero;
-                    symbols++;
-                  }
-                  slot_count = (slot_count + 1) % 16;
-                  j++;
-                  break;
-                }
-                else if ((group == 10) && symbols == 702) {
-                  for (int p = 0; p < 36; p++) {
-                    tempin = m_bpsk[0][0];
-                    switch (m_cscram[n++]) {
-                      case 0:
-                        tempout = tempin;
-                        break;
-                      case 1:
-                        tempout = gr_complex(-tempin.imag(),  tempin.real());
-                        break;
-                      case 2:
-                        tempout = -tempin;
-                        break;
-                      case 3:
-                        tempout = gr_complex( tempin.imag(), -tempin.real());
-                        break;
-                    }
-                    out[produced++] = tempout;
-                    out[produced++] = m_zero;
-                  }
-                  for (int x = (k + 1 + 36) - 90; x < 90; x++) {
-                    tempin = in[consumed++];
-                    switch (m_cscram[n++]) {
-                      case 0:
-                        tempout = tempin;
-                        break;
-                      case 1:
-                        tempout = -tempin;
-                        break;
-                      case 2:
-                        tempout = tempin;
-                        break;
-                      case 3:
-                        tempout = -tempin;
-                        break;
-                    }
-                    out[produced++] = tempout;
-                    out[produced++] = m_zero;
-                    symbols++;
-                  }
-                  slot_count = (slot_count + 1) % 16;
-                  j++;
-                  break;
-                }
-              }
-              slot_count = (slot_count + 1) % 16;
-              if ((slot_count == 0) && (j < slots - 1)) {
-                if (pilots) {
-                  // Add pilots if needed
-                  group++;
-                  symbols = 0;
-                  for (int p = 0; p < 36; p++) {
-                    tempin = m_bpsk[0][0];
-                    switch (m_cscram[n++]) {
-                      case 0:
-                        tempout = tempin;
-                        break;
-                      case 1:
-                        tempout = gr_complex(-tempin.imag(),  tempin.real());
-                        break;
-                      case 2:
-                        tempout = -tempin;
-                        break;
-                      case 3:
-                        tempout = gr_complex( tempin.imag(), -tempin.real());
-                        break;
-                    }
-                    out[produced++] = tempout;
-                    out[produced++] = m_zero;
-                  }
-                }
-              }
-            }
-          }
-        }
-        else {
-          break;
         }
       }
 

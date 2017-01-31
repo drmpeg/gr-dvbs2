@@ -760,7 +760,7 @@ namespace gr {
       unsigned char *ptr;
       unsigned char total_length[2];
       int length, crc32;
-      unsigned int ether_addr_len;
+      unsigned int ether_addr_len, dummy;
       bool maxsize;
       bool gse = FALSE;
 
@@ -768,13 +768,6 @@ namespace gr {
 
       i = stream;
       while (kbch[i] + produced <= (unsigned int)noutput_items) {
-//        printf("kbch = %d, produced = %d, noutput_items = %d\n", kbch[i], produced, noutput_items);
-        const uint64_t tagoffset = this->nitems_written(0);
-        const uint64_t tagmodcod = (uint64_t(gold_code[0]) << 32) | (uint64_t(pilot_mode[i]) << 24) | (uint64_t(signal_constellation[i]) << 16) | (uint64_t(code_rate[i]) << 8) | uint64_t(frame_size[i]);
-        pmt::pmt_t key = pmt::string_to_symbol("modcod");
-        pmt::pmt_t value = pmt::from_long(tagmodcod);
-        this->add_item_tag(0, tagoffset, key, value);
-        gold_code[0]++;    /* VCM gold code not supported for now, use it for stream tag debugging instead. */
         if (frame_size[i] != FECFRAME_MEDIUM) {
           padding = 0;
         }
@@ -1051,7 +1044,6 @@ namespace gr {
           }
           else {
             padding = kbch[i] - (offset - first_offset);
-//            printf("padding = %d\n", padding);
             add_bbheader(&out[first_offset], count[i], padding, TRUE, i);
             if (offset == produced + (kbch[i]) - padding) {
               break;
@@ -1064,6 +1056,7 @@ namespace gr {
         }
         if (gse == TRUE) {
           gse = FALSE;
+          dummy = 0;
           dump_packet(&out[first_offset]);
           if (0) {
             unsigned char pack;
@@ -1088,6 +1081,15 @@ namespace gr {
             }
           }
         }
+        else {
+          dummy = 1;
+        }
+        const uint64_t tagoffset = this->nitems_written(0);
+        const uint64_t tagmodcod = (uint64_t(gold_code[0]) << 32) | (uint64_t(pilot_mode[i]) << 24) | (uint64_t(signal_constellation[i]) << 16) | (uint64_t(code_rate[i]) << 8) | (uint64_t(frame_size[i]) << 1) | uint64_t(dummy);
+        pmt::pmt_t key = pmt::string_to_symbol("modcod");
+        pmt::pmt_t value = pmt::from_long(tagmodcod);
+        this->add_item_tag(0, tagoffset, key, value);
+        gold_code[0]++;    /* VCM gold code not supported for now, use it for stream tag debugging instead. */
         produced += kbch[i];
         produce(0, kbch[i]);
       }

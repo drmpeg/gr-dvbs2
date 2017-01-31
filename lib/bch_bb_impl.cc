@@ -604,7 +604,7 @@ namespace gr {
       dvbs2_code_rate_t rate;
       dvbs2_constellation_t constellation;
       dvbs2_pilots_t pilots;
-      unsigned int goldcode;
+      unsigned int goldcode, dummy;
       unsigned int kbch, nbch, bch_code;
 
       std::vector<tag_t> tags;
@@ -614,7 +614,8 @@ namespace gr {
       this->get_tags_in_range(tags, 0, nread, nread + noutput_items, pmt::string_to_symbol("modcod"));
 
       for (int i = 0; i < (int)tags.size(); i++) {
-        framesize = (dvbs2_framesize_t)((pmt::to_long(tags[i].value)) & 0xff);
+        dummy = (unsigned int)((pmt::to_long(tags[i].value)) & 0x1);
+        framesize = (dvbs2_framesize_t)(((pmt::to_long(tags[i].value)) >> 1) & 0x7f);
         rate = (dvbs2_code_rate_t)(((pmt::to_long(tags[i].value)) >> 8) & 0xff);
         constellation = (dvbs2_constellation_t)(((pmt::to_long(tags[i].value)) >> 16) & 0xff);
         pilots = (dvbs2_pilots_t)(((pmt::to_long(tags[i].value)) >> 24) & 0xff);
@@ -623,7 +624,7 @@ namespace gr {
         if (nbch + produced <= (unsigned int)noutput_items) {
           produced_per_iteration = 0;
           const uint64_t tagoffset = this->nitems_written(0);
-          const uint64_t tagmodcod = (uint64_t(goldcode) << 32) | (uint64_t(pilots) << 24) | (uint64_t(constellation) << 16) | (uint64_t(rate) << 8) | uint64_t(framesize);
+          const uint64_t tagmodcod = (uint64_t(goldcode) << 32) | (uint64_t(pilots) << 24) | (uint64_t(constellation) << 16) | (uint64_t(rate) << 8) | (uint64_t(framesize) << 1) | uint64_t(dummy);
           pmt::pmt_t key = pmt::string_to_symbol("modcod");
           pmt::pmt_t value = pmt::from_long(tagmodcod);
           this->add_item_tag(0, tagoffset, key, value);

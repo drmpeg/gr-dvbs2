@@ -479,7 +479,7 @@ namespace gr {
       in = (const unsigned char *) input_items[i];
       while (kbch[i] + produced <= (unsigned int)noutput_items) {
         const uint64_t tagoffset = this->nitems_written(0);
-        const uint64_t tagmodcod = (uint64_t(gold_code[0]) << 32) | (uint64_t(pilot_mode[i]) << 24) | (uint64_t(signal_constellation[i]) << 16) | (uint64_t(code_rate[i]) << 8) | uint64_t(frame_size[i]);
+        const uint64_t tagmodcod = (uint64_t(gold_code[0]) << 32) | (uint64_t(pilot_mode[i]) << 24) | (uint64_t(signal_constellation[i]) << 16) | (uint64_t(code_rate[i]) << 8) | (uint64_t(frame_size[i]) << 1) | uint64_t(0);
         pmt::pmt_t key = pmt::string_to_symbol("modcod");
         pmt::pmt_t value = pmt::from_long(tagmodcod);
         this->add_item_tag(0, tagoffset, key, value);
