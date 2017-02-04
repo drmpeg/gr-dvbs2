@@ -908,12 +908,16 @@
       <value></value>
     </param>
     <param>
+      <key>dummyframes</key>
+      <value>DUMMY_FRAMES_OFF</value>
+    </param>
+    <param>
       <key>_enabled</key>
       <value>True</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(208, 360)</value>
+      <value>(208, 356)</value>
     </param>
     <param>
       <key>_rotation</key>
