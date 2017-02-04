@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014,2016 Ron Economos.
+ * Copyright 2014,2016,2017 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
