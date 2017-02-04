@@ -31,6 +31,7 @@ namespace gr {
     class physical_cc_impl : public physical_cc
     {
      private:
+      int dummy_frames;
       int b[VLSNR_HEADER_LENGTH];
       gr_complex m_bpsk[4][2];
       gr_complex m_pl[90];
@@ -50,7 +51,7 @@ namespace gr {
       const static int ph_vlsnr_seq[16][VLSNR_HEADER_LENGTH - 4];
 
      public:
-      physical_cc_impl();
+      physical_cc_impl(dvbs2_dummy_frames_t dummyframes);
       ~physical_cc_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

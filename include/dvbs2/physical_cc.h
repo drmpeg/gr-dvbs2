@@ -50,7 +50,7 @@ namespace gr {
        * \param pilots pilot symbols (on/off).
        * \param goldcode physical layer scrambler Gold code (0 to 262141 inclusive).
        */
-      static sptr make();
+      static sptr make(dvbs2_dummy_frames_t dummyframes);
     };
 
   } // namespace dvbs2

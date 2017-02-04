@@ -9,7 +9,22 @@
   <key>dvbs2_physical_cc</key>
   <category>[DVB]/DVB-S2</category>
   <import>import dvbs2</import>
-  <make>dvbs2.physical_cc()</make>
+  <make>dvbs2.physical_cc($dummyframes.val)</make>
+  <param>
+    <name>Dummy Frames</name>
+    <key>dummyframes</key>
+    <type>enum</type>
+    <option>
+      <name>Off</name>
+      <key>DUMMY_FRAMES_OFF</key>
+      <opt>val:dvbs2.DUMMY_FRAMES_OFF</opt>
+    </option>
+    <option>
+      <name>On</name>
+      <key>DUMMY_FRAMES_ON</key>
+      <opt>val:dvbs2.DUMMY_FRAMES_ON</opt>
+    </option>
+  </param>
   <sink>
     <name>in</name>
     <type>complex</type>

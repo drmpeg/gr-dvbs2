@@ -168,6 +168,12 @@ namespace gr {
       IPADDR_SPOOF_OFF = 0,
       IPADDR_SPOOF_ON,
     };
+
+    enum dvbs2_dummy_frames_t {
+      DUMMY_FRAMES_OFF = 0,
+      DUMMY_FRAMES_ON,
+    };
+
   } // namespace dvbs2
 } // namespace gr
 
@@ -178,6 +184,7 @@ typedef gr::dvbs2::dvbs2_pilots_t dvbs2_pilots_t;
 typedef gr::dvbs2::dvbs2_framesize_t dvbs2_framesize_t;
 typedef gr::dvbs2::dvbs2_ping_reply_t dvbs2_ping_reply_t;
 typedef gr::dvbs2::dvbs2_ipaddr_spoof_t dvbs2_ipaddr_spoof_t;
+typedef gr::dvbs2::dvbs2_dummy_frames_t dvbs2_dummy_frames_t;
 
 #endif /* INCLUDED_DVBS2_CONFIG_H */
 

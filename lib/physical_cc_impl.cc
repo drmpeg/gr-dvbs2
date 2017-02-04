@@ -29,21 +29,23 @@ namespace gr {
   namespace dvbs2 {
 
     physical_cc::sptr
-    physical_cc::make()
+    physical_cc::make(dvbs2_dummy_frames_t dummyframes)
     {
       return gnuradio::get_initial_sptr
-        (new physical_cc_impl());
+        (new physical_cc_impl(dummyframes));
     }
 
     /*
      * The private constructor
      */
-    physical_cc_impl::physical_cc_impl()
+    physical_cc_impl::physical_cc_impl(dvbs2_dummy_frames_t dummyframes)
       : gr::block("physical_cc",
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
     {
       double r0 = 1.0;
+
+      dummy_frames = dummyframes;
 
       m_bpsk[0][0] = gr_complex((r0 * cos(M_PI / 4.0)), (r0 * sin(M_PI / 4.0)));
       m_bpsk[0][1] = gr_complex((r0 * cos(5.0 * M_PI / 4.0)), (r0 * sin(5.0 * M_PI / 4.0)));
@@ -731,11 +733,8 @@ namespace gr {
         constellation = (dvbs2_constellation_t)(((pmt::to_long(tags[i].value)) >> 16) & 0xff);
         pilots = (dvbs2_pilots_t)(((pmt::to_long(tags[i].value)) >> 24) & 0xff);
         goldcode = (unsigned int)(((pmt::to_long(tags[i].value)) >> 32) & 0x3ffff);
-        if (dummy == 0) {
-          printf("dummy = %d, framesize = %d, rate = %d, const = %d, pilots = %d, code = %d\n", dummy, framesize, rate, constellation, pilots, goldcode);
-        }
         get_slots(framesize, rate, constellation, pilots, goldcode, &slots, &pilot_symbols, &vlsnr_set, &vlsnr_header);
-        if (dummy == 0) {
+        if (dummy == 0 || dummy_frames == 0) {
           if (produced + (((slots * 90) + 90 + pilot_symbols) * 2) <= noutput_items) {
             if (vlsnr_set == VLSNR_OFF) {
               n = 0;
