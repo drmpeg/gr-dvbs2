@@ -7,7 +7,7 @@
 <block>
   <name>Physical Layer Framer</name>
   <key>dvbs2_physical_cc</key>
-  <category>[DVB]/DVB-S2</category>
+  <category>[DVB]/DVB-S2 VCM</category>
   <import>import dvbs2</import>
   <make>dvbs2.physical_cc($dummyframes.val)</make>
   <param>

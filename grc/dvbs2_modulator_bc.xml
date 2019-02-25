@@ -7,7 +7,7 @@
 <block>
   <name>DVB-S2X Modulator</name>
   <key>dvbs2_modulator_bc</key>
-  <category>[DVB]/DVB-S2</category>
+  <category>[DVB]/DVB-S2 VCM</category>
   <import>import dvbs2</import>
   <make>dvbs2.modulator_bc()</make>
   <sink>

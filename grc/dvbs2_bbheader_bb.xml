@@ -7,7 +7,7 @@
 <block>
   <name>BBheader</name>
   <key>dvbs2_bbheader_bb</key>
-  <category>[DVB]/DVB-S2</category>
+  <category>[DVB]/DVB-S2 VCM</category>
   <import>import dvbs2</import>
   <make>dvbs2.bbheader_bb($nstreams, #slurp
 $framesize1.val, #slurp

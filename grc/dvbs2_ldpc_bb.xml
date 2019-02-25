@@ -7,7 +7,7 @@
 <block>
   <name>LDPC Encoder</name>
   <key>dvbs2_ldpc_bb</key>
-  <category>[DVB]/DVB-S2</category>
+  <category>[DVB]/DVB-S2 VCM</category>
   <import>import dvbs2</import>
   <make>dvbs2.ldpc_bb()</make>
   <sink>

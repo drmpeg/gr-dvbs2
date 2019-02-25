@@ -7,7 +7,7 @@
 <block>
   <name>BBscrambler</name>
   <key>dvbs2_bbscrambler_bb</key>
-  <category>[DVB]/DVB-S2</category>
+  <category>[DVB]/DVB-S2 VCM</category>
   <import>import dvbs2</import>
   <make>dvbs2.bbscrambler_bb()</make>
   <sink>

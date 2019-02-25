@@ -7,7 +7,7 @@
 <block>
   <name>Interleaver</name>
   <key>dvbs2_interleaver_bb</key>
-  <category>[DVB]/DVB-S2</category>
+  <category>[DVB]/DVB-S2 VCM</category>
   <import>import dvbs2</import>
   <make>dvbs2.interleaver_bb()</make>
   <sink>

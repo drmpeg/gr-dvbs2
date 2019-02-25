@@ -7,7 +7,7 @@
 <block>
   <name>IP Packet Source</name>
   <key>dvbs2_bbheader_source</key>
-  <category>[DVB]/DVB-S2</category>
+  <category>[DVB]/DVB-S2 VCM</category>
   <import>import dvbs2</import>
   <make>dvbs2.bbheader_source($nstreams, #slurp
 $framesize1.val, #slurp
