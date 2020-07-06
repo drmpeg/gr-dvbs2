@@ -1,9 +1,10 @@
-******** NOTICE ********
+Since the functionality of the CCM version of the DVB-S2 transmitter
+is already included in GNU Radio, this OOT implements a VCM/ACM
+(Variable/Adaptive Coding and Modulation) version of the DVB-S2
+transmitter. A VCM/ACM capable DVB-GSE block and test flow graph
+(dvbs2_txip.grc) are also included.
 
-This is a special branch of gr-dvbs2 that implements VCM/ACM and
-includes a VCM/ACM capable DVB-GSE block.
-
-# Copyright 2014,2016 Ron Economos
+# Copyright 2014,2016,2020 Ron Economos
 #
 # This file is part of gr-dvbs2
 #
@@ -44,13 +45,14 @@ DATV-Express Digital Amateur Television project datvexpress_gui
 and converted to GnuRadio 3.7.x.
 
 A gnuradio-companion flowgraph (dvbs2_tx.grc) for the bladeRF
-transmit capable SDR is included along with a stand-alone
-Python script for bladeRF (dvbs2-blade.py).
+and Ettus B2xx transmit capable SDR's is included.
 
-A test Transport Stream that matches the example applications
-symbol rate, constellation and code rate can be downloaded here:
+A set of test Transport Streams that matches the example application
+symbol rate, constellations and code rates can be downloaded here:
 
-http://www.w6rz.net/adv16apsk910.ts
+http://www.w6rz.net/overflowqpsk_276_45.ts
+http://www.w6rz.net/sweetnothing8psk_184_56.ts
+http://www.w6rz.net/cosmic16apsk_138_89.ts
 
 A DVB-S2 and DVB-S2X Transport Stream bit-rate calculator:
 
@@ -85,9 +87,6 @@ System configurations not supported are:
 Note: DVB-S2X Broadcast services MODCOD's have been tested
 as of September 2016 with the Silicon Labs Si2183 demodulator.
 VL-SNR modes have been implemented, but are still untested.
-For DVB-S2X, optional Broadcast services configurations supported
-are 64APSK and 64APSK-L. 128APSK, 256APSK and 256APSK-L
-constellations are included for experimentation.
 
 https://www.dvb.org/resources/public/standards/a83-2_dvb-s2x_den302307-2.pdf
 
