@@ -43,10 +43,6 @@ namespace gr {
 
       /*!
        * \brief Create a baseband frame LDPC encoder.
-       *
-       * \param framesize FEC frame size (normal, medium or short).
-       * \param rate FEC code rate.
-       * \param constellation DVB-S2 constellation.
        */
       static sptr make();
     };

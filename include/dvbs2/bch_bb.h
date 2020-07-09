@@ -44,9 +44,6 @@ namespace gr {
 
       /*!
        * \brief Create a baseband frame BCH encoder.
-       *
-       * \param framesize FEC frame size (normal, medium or short).
-       * \param rate FEC code rate.
        */
       static sptr make();
     };

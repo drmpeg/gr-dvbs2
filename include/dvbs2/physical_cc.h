@@ -44,11 +44,7 @@ namespace gr {
       /*!
        * \brief Create a DVB-S2 physical layer framer.
        *
-       * \param framesize FEC frame size (normal or short).
-       * \param rate FEC code rate.
-       * \param constellation DVB-S2 constellation.
-       * \param pilots pilot symbols (on/off).
-       * \param goldcode physical layer scrambler Gold code (0 to 262141 inclusive).
+       * \param dummyframes Enable dummy frames.
        */
       static sptr make(dvbs2_dummy_frames_t dummyframes);
     };

@@ -47,8 +47,27 @@ namespace gr {
       /*!
        * \brief Create a baseband header formatter.
        *
-       * \param framesize FEC frame size (normal, medium or short).
-       * \param rate FEC code rate.
+       * \param nstreams number of streams (1-4).
+       * \param framesize1 FEC frame size (normal, medium or short).
+       * \param rate1 FEC code rate.
+       * \param constellation1 DVB-S2 constellation.
+       * \param pilots1 pilot symbols (on/off).
+       * \param goldcode1 physical layer scrambler Gold code (0 to 262141 inclusive).
+       * \param framesize2 FEC frame size (normal, medium or short).
+       * \param rate2 FEC code rate.
+       * \param constellation2 DVB-S2 constellation.
+       * \param pilots2 pilot symbols (on/off).
+       * \param goldcode2 physical layer scrambler Gold code (0 to 262141 inclusive).
+       * \param framesize3 FEC frame size (normal, medium or short).
+       * \param rate3 FEC code rate.
+       * \param constellation3 DVB-S2 constellation.
+       * \param pilots3 pilot symbols (on/off).
+       * \param goldcode3 physical layer scrambler Gold code (0 to 262141 inclusive).
+       * \param framesize4 FEC frame size (normal, medium or short).
+       * \param rate4 FEC code rate.
+       * \param constellation4 DVB-S2 constellation.
+       * \param pilots4 pilot symbols (on/off).
+       * \param goldcode4 physical layer scrambler Gold code (0 to 262141 inclusive).
        * \param rolloff DVB-S2 root-raised-cosine filter roll-off.
        */
       static sptr make(int nstreams, dvbs2_framesize_t framesize1, dvbs2_code_rate_t rate1, dvbs2_constellation_t constellation1, dvbs2_pilots_t pilots1, int goldcode1, dvbs2_framesize_t framesize2, dvbs2_code_rate_t rate2, dvbs2_constellation_t constellation2, dvbs2_pilots_t pilots2, int goldcode2, dvbs2_framesize_t framesize3, dvbs2_code_rate_t rate3, dvbs2_constellation_t constellation3, dvbs2_pilots_t pilots3, int goldcode3, dvbs2_framesize_t framesize4, dvbs2_code_rate_t rate4, dvbs2_constellation_t constellation4, dvbs2_pilots_t pilots4, int goldcode4, dvbs2_rolloff_factor_t rolloff);
