@@ -22,9 +22,10 @@ FIND_LIBRARY(
           /usr/local/lib64
           /usr/lib
           /usr/lib64
-)
+          )
+
+include("${CMAKE_CURRENT_LIST_DIR}/dvbs2Target.cmake")
 
 INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(DVBS2 DEFAULT_MSG DVBS2_LIBRARIES DVBS2_INCLUDE_DIRS)
 MARK_AS_ADVANCED(DVBS2_LIBRARIES DVBS2_INCLUDE_DIRS)
-
