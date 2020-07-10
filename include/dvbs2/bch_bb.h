@@ -40,7 +40,7 @@ namespace gr {
     class DVBS2_API bch_bb : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<bch_bb> sptr;
+      typedef std::shared_ptr<bch_bb> sptr;
 
       /*!
        * \brief Create a baseband frame BCH encoder.

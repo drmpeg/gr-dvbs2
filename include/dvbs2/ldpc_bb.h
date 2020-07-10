@@ -39,7 +39,7 @@ namespace gr {
     class DVBS2_API ldpc_bb : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<ldpc_bb> sptr;
+      typedef std::shared_ptr<ldpc_bb> sptr;
 
       /*!
        * \brief Create a baseband frame LDPC encoder.

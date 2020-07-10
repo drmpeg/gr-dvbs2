@@ -40,7 +40,7 @@ namespace gr {
     class DVBS2_API bbscrambler_bb : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<bbscrambler_bb> sptr;
+      typedef std::shared_ptr<bbscrambler_bb> sptr;
 
       /*!
        * \brief Create a baseband frame scrambler.

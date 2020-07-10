@@ -39,7 +39,7 @@ namespace gr {
     class DVBS2_API interleaver_bb : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<interleaver_bb> sptr;
+      typedef std::shared_ptr<interleaver_bb> sptr;
 
       /*!
        * \brief Create a DVB-S2 bit interleaver.

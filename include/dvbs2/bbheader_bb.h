@@ -42,7 +42,7 @@ namespace gr {
     class DVBS2_API bbheader_bb : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<bbheader_bb> sptr;
+      typedef std::shared_ptr<bbheader_bb> sptr;
 
       /*!
        * \brief Create a baseband header formatter.

@@ -39,7 +39,7 @@ namespace gr {
     class DVBS2_API physical_cc : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<physical_cc> sptr;
+      typedef std::shared_ptr<physical_cc> sptr;
 
       /*!
        * \brief Create a DVB-S2 physical layer framer.
