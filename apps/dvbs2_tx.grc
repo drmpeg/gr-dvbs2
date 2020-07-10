@@ -867,7 +867,7 @@ blocks:
     clock_source6: ''
     clock_source7: ''
     comment: ''
-    dev_addr: '"send_frame_size=65536,num_send_frames=256,master_clock_rate=" + str(samp_rate*4)'
+    dev_addr: '"send_frame_size=8192,num_send_frames=256,master_clock_rate=" + str(samp_rate*4)'
     dev_args: '""'
     gain0: tx_gain
     gain1: '0'
@@ -1015,7 +1015,7 @@ blocks:
     show_lo_controls: 'False'
     stream_args: ''
     stream_chans: '[]'
-    sync: sync
+    sync: none
     time_source0: ''
     time_source1: ''
     time_source2: ''
