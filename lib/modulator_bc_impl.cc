@@ -43,7 +43,7 @@ namespace gr {
               gr::io_signature::make(1, 1, sizeof(unsigned char)),
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
     {
-      double r1, r2, r3, r4;
+      double r0, r1, r2, r3, r4;
       double m = 1.0;
       r1 = m;
       m_bpsk[0][0] = gr_complex((r1 * cos(M_PI / 4.0)), (r1 * sin(M_PI / 4.0)));
@@ -84,6 +84,9 @@ namespace gr {
       r2 = m;
       for (int i = 0; i < 12; i++) {
         r1 = r2 / m_16apsk_radius[i][0];
+        r0 = sqrt(4.0 / ((r1 * r1) + 3.0 * (r2 * r2)));
+        r1 *= r0;
+        r2 *= r0;
         m_16apsk[0][i] = gr_complex((r2 * cos(M_PI / 4.0)), (r2 * sin(M_PI / 4.0)));
         m_16apsk[1][i] = gr_complex((r2 * cos(-M_PI / 4.0)), (r2 * sin(-M_PI / 4.0)));
         m_16apsk[2][i] = gr_complex((r2 * cos(3 * M_PI / 4.0)), (r2 * sin(3 * M_PI / 4.0)));
@@ -161,6 +164,10 @@ namespace gr {
       for (int i = 0; i < 5; i++) {
         r1 = r3 / m_32apsk_radius[i][0];
         r2 = r1 * m_32apsk_radius[i][1];
+        r0 = sqrt(8.0 / ((r1 * r1) + 3.0 * (r2 * r2) + 4.0 * (r3 * r3)));
+        r1 *= r0;
+        r2 *= r0;
+        r3 *= r0;
         m_32apsk[0][i] = gr_complex((r2 * cos(M_PI / 4.0)), (r2 * sin(M_PI / 4.0)));
         m_32apsk[1][i] = gr_complex((r2 * cos(5 * M_PI / 12.0)), (r2 * sin(5 * M_PI / 12.0)));
         m_32apsk[2][i] = gr_complex((r2 * cos(-M_PI / 4.0)), (r2 * sin(-M_PI / 4.0)));
