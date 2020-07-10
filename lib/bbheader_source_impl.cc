@@ -1087,7 +1087,7 @@ namespace gr {
         const uint64_t tagoffset = this->nitems_written(0);
         const uint64_t tagmodcod = (uint64_t(gold_code[0]) << 32) | (uint64_t(pilot_mode[i]) << 24) | (uint64_t(signal_constellation[i]) << 16) | (uint64_t(code_rate[i]) << 8) | (uint64_t(frame_size[i]) << 1) | uint64_t(dummy);
         pmt::pmt_t key = pmt::string_to_symbol("modcod");
-        pmt::pmt_t value = pmt::from_long(tagmodcod);
+        pmt::pmt_t value = pmt::from_uint64(tagmodcod);
         this->add_item_tag(0, tagoffset, key, value);
         gold_code[0]++;    /* VCM gold code not supported for now, use it for stream tag debugging instead. */
         produced += kbch[i];

@@ -291,7 +291,7 @@ namespace gr {
       this->get_tags_in_range(tags, 0, nread, nread + noutput_items, pmt::string_to_symbol("modcod"));
 
       for (int i = 0; i < (int)tags.size(); i++) {
-        get_kbch((dvbs2_framesize_t)(((pmt::to_long(tags[i].value)) >> 1) & 0x7f), (dvbs2_code_rate_t)(((pmt::to_long(tags[i].value)) >> 8) & 0xff), &kbch);
+        get_kbch((dvbs2_framesize_t)(((pmt::to_uint64(tags[i].value)) >> 1) & 0x7f), (dvbs2_code_rate_t)(((pmt::to_uint64(tags[i].value)) >> 8) & 0xff), &kbch);
         if (kbch + produced <= (unsigned int)noutput_items) {
           for (int j = 0; j < (int)kbch; ++j) {
             out[produced + j] = in[produced + j] ^ bb_randomise[j];
