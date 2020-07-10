@@ -128,7 +128,7 @@ find_package(Doxygen)
 find_package(Pcap)
 
 if(NOT PCAP_FOUND)
-    message(FATAL_ERROR "Pcap required to compile dvbgse")
+    message(FATAL_ERROR "Pcap required to compile dvbs2")
 endif()
 
 ########################################################################
