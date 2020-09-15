@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 Ron Economos.
+ * Copyright 2017,2020 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ namespace gr {
         GR_LOG_WARN(d_logger, "Gold Code 1 set to 0.");
         goldcode1 = 0;
       }
-      gold_code[0] = goldcode1;
+      root_code[0] = gold_to_root(goldcode1);
       strcpy(&mac_address[0][0], mac_address1);
 
       frame_size[1] = framesize2;
@@ -106,7 +106,7 @@ namespace gr {
         GR_LOG_WARN(d_logger, "Gold Code 2 set to 0.");
         goldcode2 = 0;
       }
-      gold_code[1] = goldcode2;
+      root_code[1] = gold_to_root(goldcode2);
       strcpy(&mac_address[1][0], mac_address2);
 
       frame_size[2] = framesize3;
@@ -118,7 +118,7 @@ namespace gr {
         GR_LOG_WARN(d_logger, "Gold Code 3 set to 0.");
         goldcode3 = 0;
       }
-      gold_code[2] = goldcode3;
+      root_code[2] = gold_to_root(goldcode3);
       strcpy(&mac_address[2][0], mac_address3);
 
       frame_size[3] = framesize4;
@@ -130,7 +130,7 @@ namespace gr {
         GR_LOG_WARN(d_logger, "Gold Code 4 set to 0.");
         goldcode4 = 0;
       }
-      gold_code[3] = goldcode4;
+      root_code[3] = gold_to_root(goldcode4);
       strcpy(&mac_address[3][0], mac_address4);
 
       for (int i = 0; i < nstreams; i++) {
@@ -594,6 +594,17 @@ namespace gr {
       // Add CRC to BB header, at end
       int len = BB_HEADER_LENGTH_BITS;
       m_frame_offset_bits += add_crc8_bits(m_frame, len);
+    }
+
+    int
+    bbheader_source_impl::gold_to_root(int goldcode)
+    {
+      int x;
+
+      for (int g = 0, x = 1; g < goldcode; g++) {
+        x = (((x ^ (x >> 7)) & 1) << 17) | (x >> 1);
+      }
+      return x;
     }
 
     int
@@ -1085,11 +1096,10 @@ namespace gr {
           dummy = 1;
         }
         const uint64_t tagoffset = this->nitems_written(0);
-        const uint64_t tagmodcod = (uint64_t(gold_code[0]) << 32) | (uint64_t(pilot_mode[i]) << 24) | (uint64_t(signal_constellation[i]) << 16) | (uint64_t(code_rate[i]) << 8) | (uint64_t(frame_size[i]) << 1) | uint64_t(dummy);
+        const uint64_t tagmodcod = (uint64_t(root_code[i]) << 32) | (uint64_t(pilot_mode[i]) << 24) | (uint64_t(signal_constellation[i]) << 16) | (uint64_t(code_rate[i]) << 8) | (uint64_t(frame_size[i]) << 1) | uint64_t(dummy);
         pmt::pmt_t key = pmt::string_to_symbol("modcod");
-        pmt::pmt_t value = pmt::from_long(tagmodcod);
+        pmt::pmt_t value = pmt::from_uint64(tagmodcod);
         this->add_item_tag(0, tagoffset, key, value);
-        gold_code[0]++;    /* VCM gold code not supported for now, use it for stream tag debugging instead. */
         produced += kbch[i];
         produce(0, kbch[i]);
       }

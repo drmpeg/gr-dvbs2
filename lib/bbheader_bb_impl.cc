@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014,2016,2017 Ron Economos.
+ * Copyright 2014,2016,2017,2020 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ namespace gr {
         GR_LOG_WARN(d_logger, "Gold Code 1 set to 0.");
         goldcode1 = 0;
       }
-      gold_code[0] = goldcode1;
+      root_code[0] = gold_to_root(goldcode1);
 
       frame_size[1] = framesize2;
       code_rate[1] = rate2;
@@ -73,7 +73,7 @@ namespace gr {
         GR_LOG_WARN(d_logger, "Gold Code 2 set to 0.");
         goldcode2 = 0;
       }
-      gold_code[1] = goldcode2;
+      root_code[1] = gold_to_root(goldcode2);
 
       frame_size[2] = framesize3;
       code_rate[2] = rate3;
@@ -84,7 +84,7 @@ namespace gr {
         GR_LOG_WARN(d_logger, "Gold Code 3 set to 0.");
         goldcode3 = 0;
       }
-      gold_code[2] = goldcode3;
+      root_code[2] = gold_to_root(goldcode3);
 
       frame_size[3] = framesize4;
       code_rate[3] = rate4;
@@ -95,7 +95,7 @@ namespace gr {
         GR_LOG_WARN(d_logger, "Gold Code 4 set to 0.");
         goldcode4 = 0;
       }
-      gold_code[3] = goldcode4;
+      root_code[3] = gold_to_root(goldcode4);
 
       for (int i = 0; i < nstreams; i++) {
         if (frame_size[i] == FECFRAME_NORMAL) {
@@ -463,6 +463,17 @@ namespace gr {
     }
 
     int
+    bbheader_bb_impl::gold_to_root(int goldcode)
+    {
+      int x;
+
+      for (int g = 0, x = 1; g < goldcode; g++) {
+        x = (((x ^ (x >> 7)) & 1) << 17) | (x >> 1);
+      }
+      return x;
+    }
+
+    int
     bbheader_bb_impl::general_work (int noutput_items,
                        gr_vector_int &ninput_items,
                        gr_vector_const_void_star &input_items,
@@ -476,43 +487,18 @@ namespace gr {
       unsigned char b;
 
       i = stream;
-      in = (const unsigned char *) input_items[i];
-      while (kbch[i] + produced <= (unsigned int)noutput_items) {
-        const uint64_t tagoffset = this->nitems_written(0);
-        const uint64_t tagmodcod = (uint64_t(gold_code[0]) << 32) | (uint64_t(pilot_mode[i]) << 24) | (uint64_t(signal_constellation[i]) << 16) | (uint64_t(code_rate[i]) << 8) | (uint64_t(frame_size[i]) << 1) | uint64_t(0);
-        pmt::pmt_t key = pmt::string_to_symbol("modcod");
-        pmt::pmt_t value = pmt::from_long(tagmodcod);
-        this->add_item_tag(0, tagoffset, key, value);
-        gold_code[0]++;    /* VCM gold code not supported for now, use it for stream tag debugging instead. */
-        if (frame_size[i] != FECFRAME_MEDIUM) {
-          add_bbheader(&out[offset], count[i], nibble[i], i);
-          offset = offset + 80;
-          for (int j = 0; j < (int)((kbch[i] - 80) / 8); j++) {
-            if (count[i] == 0) {
-              if (*in != 0x47) {
-                GR_LOG_WARN(d_logger, boost::format("Transport Stream %1% sync error!") \
-                            % i);
-              }
-              in++;
-              b = crc[i];
-              crc[i] = 0;
-            }
-            else {
-              b = *in++;
-              crc[i] = crc_tab[b ^ crc[i]];
-            }
-            count[i] = (count[i] + 1) % 188;
-            consumed[i]++;
-            for (int n = 7; n >= 0; n--) {
-              out[offset++] = b & (1 << n) ? 1 : 0;
-            }
-          }
-        }
-        else {
-          add_bbheader(&out[offset], count[i], nibble[i], i);
-          offset = offset + 80;
-          for (int j = 0; j < (int)((kbch[i] - 80) / 4); j++) {
-            if (nibble[i] == TRUE) {
+      if (ninput_items[i] != 0) {
+        in = (const unsigned char *) input_items[i];
+        while (kbch[i] + produced <= (unsigned int)noutput_items) {
+          const uint64_t tagoffset = this->nitems_written(0);
+          const uint64_t tagmodcod = (uint64_t(root_code[i]) << 32) | (uint64_t(pilot_mode[i]) << 24) | (uint64_t(signal_constellation[i]) << 16) | (uint64_t(code_rate[i]) << 8) | (uint64_t(frame_size[i]) << 1) | uint64_t(0);
+          pmt::pmt_t key = pmt::string_to_symbol("modcod");
+          pmt::pmt_t value = pmt::from_uint64(tagmodcod);
+          this->add_item_tag(0, tagoffset, key, value);
+          if (frame_size[i] != FECFRAME_MEDIUM) {
+            add_bbheader(&out[offset], count[i], nibble[i], i);
+            offset = offset + 80;
+            for (int j = 0; j < (int)((kbch[i] - 80) / 8); j++) {
               if (count[i] == 0) {
                 if (*in != 0x47) {
                   GR_LOG_WARN(d_logger, boost::format("Transport Stream %1% sync error!") \
@@ -526,24 +512,50 @@ namespace gr {
                 b = *in++;
                 crc[i] = crc_tab[b ^ crc[i]];
               }
-              bsave[i] = b;
               count[i] = (count[i] + 1) % 188;
               consumed[i]++;
-              for (int n = 7; n >= 4; n--) {
+              for (int n = 7; n >= 0; n--) {
                 out[offset++] = b & (1 << n) ? 1 : 0;
               }
-              nibble[i] = FALSE;
-            }
-            else {
-              for (int n = 3; n >= 0; n--) {
-                out[offset++] = bsave[i] & (1 << n) ? 1 : 0;
-              }
-              nibble[i] = TRUE;
             }
           }
+          else {
+            add_bbheader(&out[offset], count[i], nibble[i], i);
+            offset = offset + 80;
+            for (int j = 0; j < (int)((kbch[i] - 80) / 4); j++) {
+              if (nibble[i] == TRUE) {
+                if (count[i] == 0) {
+                  if (*in != 0x47) {
+                    GR_LOG_WARN(d_logger, boost::format("Transport Stream %1% sync error!") \
+                                % i);
+                  }
+                  in++;
+                  b = crc[i];
+                  crc[i] = 0;
+                }
+                else {
+                  b = *in++;
+                  crc[i] = crc_tab[b ^ crc[i]];
+                }
+                bsave[i] = b;
+                count[i] = (count[i] + 1) % 188;
+                consumed[i]++;
+                for (int n = 7; n >= 4; n--) {
+                  out[offset++] = b & (1 << n) ? 1 : 0;
+                }
+                nibble[i] = FALSE;
+              }
+              else {
+                for (int n = 3; n >= 0; n--) {
+                  out[offset++] = bsave[i] & (1 << n) ? 1 : 0;
+                }
+                nibble[i] = TRUE;
+              }
+            }
+          }
+          produced += kbch[i];
+          produce(0, kbch[i]);
         }
-        produced += kbch[i];
-        produce(0, kbch[i]);
       }
       stream++;
       if (stream == num_streams) {

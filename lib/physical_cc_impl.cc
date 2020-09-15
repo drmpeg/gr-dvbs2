@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014,2016,2017 Ron Economos.
+ * Copyright 2014,2016,2017,2020 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,6 @@ namespace gr {
       m_bpsk[3][1] = gr_complex((r0 * cos(M_PI / 4.0)), (r0 * sin(M_PI / 4.0)));
 
       m_zero = gr_complex(0.0, 0.0);
-      build_symbol_scrambler_table();
 
       // Create the dummy PL header.
       // Add the sync sequence SOF
@@ -95,7 +94,7 @@ namespace gr {
     void
     physical_cc_impl::b_64_8_code(unsigned char in, int *out)
     {
-      unsigned long temp, bit;
+      unsigned int temp, bit;
 
       temp = 0;
 
@@ -148,69 +147,50 @@ namespace gr {
       b_64_8_code (code, out);
     }
 
-    int
-    physical_cc_impl::parity_chk(long a, long b)
+    inline int
+    physical_cc_impl::parity_chk(int a, int b)
     {
-      int c = 0;
       a = a & b;
-      for (int i = 0; i < 18; i++) {
-        if(a & (1L << i)) {
-          c++;
-        }
-      }
-      return c & 1;
+      a ^= (a >> 16);
+      a ^= (a >> 8);
+      a ^= (a >> 4);
+      a ^= (a >> 2);
+      a ^= (a >> 1);
+      return a & 1;
     }
 
-    void
-    physical_cc_impl::build_symbol_scrambler_table(void)
+    inline int
+    physical_cc_impl::symbol_scrambler(void)
     {
-      long x, y;
       int xa, xb, xc, ya, yb, yc;
       int rn, zna, znb;
 
-      // Initialisation
-      x = 0x00001;
-      y = 0x3FFFF;
+      xa = parity_chk(m_cscram_x, 0x8050);
+      xb = parity_chk(m_cscram_x, 0x0081);
+      xc = m_cscram_x & 1;
 
-#if 0
-      for (int n = 0; n < gold_code; n++) {
-        xb = parity_chk(x, 0x0081);
-
-        x >>= 1;
-        if (xb) {
-          x |= 0x20000;
-        }
+      m_cscram_x >>= 1;
+      if (xb) {
+        m_cscram_x |= 0x20000;
       }
-#endif
 
-      for (int i = 0; i < FRAME_SIZE_NORMAL; i++) {
-        xa = parity_chk(x, 0x8050);
-        xb = parity_chk(x, 0x0081);
-        xc = x & 1;
+      ya = parity_chk(m_cscram_y, 0x04A1);
+      yb = parity_chk(m_cscram_y, 0xFF60);
+      yc = m_cscram_y & 1;
 
-        x >>= 1;
-        if (xb) {
-          x |= 0x20000;
-        }
-
-        ya = parity_chk(y, 0x04A1);
-        yb = parity_chk(y, 0xFF60);
-        yc = y & 1;
-
-        y >>= 1;
-        if (ya) {
-          y |= 0x20000;
-        }
-
-        zna = xc ^ yc;
-        znb = xa ^ yb;
-        rn = (znb << 1) + zna;
-        m_cscram[i] = rn;
+      m_cscram_y >>= 1;
+      if (ya) {
+        m_cscram_y |= 0x20000;
       }
+
+      zna = xc ^ yc;
+      znb = xa ^ yb;
+      rn = (znb << 1) + zna;
+      return (rn);
     }
 
     void
-    physical_cc_impl::get_slots(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, dvbs2_pilots_t pilots, int goldcode, int *slots, int *pilot_symbols, int *vlsnr_set, int *vlsnr_header)
+    physical_cc_impl::get_slots(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, dvbs2_pilots_t pilots, int rootcode, int *slots, int *pilot_symbols, int *vlsnr_set, int *vlsnr_header)
     {
       int type, modcod, frame_size;
       int slots_temp = 0;
@@ -711,14 +691,14 @@ namespace gr {
       int consumed = 0;
       int produced = 0;
       int slots, pilot_symbols, vlsnr_set, vlsnr_header;
-      int slot_count, n;
+      int slot_count;
       int group, symbols;
       gr_complex tempin, tempout;
       dvbs2_framesize_t framesize;
       dvbs2_code_rate_t rate;
       dvbs2_constellation_t constellation;
       dvbs2_pilots_t pilots;
-      unsigned int goldcode, dummy;
+      unsigned int rootcode, dummy;
 
       std::vector<tag_t> tags;
       const uint64_t nread = this->nitems_read(0); //number of items read on port 0
@@ -727,17 +707,18 @@ namespace gr {
       this->get_tags_in_range(tags, 0, nread, nread + noutput_items, pmt::string_to_symbol("modcod"));
 
       for (int i = 0; i < (int)tags.size(); i++) {
-        dummy = (unsigned int)((pmt::to_long(tags[i].value)) & 0x1);
-        framesize = (dvbs2_framesize_t)(((pmt::to_long(tags[i].value)) >> 1) & 0x7f);
-        rate = (dvbs2_code_rate_t)(((pmt::to_long(tags[i].value)) >> 8) & 0xff);
-        constellation = (dvbs2_constellation_t)(((pmt::to_long(tags[i].value)) >> 16) & 0xff);
-        pilots = (dvbs2_pilots_t)(((pmt::to_long(tags[i].value)) >> 24) & 0xff);
-        goldcode = (unsigned int)(((pmt::to_long(tags[i].value)) >> 32) & 0x3ffff);
-        get_slots(framesize, rate, constellation, pilots, goldcode, &slots, &pilot_symbols, &vlsnr_set, &vlsnr_header);
+        dummy = (unsigned int)((pmt::to_uint64(tags[i].value)) & 0x1);
+        framesize = (dvbs2_framesize_t)(((pmt::to_uint64(tags[i].value)) >> 1) & 0x7f);
+        rate = (dvbs2_code_rate_t)(((pmt::to_uint64(tags[i].value)) >> 8) & 0xff);
+        constellation = (dvbs2_constellation_t)(((pmt::to_uint64(tags[i].value)) >> 16) & 0xff);
+        pilots = (dvbs2_pilots_t)(((pmt::to_uint64(tags[i].value)) >> 24) & 0xff);
+        rootcode = (unsigned int)(((pmt::to_uint64(tags[i].value)) >> 32) & 0x3ffff);
+        get_slots(framesize, rate, constellation, pilots, rootcode, &slots, &pilot_symbols, &vlsnr_set, &vlsnr_header);
         if (dummy == 0 || dummy_frames == 0) {
           if (produced + (((slots * 90) + 90 + pilot_symbols) * 2) <= noutput_items) {
             if (vlsnr_set == VLSNR_OFF) {
-              n = 0;
+              m_cscram_x = rootcode;
+              m_cscram_y = 0x3ffff;
               slot_count = 0;
               for (int plh = 0; plh < 90; plh++) {
                 out[produced++] = m_pl[plh];
@@ -746,7 +727,7 @@ namespace gr {
               for (int j = 0; j < slots; j++) {
                 for (int k = 0; k < 90; k++) {
                   tempin = in[consumed++];
-                  switch (m_cscram[n++]) {
+                  switch (symbol_scrambler()) {
                     case 0:
                       tempout = tempin;
                       break;
@@ -769,7 +750,7 @@ namespace gr {
                     // Add pilots if needed
                     for (int p = 0; p < 36; p++) {
                       tempin = m_bpsk[0][0];
-                      switch (m_cscram[n++]) {
+                      switch (symbol_scrambler()) {
                         case 0:
                           tempout = tempin;
                           break;
@@ -791,7 +772,8 @@ namespace gr {
               }
             }
             else if (vlsnr_set == VLSNR_SET1) {
-              n = 0;
+              m_cscram_x = rootcode;
+              m_cscram_y = 0x3ffff;
               slot_count = 10;
               group = 0;
               symbols = 0;
@@ -807,7 +789,7 @@ namespace gr {
                 for (int k = 0; k < 90; k++) {
                   tempin = in[consumed++];
                   if (constellation == MOD_QPSK) {
-                    switch (m_cscram[n++]) {
+                    switch (symbol_scrambler()) {
                       case 0:
                         tempout = tempin;
                         break;
@@ -823,7 +805,7 @@ namespace gr {
                     }
                   }
                   else {
-                    switch (m_cscram[n++]) {
+                    switch (symbol_scrambler()) {
                       case 0:
                         tempout = tempin;
                         break;
@@ -844,7 +826,7 @@ namespace gr {
                   if (group <= 18 && symbols == 703) {
                     for (int p = 0; p < 34; p++) {
                       tempin = m_bpsk[0][0];
-                      switch (m_cscram[n++]) {
+                      switch (symbol_scrambler()) {
                         case 0:
                           tempout = tempin;
                           break;
@@ -864,7 +846,7 @@ namespace gr {
                     for (int x = (k + 1 + 34) - 90; x < 90; x++) {
                       tempin = in[consumed++];
                       if (constellation == MOD_QPSK) {
-                        switch (m_cscram[n++]) {
+                        switch (symbol_scrambler()) {
                           case 0:
                             tempout = tempin;
                             break;
@@ -880,7 +862,7 @@ namespace gr {
                         }
                       }
                       else {
-                        switch (m_cscram[n++]) {
+                        switch (symbol_scrambler()) {
                           case 0:
                             tempout = tempin;
                             break;
@@ -906,7 +888,7 @@ namespace gr {
                   else if ((group > 18 && group <= 21) && symbols == 702) {
                     for (int p = 0; p < 36; p++) {
                       tempin = m_bpsk[0][0];
-                      switch (m_cscram[n++]) {
+                      switch (symbol_scrambler()) {
                         case 0:
                           tempout = tempin;
                             break;
@@ -926,7 +908,7 @@ namespace gr {
                     for (int x = (k + 1 + 36) - 90; x < 90; x++) {
                       tempin = in[consumed++];
                       if (constellation == MOD_QPSK) {
-                        switch (m_cscram[n++]) {
+                        switch (symbol_scrambler()) {
                           case 0:
                             tempout = tempin;
                             break;
@@ -942,7 +924,7 @@ namespace gr {
                         }
                       }
                       else {
-                        switch (m_cscram[n++]) {
+                        switch (symbol_scrambler()) {
                           case 0:
                             tempout = tempin;
                             break;
@@ -974,7 +956,7 @@ namespace gr {
                     symbols = 0;
                     for (int p = 0; p < 36; p++) {
                       tempin = m_bpsk[0][0];
-                      switch (m_cscram[n++]) {
+                      switch (symbol_scrambler()) {
                         case 0:
                           tempout = tempin;
                           break;
@@ -996,7 +978,8 @@ namespace gr {
               }
             }
             else {    /* VL-SNR set 2 */
-              n = 0;
+              m_cscram_x = rootcode;
+              m_cscram_y = 0x3ffff;
               slot_count = 10;
               group = 0;
               symbols = 0;
@@ -1011,7 +994,7 @@ namespace gr {
               for (int j = 0; j < slots; j++) {
                 for (int k = 0; k < 90; k++) {
                   tempin = in[consumed++];
-                  switch (m_cscram[n++]) {
+                  switch (symbol_scrambler()) {
                     case 0:
                       tempout = tempin;
                       break;
@@ -1031,7 +1014,7 @@ namespace gr {
                   if (group <= 9 && symbols == 704) {
                     for (int p = 0; p < 32; p++) {
                       tempin = m_bpsk[0][0];
-                      switch (m_cscram[n++]) {
+                      switch (symbol_scrambler()) {
                         case 0:
                           tempout = tempin;
                           break;
@@ -1050,7 +1033,7 @@ namespace gr {
                     }
                     for (int x = (k + 1 + 32) - 90; x < 90; x++) {
                       tempin = in[consumed++];
-                      switch (m_cscram[n++]) {
+                      switch (symbol_scrambler()) {
                         case 0:
                           tempout = tempin;
                           break;
@@ -1075,7 +1058,7 @@ namespace gr {
                   else if ((group == 10) && symbols == 702) {
                     for (int p = 0; p < 36; p++) {
                       tempin = m_bpsk[0][0];
-                      switch (m_cscram[n++]) {
+                      switch (symbol_scrambler()) {
                         case 0:
                           tempout = tempin;
                           break;
@@ -1094,7 +1077,7 @@ namespace gr {
                     }
                     for (int x = (k + 1 + 36) - 90; x < 90; x++) {
                       tempin = in[consumed++];
-                      switch (m_cscram[n++]) {
+                      switch (symbol_scrambler()) {
                         case 0:
                           tempout = tempin;
                           break;
@@ -1125,7 +1108,7 @@ namespace gr {
                     symbols = 0;
                     for (int p = 0; p < 36; p++) {
                       tempin = m_bpsk[0][0];
-                      switch (m_cscram[n++]) {
+                      switch (symbol_scrambler()) {
                         case 0:
                           tempout = tempin;
                           break;
@@ -1153,7 +1136,8 @@ namespace gr {
         }
         else {
           if (produced + (((36 * 90) + 90) * 2) <= noutput_items) {
-            n = 0;
+            m_cscram_x = rootcode;
+            m_cscram_y = 0x3ffff;
             consumed += slots * 90;
             for (int plh = 0; plh < 90; plh++) {
               out[produced++] = m_pl_dummy[plh];
@@ -1162,7 +1146,7 @@ namespace gr {
             for (int j = 0; j < 36; j++) {
               for (int k = 0; k < 90; k++) {
                 tempin = m_bpsk[0][0];
-                switch (m_cscram[n++]) {
+                switch (symbol_scrambler()) {
                   case 0:
                     tempout = tempin;
                     break;
@@ -1195,7 +1179,7 @@ namespace gr {
       return produced;
     }
 
-    const unsigned long physical_cc_impl::g[7] =
+    const unsigned int physical_cc_impl::g[7] =
     {
       0x90AC2DDD, 0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF, 0x0000FFFF, 0xFFFFFFFF
     };
