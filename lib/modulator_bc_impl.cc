@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014,2016,2017 Ron Economos.
+ * Copyright 2014,2016,2017,2020 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -558,7 +558,7 @@ namespace gr {
       dvbs2_code_rate_t rate;
       dvbs2_constellation_t constellation;
       dvbs2_pilots_t pilots;
-      unsigned int goldcode, dummy;
+      unsigned int rootcode, dummy;
 
       std::vector<tag_t> tags;
       const uint64_t nread = this->nitems_read(0); //number of items read on port 0
@@ -572,11 +572,11 @@ namespace gr {
         rate = (dvbs2_code_rate_t)(((pmt::to_uint64(tags[i].value)) >> 8) & 0xff);
         constellation = (dvbs2_constellation_t)(((pmt::to_uint64(tags[i].value)) >> 16) & 0xff);
         pilots = (dvbs2_pilots_t)(((pmt::to_uint64(tags[i].value)) >> 24) & 0xff);
-        goldcode = (unsigned int)(((pmt::to_uint64(tags[i].value)) >> 32) & 0x3ffff);
+        rootcode = (unsigned int)(((pmt::to_uint64(tags[i].value)) >> 32) & 0x3ffff);
         get_items(framesize, rate, constellation, &num_items, &constellation_index);
         if (produced + num_items <= noutput_items) {
           const uint64_t tagoffset = this->nitems_written(0);
-          const uint64_t tagmodcod = (uint64_t(goldcode) << 32) | (uint64_t(pilots) << 24) | (uint64_t(constellation) << 16) | (uint64_t(rate) << 8) | (uint64_t(framesize) << 1) | uint64_t(dummy);
+          const uint64_t tagmodcod = (uint64_t(rootcode) << 32) | (uint64_t(pilots) << 24) | (uint64_t(constellation) << 16) | (uint64_t(rate) << 8) | (uint64_t(framesize) << 1) | uint64_t(dummy);
           pmt::pmt_t key = pmt::string_to_symbol("modcod");
           pmt::pmt_t value = pmt::from_uint64(tagmodcod);
           this->add_item_tag(0, tagoffset, key, value);

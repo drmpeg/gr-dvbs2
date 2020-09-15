@@ -147,7 +147,7 @@ namespace gr {
       b_64_8_code (code, out);
     }
 
-    int
+    inline int
     physical_cc_impl::parity_chk(int a, int b)
     {
       a = a & b;
@@ -159,7 +159,7 @@ namespace gr {
       return a & 1;
     }
 
-    int
+    inline int
     physical_cc_impl::symbol_scrambler(void)
     {
       int xa, xb, xc, ya, yb, yc;
@@ -190,7 +190,7 @@ namespace gr {
     }
 
     void
-    physical_cc_impl::get_slots(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, dvbs2_pilots_t pilots, int goldcode, int *slots, int *pilot_symbols, int *vlsnr_set, int *vlsnr_header)
+    physical_cc_impl::get_slots(dvbs2_framesize_t framesize, dvbs2_code_rate_t rate, dvbs2_constellation_t constellation, dvbs2_pilots_t pilots, int rootcode, int *slots, int *pilot_symbols, int *vlsnr_set, int *vlsnr_header)
     {
       int type, modcod, frame_size;
       int slots_temp = 0;
@@ -698,7 +698,7 @@ namespace gr {
       dvbs2_code_rate_t rate;
       dvbs2_constellation_t constellation;
       dvbs2_pilots_t pilots;
-      unsigned int goldcode, dummy;
+      unsigned int rootcode, dummy;
 
       std::vector<tag_t> tags;
       const uint64_t nread = this->nitems_read(0); //number of items read on port 0
@@ -712,12 +712,12 @@ namespace gr {
         rate = (dvbs2_code_rate_t)(((pmt::to_uint64(tags[i].value)) >> 8) & 0xff);
         constellation = (dvbs2_constellation_t)(((pmt::to_uint64(tags[i].value)) >> 16) & 0xff);
         pilots = (dvbs2_pilots_t)(((pmt::to_uint64(tags[i].value)) >> 24) & 0xff);
-        goldcode = (unsigned int)(((pmt::to_uint64(tags[i].value)) >> 32) & 0x3ffff);
-        get_slots(framesize, rate, constellation, pilots, goldcode, &slots, &pilot_symbols, &vlsnr_set, &vlsnr_header);
+        rootcode = (unsigned int)(((pmt::to_uint64(tags[i].value)) >> 32) & 0x3ffff);
+        get_slots(framesize, rate, constellation, pilots, rootcode, &slots, &pilot_symbols, &vlsnr_set, &vlsnr_header);
         if (dummy == 0 || dummy_frames == 0) {
           if (produced + (((slots * 90) + 90 + pilot_symbols) * 2) <= noutput_items) {
             if (vlsnr_set == VLSNR_OFF) {
-              m_cscram_x = m_cscram_root[goldcode];
+              m_cscram_x = rootcode;
               m_cscram_y = 0x3ffff;
               slot_count = 0;
               for (int plh = 0; plh < 90; plh++) {
@@ -772,7 +772,7 @@ namespace gr {
               }
             }
             else if (vlsnr_set == VLSNR_SET1) {
-              m_cscram_x = m_cscram_root[goldcode];
+              m_cscram_x = rootcode;
               m_cscram_y = 0x3ffff;
               slot_count = 10;
               group = 0;
@@ -978,7 +978,7 @@ namespace gr {
               }
             }
             else {    /* VL-SNR set 2 */
-              m_cscram_x = m_cscram_root[goldcode];
+              m_cscram_x = rootcode;
               m_cscram_y = 0x3ffff;
               slot_count = 10;
               group = 0;
@@ -1136,7 +1136,7 @@ namespace gr {
         }
         else {
           if (produced + (((36 * 90) + 90) * 2) <= noutput_items) {
-            m_cscram_x = m_cscram_root[goldcode];
+            m_cscram_x = rootcode;
             m_cscram_y = 0x3ffff;
             consumed += slots * 90;
             for (int plh = 0; plh < 90; plh++) {
@@ -1469,8 +1469,6 @@ namespace gr {
        1,1,0,0,0,0,0,0,1,0,1,1,0,1,1,1,1,1,0,0,1,0,1,0,0,1,0,1,1,0,1,1,1,1,1,1,1,0,0,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,0,
        0,0,1,0,0,0,1,1,1,1,0,0,1,0,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,0,0,1,1,1,1,0,0,1,0,1,1,1,0,1,1,0,1,0,1,0,0,0,0,0,1}
     };
-
-#include "physical_root_table.h"
 
   } /* namespace dvbs2 */
 } /* namespace gr */

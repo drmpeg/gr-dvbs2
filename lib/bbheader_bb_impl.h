@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014,2016,2017 Ron Economos.
+ * Copyright 2014,2016,2017,2020 Ron Economos.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ namespace gr {
       unsigned int code_rate[NUM_STREAMS];
       unsigned int signal_constellation[NUM_STREAMS];
       unsigned int pilot_mode[NUM_STREAMS];
-      unsigned int gold_code[NUM_STREAMS];
+      unsigned int root_code[NUM_STREAMS];
       unsigned char bsave[NUM_STREAMS];
       bool dvbs2x[NUM_STREAMS];
       bool alternate[NUM_STREAMS];
@@ -66,6 +66,7 @@ namespace gr {
       FrameFormat m_format[1][NUM_STREAMS];
       unsigned char crc_tab[256];
       void add_bbheader(unsigned char *, int, bool, int);
+      int gold_to_root(int);
       void build_crc8_table(void);
       int add_crc8_bits(unsigned char *, int);
 
