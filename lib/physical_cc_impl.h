@@ -42,15 +42,14 @@ namespace gr {
       int m_cscram_y;
       void b_64_8_code(unsigned char, int *);
       void pl_header_encode(unsigned char, unsigned char, int *);
-      int parity_chk(int, int);
-      int symbol_scrambler(void);
+      inline int parity_chk(int, int);
+      inline int symbol_scrambler(void);
       void get_slots(dvbs2_framesize_t, dvbs2_code_rate_t, dvbs2_constellation_t, dvbs2_pilots_t, int, int *, int *, int *, int *);
 
       const static unsigned int g[7];
       const static int ph_scram_tab[64];
       const static int ph_sync_seq[26];
       const static int ph_vlsnr_seq[16][VLSNR_HEADER_LENGTH - 4];
-      const static int m_cscram_root[262141 + 1];
 
      public:
       physical_cc_impl(dvbs2_dummy_frames_t dummyframes);
