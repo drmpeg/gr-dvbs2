@@ -63,14 +63,6 @@ include(GrTest)
 #include_directories()
 # List all files that contain Boost.UTF unit tests here
 list(APPEND test_dvbs2_sources
-qa_physical_cc.cc
-qa_modulator_bc.cc
-qa_ldpc_bb.cc
-qa_interleaver_bb.cc
-qa_bch_bb.cc
-qa_bbscrambler_bb.cc
-qa_bbheader_source.cc
-qa_bbheader_bb.cc
 )
 # Anything we need to link to for the unit tests go here
 list(APPEND GR_TEST_TARGET_DEPS gnuradio-dvbs2)
