@@ -465,9 +465,10 @@ namespace gr {
     int
     bbheader_bb_impl::gold_to_root(int goldcode)
     {
-      int x;
+      int g;
+      int x = 1;
 
-      for (int g = 0, x = 1; g < goldcode; g++) {
+      for (g = 0, x = 1; g < goldcode; g++) {
         x = (((x ^ (x >> 7)) & 1) << 17) | (x >> 1);
       }
       return x;
