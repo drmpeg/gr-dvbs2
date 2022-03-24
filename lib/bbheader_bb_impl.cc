@@ -24,6 +24,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "bbheader_bb_impl.h"
+#include <boost/format.hpp>
 
 namespace gr {
   namespace dvbs2 {
