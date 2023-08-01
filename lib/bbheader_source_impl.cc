@@ -1089,7 +1089,7 @@ namespace gr {
               d_socket->send_to(boost::asio::buffer((void*)(udp_packet), (kbch[i] / 8) + 4), d_endpoint);
             }
             catch(std::exception& e) {
-              GR_LOG_ERROR(d_logger, boost::format("send error: %s") % e.what());
+              d_logger->error("send error: {}",e.what());
             }
           }
         }
