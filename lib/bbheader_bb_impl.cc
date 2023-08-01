@@ -503,8 +503,7 @@ namespace gr {
             for (int j = 0; j < (int)((kbch[i] - 80) / 8); j++) {
               if (count[i] == 0) {
                 if (*in != 0x47) {
-                  GR_LOG_WARN(d_logger, boost::format("Transport Stream %1% sync error!") \
-                              % i);
+                  d_logger->warn("Transport Stream {} sync error!",i);
                 }
                 in++;
                 b = crc[i];
@@ -528,8 +527,7 @@ namespace gr {
               if (nibble[i] == TRUE) {
                 if (count[i] == 0) {
                   if (*in != 0x47) {
-                    GR_LOG_WARN(d_logger, boost::format("Transport Stream %1% sync error!") \
-                                % i);
+                    d_logger->warn("Transport Stream {} sync error!",i);
                   }
                   in++;
                   b = crc[i];
