@@ -36,6 +36,9 @@ set(VERSION_ABI   0)
 set(VERSION_PATCH git)
 
 cmake_policy(SET CMP0011 NEW)
+if(POLICY CMP0148)
+    cmake_policy(SET CMP0148 OLD)
+endif()
 
 # Enable generation of compile_commands.json for code completion engines
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -77,13 +80,13 @@ include(FindPkgConfig)
 find_package(Gnuradio "3.9" REQUIRED)
 include(GrVersion)
 
-include(GrPlatform) #define LIB_SUFFIX
+include(GNUInstallDirs)
 
 if(NOT CMAKE_MODULES_DIR)
-  set(CMAKE_MODULES_DIR lib${LIB_SUFFIX}/cmake)
+  set(CMAKE_MODULES_DIR ${CMAKE_INSTALL_LIBDIR}/cmake)
 endif(NOT CMAKE_MODULES_DIR)
 
-set(GR_INCLUDE_DIR      include/dvbs2)
+set(GR_INCLUDE_DIR      ${CMAKE_INSTALL_INCLUDEDIR}/dvbs2)
 set(GR_CMAKE_DIR        ${CMAKE_MODULES_DIR}/dvbs2)
 set(GR_PKG_DATA_DIR     ${GR_DATA_DIR}/${CMAKE_PROJECT_NAME})
 set(GR_PKG_DOC_DIR      ${GR_DOC_DIR}/${CMAKE_PROJECT_NAME})

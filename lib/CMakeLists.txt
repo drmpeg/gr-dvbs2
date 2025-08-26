@@ -9,7 +9,7 @@
 ########################################################################
 # Setup library
 ########################################################################
-include(GrPlatform) #define LIB_SUFFIX
+include(GNUInstallDirs)
 
 list(APPEND dvbs2_sources
     bbheader_bb_impl.cc
@@ -32,7 +32,7 @@ add_library(gnuradio-dvbs2 SHARED ${dvbs2_sources})
 target_link_libraries(gnuradio-dvbs2 gnuradio::gnuradio-runtime ${PCAP_LIBRARIES})
 target_include_directories(gnuradio-dvbs2
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
-    PUBLIC $<INSTALL_INTERFACE:include>
+    PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
 set_target_properties(gnuradio-dvbs2 PROPERTIES DEFINE_SYMBOL "gnuradio_dvbs2_EXPORTS")
 
